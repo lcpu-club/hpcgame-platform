@@ -21,7 +21,7 @@
 
 目前，我们有如下组件：
 
-- [`ui`]('./ui/README.md'): HPCGame 平台的前端组件
-- [`server`]('./server/README.md'): HPCGame 平台的后端组件
+- [`ui`](./ui/README.md): HPCGame 平台的前端组件
+- [`server`](./server/README.md): HPCGame 平台的后端组件
 
 请阅读对应的文档。
