@@ -1,0 +1,12 @@
+{
+	"recommendations": [
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"VisualStudioExptTeam.intellicode-api-usage-examples",
+		"VisualStudioExptTeam.vscodeintellicode",
+		"voorjaar.windicss-intellisense",
+		"Vue.volar",
+		"wix.vscode-import-cost",
+	],
+	"unwantedRecommendations": []
+}
