@@ -1,0 +1,3 @@
+.hg-content-h-full {
+  min-height: calc(100vh - 6rem);
+}
