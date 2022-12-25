@@ -45,7 +45,7 @@ if (DEV_MODE) {
 }
 
 import { rootRouter } from './api/index.js'
-import { GetRouterDescriptor } from 'fastify-typeful'
+import type { GetRouterDescriptor } from 'fastify-typeful'
 import { client } from '../../db/index.js'
 import fastifyCors from '@fastify/cors'
 await server.register(rootRouter.toPlugin())

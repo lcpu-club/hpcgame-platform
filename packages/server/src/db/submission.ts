@@ -1,4 +1,4 @@
-import { Static } from '@sinclair/typebox'
+import type { Static } from '@sinclair/typebox'
 import { StringEnum } from '../utils/type.js'
 import { db } from './base.js'
 

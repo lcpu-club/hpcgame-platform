@@ -1,9 +1,15 @@
-import { Static } from '@sinclair/typebox'
+import type { Static } from '@sinclair/typebox'
 import { nanoid } from 'nanoid'
 import { StringEnum } from '../utils/type.js'
 import { db } from './base.js'
 
-export const UserGroupSchema = StringEnum(['banned', 'pku', 'social', 'admin'])
+export const UserGroupSchema = StringEnum([
+  'banned',
+  'pku',
+  'social',
+  'staff',
+  'admin'
+])
 export type UserGroup = Static<typeof UserGroupSchema>
 
 export const UserGenderSchema = StringEnum(['male', 'female', 'unknown'])
@@ -19,9 +25,12 @@ export interface IUser {
   group: UserGroup
   tags: string[]
   email: string
+
   gender: UserGender
+
   authToken: string
   authSources: IUserAuthSource
+  scores: Record<string, number>
 }
 
 export const Users = db.collection<IUser>('users')

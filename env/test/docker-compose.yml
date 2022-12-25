@@ -1,0 +1,89 @@
+version: '3.4'
+services:
+  server-main:
+    restart: always
+    image: node:18
+    volumes:
+      - ../..:/workspace
+    command: bash -c "cd /workspace; corepack yarn workspace @hpcgame-platform/server start"
+    ports:
+      - 13000:13000
+    depends_on:
+      mongo:
+        condition: service_healthy
+    links:
+      - mongo
+    environment:
+      HPC_DEV_MODE: 'true'
+      HPC_API_HOST: '0.0.0.0'
+      HPC_API_PORT: '10721'
+      HPC_TRUST_PROXY: 'true'
+      HPC_MONGO_URI: 'mongodb://mongo:27017/hpc'
+      HPC_NSQ_NSQD_HOST: 'nsqd'
+      HPC_NSQ_NSQD_PORT: '4150'
+      HPC_NSQ_LOOKUPD_ADDR: 'nsqlookupd:4161'
+      HPC_MINIO_ENDPOINT: 'minio:9000'
+      HPC_MINIO_ACCESS_KEY: '${HPC_MINIO_ACCESS_KEY}'
+      HPC_MINIO_SECRET_KEY: '${HPC_MINIO_SECRET_KEY}'
+
+  mongo:
+    restart: always
+    image: mongo:latest
+    volumes:
+      - ./data/mongo:/data/db
+    healthcheck:
+      test: echo 'db.stats().ok' | mongosh mongo:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  minio:
+    restart: always
+    image: minio/minio:latest
+    volumes:
+      - /opt/volumes/minio:/data
+    ports:
+      - 9000:9000
+      - 9090:9090
+    environment:
+      MINIO_ACCESS_KEY: HPC
+      MINIO_SECRET_KEY: HPCGAMEOSS
+    command: server /data --console-address ":9090"
+
+  nsqlookupd:
+    image: nsqio/nsq
+    command: /nsqlookupd
+    ports:
+      - '4160'
+      - '4161'
+  nsqd:
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+    depends_on:
+      - nsqlookupd
+    ports:
+      - '4150'
+      - '4151'
+
+  nsqadmin:
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    depends_on:
+      - nsqlookupd
+    ports:
+      - '4171'
+
+  nginx:
+    restart: always
+    image: nginx:latest
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ../..:/workspace
+    ports:
+      - 8000:8000
+    depends_on:
+      - server-main
+      - mongo
+      - minio
+      - nsqd
+      - nsqlookupd

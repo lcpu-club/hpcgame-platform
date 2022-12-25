@@ -5,8 +5,14 @@
 ## 开发环境配置
 
 - 配置 MongoDB
+  - `docker run --rm --name hpc-mongo -p 27017:27017 -d mongo`
 - 配置 Minio
+  - `docker run --rm --name hpc-minio -p 9000:9000 -p 9090:9090 -e "MINIO_ROOT_USER=HPC" -e "MINIO_ROOT_PASSWORD=HPCGAMEOSS" minio/minio server /data --console-address ":9090"`
 - 配置 NSQ
+  - `docker run --rm --name hpc-lookupd -p 4160:4160 -p 4161:4161 -d nsqio/nsq /nsqlookupd`
+  - `docker run --rm --name hpc-nsqd -p 4150:4150 -p 4151:4151 -d nsqio/nsq /nsqd --broadcast-address=172.17.0.1 --lookupd-tcp-address=172.17.0.1:4160`
+
+注意，上述 docker 命令均没有进行数据持久化。在开发过程中，这并不是必要的。
 
 然后，按照`src/config/index.ts`中的描述设置对应的环境变量。您可以在这个包的根目录下创建`.env`文件，将环境变量写入其中。一个示例文件如下：
 

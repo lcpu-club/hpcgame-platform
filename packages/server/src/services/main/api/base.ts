@@ -1,6 +1,6 @@
-import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
+import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { createRoot } from 'fastify-typeful'
-import { IUser, verifyAuthToken } from '../../../db/user.js'
+import { type IUser, verifyAuthToken } from '../../../db/user.js'
 import { server } from '../index.js'
 
 function requires(this: { user: IUser }, cond: boolean) {

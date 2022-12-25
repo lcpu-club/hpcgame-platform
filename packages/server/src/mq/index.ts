@@ -1,8 +1,12 @@
 import { Reader, Writer } from 'nsqjs'
-import { NSQ_HOST, NSQ_LOOKUPD_ADDR, NSQ_PORT } from '../config/index.js'
+import {
+  NSQ_NSQD_HOST,
+  NSQ_LOOKUPD_ADDR,
+  NSQ_NSQD_PORT
+} from '../config/index.js'
 
 export async function createWriter() {
-  const writer = new Writer(NSQ_HOST, NSQ_PORT)
+  const writer = new Writer(NSQ_NSQD_HOST, NSQ_NSQD_PORT)
   writer.connect()
   await new Promise<void>((resolve) => {
     writer.on('ready', resolve)

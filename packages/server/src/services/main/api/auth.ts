@@ -23,7 +23,8 @@ export const authRouter = rootChain.router().handle('GET', '/dev', (C) =>
         tags: [],
         email: 'no@email.at.all',
         gender: 'unknown',
-        authSources: {}
+        authSources: {},
+        scores: {}
       })
     })
 )

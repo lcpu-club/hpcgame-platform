@@ -3,6 +3,7 @@
   "packageManager": "yarn@3.3.0",
   "type": "module",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.238.0",
     "@fastify/cors": "^8.2.0",
     "@fastify/sensible": "^5.2.0",
     "@fastify/type-provider-typebox": "^2.4.0",
