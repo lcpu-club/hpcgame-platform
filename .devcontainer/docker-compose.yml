@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../..:/workspaces:cached
+
+    command: sleep infinity
+
+  db:
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - mongodb-data:/data/db
+
+  minio:
+    restart: always
+    image: minio/minio:latest
+    volumes:
+      - minio-data:/data
+    ports:
+      - '9000'
+      - '9090'
+    environment:
+      MINIO_ACCESS_KEY: HPC
+      MINIO_SECRET_KEY: HPCGAMEOSS
+    command: server /data --console-address ":9090"
+
+  nsqlookupd:
+    image: nsqio/nsq
+    command: /nsqlookupd
+    ports:
+      - '4160'
+      - '4161'
+
+  nsqd:
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+    depends_on:
+      - nsqlookupd
+    ports:
+      - '4150'
+      - '4151'
+
+  nsqadmin:
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    depends_on:
+      - nsqlookupd
+    ports:
+      - '4171'
+
+volumes:
+  mongodb-data:
+  minio-data:

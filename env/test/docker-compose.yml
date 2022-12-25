@@ -41,7 +41,7 @@ services:
     restart: always
     image: minio/minio:latest
     volumes:
-      - /opt/volumes/minio:/data
+      - ./data/minio:/data
     ports:
       - 9000:9000
       - 9090:9090
