@@ -9,11 +9,13 @@
           <NMenu :options="menuOptions" />
         </NLayoutSider>
         <NLayoutContent class="p-4">
-          <RouterView v-slot="{ Component }">
-            <Transition name="router" mode="out-in">
-              <component :is="Component" />
-            </Transition>
-          </RouterView>
+          <TaskContext>
+            <RouterView v-slot="{ Component }">
+              <Transition name="router" mode="out-in">
+                <component :is="Component" />
+              </Transition>
+            </RouterView>
+          </TaskContext>
         </NLayoutContent>
       </NLayout>
     </NLayout>
@@ -31,6 +33,7 @@ import {
   type MenuOption,
   NLayoutContent
 } from 'naive-ui'
+import TaskContext from '@/components/misc/TaskContext.vue'
 
 const menuOptions: MenuOption[] = [
   ['/admin/', '概览'],

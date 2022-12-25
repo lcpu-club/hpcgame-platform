@@ -13,3 +13,6 @@ node_modules
 # DotEnv
 .env
 .env.*
+
+# TypeScript
+*.tsbuildinfo

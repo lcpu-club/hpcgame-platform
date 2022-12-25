@@ -2,6 +2,8 @@
   "name": "@hpcgame-platform/server",
   "packageManager": "yarn@3.3.0",
   "type": "module",
+  "version": "0.0.1",
+  "license": "MIT",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.238.0",
     "@fastify/cors": "^8.2.0",

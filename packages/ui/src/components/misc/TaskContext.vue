@@ -1,0 +1,33 @@
+<template>
+  <NSpin :show="running">
+    <slot />
+  </NSpin>
+</template>
+
+<script setup lang="ts">
+import { kTaskContext } from '@/utils/async'
+import { NSpin, useNotification } from 'naive-ui'
+import { provide, ref } from 'vue'
+
+const running = ref(false)
+const notification = useNotification()
+
+provide(kTaskContext, {
+  running,
+  run: async (task) => {
+    try {
+      const result = await task()
+      notification.success({
+        title: '操作成功'
+      })
+      return [null, result]
+    } catch (err) {
+      notification.error({
+        title: '操作失败',
+        description: '' + err
+      })
+      return [err, null]
+    }
+  }
+})
+</script>

@@ -1,4 +1,3 @@
-import { userInfo } from '@/api'
 import type { RouteRecordRaw } from 'vue-router'
 
 export const userRoutes: RouteRecordRaw[] = [
@@ -8,10 +7,7 @@ export const userRoutes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        component: () => import('@/views/user/ProfileView.vue'),
-        props: {
-          userId: () => userInfo.value._id
-        }
+        component: () => import('@/views/user/ProfileView.vue')
       },
       {
         path: 'logout',

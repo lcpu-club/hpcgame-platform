@@ -2,6 +2,7 @@
   "compilerOptions": {
     "incremental": true,
     "composite": true,
+    "rootDir": "src",
     "target": "ESNext",
     "lib": [],
     // "experimentalDecorators": true,

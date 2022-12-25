@@ -1,11 +1,13 @@
 <template>
   <div class="w-full grid grid-cols-1">
-    <NCard title="公开信息">
-      <!--  -->
-    </NCard>
+    <TaskContext>
+      <UserEdit :userId="userInfo._id" />
+    </TaskContext>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NCard } from 'naive-ui'
+import { userInfo } from '@/api'
+import TaskContext from '@/components/misc/TaskContext.vue'
+import UserEdit from '@/components/user/UserEdit.vue'
 </script>
