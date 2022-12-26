@@ -32,9 +32,12 @@ graph LR
 
 统一使用 JSON 格式
 
-#### 评测请求
+#### Runner 相关
+
+##### 评测请求
 
 ```ts
+// topic: runner:judge:request
 interface JudgeRequest {
   // 运行参数。该参数在Problem模型中定义。
   runner_args: string
@@ -45,9 +48,10 @@ interface JudgeRequest {
 }
 ```
 
-#### 评测状态上报
+##### 评测状态上报
 
 ```ts
+// topic: runner:judge:status
 interface JudgeStatus {
   // 提交ID。MainAPI将根据该ID更新评测状态。
   submission_id: string
@@ -60,9 +64,10 @@ interface JudgeStatus {
 }
 ```
 
-#### 试验场操作请求
+##### 试验场操作请求
 
 ```ts
+// topic: runner:sandbox:request
 interface SandboxRequest {
   // 运行参数。该参数在Problem模型中定义。
   runner_args: string
@@ -75,9 +80,10 @@ interface SandboxRequest {
 }
 ```
 
-#### 试验场状态上报
+##### 试验场状态上报
 
 ```ts
+// topic: runner:sandbox:status
 interface SandboxStatus {
   // 试验场ID。MainAPI将根据该ID更新试验场状态。
   sandbox_id: string
@@ -89,5 +95,15 @@ interface SandboxStatus {
   message: string
   // 时间戳。将根据本字段生成推送通知。
   timestamp: number
+}
+```
+
+#### 其他消息
+
+##### 排名重计算请求
+
+```ts
+interface RankRequest {
+  ranklist_id: string
 }
 ```
