@@ -29,10 +29,17 @@ export const problemRouter = protectedChain
         return problem.content
       })
   )
-  .handle('POST', '/add', (C) =>
+  // Create problem
+  .handle('POST', '/', (C) =>
     C.handler().body(
       Type.Object({
         problemId: Type.String()
       })
     )
   )
+  // Delete problem
+  .handle('DELETE', '/', (C) => C.handler())
+  // Update problem
+  .handle('PATCH', '/', (C) => C.handler())
+  .handle('POST', '/count', (C) => C.handler())
+  .handle('POST', '/search', (C) => C.handler())
