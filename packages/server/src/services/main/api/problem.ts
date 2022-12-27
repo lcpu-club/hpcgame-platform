@@ -29,17 +29,25 @@ export const problemRouter = protectedChain
         return problem.content
       })
   )
-  // Create problem
-  .handle('POST', '/', (C) =>
-    C.handler().body(
-      Type.Object({
-        problemId: Type.String()
-      })
-    )
+  .handle('PUT', '/', (C) =>
+    C.handler()
+      .body(
+        Type.Object({
+          _id: Type.String(),
+          $set: Type.Object({
+            global: Type.Boolean(),
+            group: Type.String(),
+            userId: Type.String(),
+            title: Type.String(),
+            content: Type.String(),
+            timestamp: Type.Number(),
+            metadata: Type.Record(Type.String(), Type.Unknown())
+          })
+        })
+      )
+      .handle(async (ctx, req) => {})
   )
   // Delete problem
   .handle('DELETE', '/', (C) => C.handler())
-  // Update problem
-  .handle('PATCH', '/', (C) => C.handler())
   .handle('POST', '/count', (C) => C.handler())
   .handle('POST', '/search', (C) => C.handler())

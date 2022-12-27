@@ -21,7 +21,8 @@
 				"voorjaar.windicss-intellisense",
 				"Vue.volar",
 				"wix.vscode-import-cost",
-				"GitHub.copilot"
+				"GitHub.copilot",
+				"cweijan.vscode-redis-client"
 			]
 		}
 	},

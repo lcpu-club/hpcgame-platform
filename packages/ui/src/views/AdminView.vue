@@ -37,6 +37,7 @@ import TaskContext from '@/components/misc/TaskContext.vue'
 
 const menuOptions: MenuOption[] = [
   ['/admin/', '概览'],
+  ['/admin/sys', '动态配置'],
   ['/admin/user', '用户管理'],
   ['/admin/problem', '题面管理'],
   ['/admin/submission', '提交管理'],

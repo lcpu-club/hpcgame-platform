@@ -2,7 +2,9 @@
   <NCard segmented>
     <AsyncState :loading="isLoading" :error="error">
       <h1 class="text-lg pb-2">公开信息</h1>
-      <div class="grid grid-cols-[100px,auto] items-center gap-2">
+      <div
+        class="grid grid-cols-[100px,1fr] auto-rows-fr items-center gap-2 pb-2"
+      >
         <div>用户ID</div>
         <NInput readonly v-model:value="state._id" />
         <div>用户名</div>
@@ -13,8 +15,17 @@
         <div>
           <UserGroup :group="state.group" />
         </div>
+        <div>用户标签</div>
+        <UserTags :tags="state.tags" show-empty />
       </div>
-      <pre>{{ state }}</pre>
+      <hr class="pb-2" />
+      <h1 class="text-lg pb-2">登录信息</h1>
+      <div class="grid grid-cols-[100px,1fr] items-center gap-2 pb-2">
+        <div>IAAA账号</div>
+        <NInput readonly :value="state.iaaaId ?? '未绑定'" />
+        <div>登陆邮箱</div>
+        <NInput readonly :value="state.authEmail ?? '未绑定'" />
+      </div>
     </AsyncState>
     <template #action>
       <NSpace>
@@ -32,30 +43,24 @@ import { useAsyncState } from '@vueuse/core'
 import { NButton, NCard, NInput, NSpace } from 'naive-ui'
 import AsyncState from '../misc/AsyncState.vue'
 import UserGroup from './UserGroup.vue'
-
-const props = defineProps<{
-  userId: string
-}>()
+import UserTags from './UserTags.vue'
 
 const task = useTaskContext()
 
 const { state, isLoading, error, execute } = useAsyncState(
-  () => mainApi.user.$get.query({ userId: props.userId }).fetch(),
+  () => mainApi.user.$get.fetch(),
   null as never,
   { immediate: true, shallow: false }
 )
 
 function save() {
   task.run(async () => {
-    const { name, email, gender } = state.value
+    const { name, email } = state.value
     return mainApi.user.$patch
-      .query({ userId: props.userId })
-      .body({ name, email, gender })
+      .body({ name, email })
       .fetch()
       .then(() => {
-        if (props.userId === userInfo.value._id) {
-          userInfo.value = { ...userInfo.value, name, email, gender }
-        }
+        userInfo.value = { ...userInfo.value, name, email }
       })
   })
 }

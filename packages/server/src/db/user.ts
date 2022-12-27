@@ -12,11 +12,12 @@ export const UserGroupSchema = StringEnum([
 ])
 export type UserGroup = Static<typeof UserGroupSchema>
 
-export const UserGenderSchema = StringEnum(['male', 'female', 'unknown'])
-export type UserGender = Static<typeof UserGenderSchema>
-
 export interface IUserAuthSource {
   iaaa?: string // IAAA Identifier
+}
+
+export interface ProblemStatus {
+  score: number
 }
 
 export interface IUser {
@@ -26,16 +27,16 @@ export interface IUser {
   tags: string[]
   email: string
 
-  gender: UserGender
-
   authToken: string
-  authSources: IUserAuthSource
-  scores: Record<string, number>
+  iaaaId?: string
+  authEmail?: string
+  problemStatus: Record<string, ProblemStatus>
 }
 
 export const Users = db.collection<IUser>('users')
 
-await Users.createIndex({ name: 1 }, { unique: true })
+await Users.createIndex({ iaaaId: 1 }, { unique: true, sparse: true })
+await Users.createIndex({ authEmail: 1 }, { unique: true, sparse: true })
 
 export function generateAuthToken(userId: string) {
   const token = nanoid(32)

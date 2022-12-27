@@ -39,6 +39,18 @@ const router = createRouter({
       }
     },
     {
+      path: '/login/iaaa',
+      component: () => import('@/views/auth/IaaaAuth.vue')
+    },
+    {
+      path: '/auth/iaaa',
+      component: () => import('@/views/auth/IaaaCallback.vue')
+    },
+    {
+      path: '/login/mail',
+      component: () => import('@/views/auth/MailAuth.vue')
+    },
+    {
       path: '/messages',
       component: () => import('@/views/MessagesView.vue')
     },

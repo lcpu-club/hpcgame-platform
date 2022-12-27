@@ -1,7 +1,30 @@
 import { Type } from '@sinclair/typebox'
-import { DEV_MODE } from '../../../config/index.js'
+import {
+  DEV_MODE,
+  IAAA_ID,
+  IAAA_KEY,
+  MAIL_BLACKLIST,
+  MAIL_WHITELIST,
+  NEWCOMER_YEAR
+} from '../../../config/index.js'
 import { createUser, UserGroupSchema, Users } from '../../../db/user.js'
 import { rootChain } from './base.js'
+import { validate } from '@pku-internals/iaaa'
+import { server } from '../index.js'
+import { redis } from '../../../cache/index.js'
+import isemail from 'isemail'
+import { sendMail } from '../../../mail/index.js'
+import { recaptchaVerify } from '../../../captcha/index.js'
+
+function isNewComer(identityId: string) {
+  return identityId.length === 10 && identityId.startsWith(NEWCOMER_YEAR)
+}
+
+function generateCode() {
+  return Math.floor(Math.random() * 1000000)
+    .toString()
+    .padStart(6, '0')
+}
 
 export const authRouter = rootChain
   .router()
@@ -24,11 +47,97 @@ export const authRouter = rootChain
           group: req.query.group,
           tags: [],
           email: 'no@email.at.all',
-          gender: 'unknown',
-          authSources: {},
-          scores: {}
+          problemStatus: {}
         })
       })
   )
-  .handle('GET', '/iaaa', (C) => C.handler())
-  .handle('GET', '/code', (C) => C.handler())
+  .handle('POST', '/iaaa', (C) =>
+    C.handler()
+      .body(
+        Type.Object({
+          token: Type.String()
+        })
+      )
+      .handle(async (ctx, req) => {
+        const resp = await validate(req.ip, IAAA_ID, IAAA_KEY, req.body.token)
+        if (!resp.success) throw server.httpErrors.forbidden(resp.errMsg)
+        const iaaaId = resp.userInfo.identityId
+        const user = await Users.findOne({ iaaaId })
+        if (user) return user
+        return createUser({
+          name: resp.userInfo.name,
+          group: 'pku',
+          tags: isNewComer(iaaaId) ? ['newcomer'] : [],
+          email: `${resp.userInfo.identityId}@pku.edu.cn`,
+          problemStatus: {},
+          iaaaId
+        })
+      })
+  )
+  .handle('POST', '/mail/send', (C) =>
+    C.handler()
+      .body(
+        Type.Object({
+          mail: Type.String(),
+          response: Type.String()
+        })
+      )
+      .handle(async (ctx, req) => {
+        if (!(await recaptchaVerify(req.body.response))) {
+          throw server.httpErrors.badRequest()
+        }
+
+        const to = req.body.mail
+        if (!isemail.validate(to)) {
+          throw server.httpErrors.badRequest()
+        }
+        if (!MAIL_WHITELIST.some((sfx) => to.endsWith(sfx))) {
+          throw server.httpErrors.badRequest()
+        }
+        if (MAIL_BLACKLIST.some((sfx) => to.endsWith(sfx))) {
+          throw server.httpErrors.badRequest()
+        }
+
+        let code = generateCode()
+        while (await redis.exists(`mail:${code}`)) {
+          code = generateCode()
+        }
+
+        await redis.set(`mail:${code}`, to, {
+          EX: 60 * 5
+        })
+
+        await sendMail(
+          to,
+          `HPC Game验证码`,
+          `您的验证码是<code>${code}</code>。请在5分钟内使用。`
+        )
+
+        return 0
+      })
+  )
+  .handle('POST', '/mail/verify', (C) =>
+    C.handler()
+      .body(
+        Type.Object({
+          code: Type.String()
+        })
+      )
+      .handle(async (ctx, req) => {
+        const authEmail = await redis.get(`mail:${req.body.code}`)
+        if (!authEmail) {
+          throw server.httpErrors.forbidden()
+        }
+
+        const user = await Users.findOne({ authEmail })
+        if (user) return user
+        return createUser({
+          name: authEmail.split('@')[0],
+          group: 'social',
+          tags: [],
+          email: authEmail,
+          problemStatus: {},
+          authEmail
+        })
+      })
+  )

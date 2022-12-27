@@ -1,5 +1,6 @@
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { Type } from '@sinclair/typebox'
+import type { FastifyRequest } from 'fastify'
 import { createRoot } from 'fastify-typeful'
 import { type IUser, verifyAuthToken } from '../../../db/user.js'
 import { pagingSchema } from '../../../utils/paging.js'
@@ -12,11 +13,21 @@ function requires(this: { user: IUser }, cond: boolean) {
 
 export const rootChain = createRoot<TypeBoxTypeProvider>()
 
-export const protectedChain = rootChain.transform(async (ctx, req) => {
+async function loadUser(req: FastifyRequest) {
   const user = await verifyAuthToken(req.headers['auth-token'])
+  if (user?.group === 'banned') throw server.httpErrors.forbidden()
+  return user
+}
+
+export const protectedChain = rootChain.transform(async (ctx, req) => {
+  const user = await loadUser(req)
   if (!user) throw server.httpErrors.badRequest()
-  if (user.group === 'banned') throw server.httpErrors.forbidden()
   return { user, requires }
+})
+
+export const unprotectedChain = rootChain.transform(async (ctx, req) => {
+  const user = await loadUser(req)
+  return { user }
 })
 
 export const adminChain = protectedChain.transform(async (ctx) => {

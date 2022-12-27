@@ -19,6 +19,7 @@
     "naive-ui": "^2.34.2",
     "typeful-fetch": "^0.1.4",
     "vue": "^3.2.45",
+    "vue-recaptcha": "^2.0.3",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {

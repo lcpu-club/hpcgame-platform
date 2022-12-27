@@ -16,3 +16,7 @@ node_modules
 
 # TypeScript
 *.tsbuildinfo
+
+# External Deps
+external/**/*
+!external/.gitkeep

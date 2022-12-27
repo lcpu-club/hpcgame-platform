@@ -53,6 +53,12 @@ services:
     ports:
       - '4171'
 
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - '6379'
+
 volumes:
   mongodb-data:
   minio-data:

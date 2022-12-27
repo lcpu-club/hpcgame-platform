@@ -40,3 +40,24 @@ export const MINIO_BUCKET = string('MINIO_BUCKET', 'hpc')
 
 // Application
 export const DEV_MODE = boolean('DEV_MODE', false)
+
+// Auth
+export const IAAA_ID = string('IAAA_ID')
+export const IAAA_KEY = string('IAAA_KEY')
+export const NEWCOMER_YEAR = string('NEWCOMER_YEAR', '22')
+
+// Mail
+export const SMTP_HOST = string('SMTP_HOST')
+export const SMTP_PORT = number('SMTP_PORT')
+export const SMTP_USER = string('SMTP_USER')
+export const SMTP_PASS = string('SMTP_PASS')
+export const MAIL_FROM = string('MAIL_FROM')
+export const MAIL_SENDER = string('MAIL_SENDER', 'HPC Game System')
+export const MAIL_WHITELIST: string[] = json('MAIL_WHITELIST', ['.edu.cn'])
+export const MAIL_BLACKLIST: string[] = json('MAIL_BLACKLIST', [])
+
+// Redis
+export const REDIS_URL = string('REDIS_URL', 'redis://localhost:6379')
+
+// Recaptcha
+export const RECAPTCHA_SECRET = string('RECAPTCHA_SECRET')
