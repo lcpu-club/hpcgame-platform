@@ -26,6 +26,18 @@ function generateCode() {
     .padStart(6, '0')
 }
 
+function validateMail(mail: string) {
+  if (!isemail.validate(mail)) {
+    throw server.httpErrors.badRequest()
+  }
+  if (!MAIL_WHITELIST.some((sfx) => mail.endsWith(sfx))) {
+    throw server.httpErrors.badRequest()
+  }
+  if (MAIL_BLACKLIST.some((sfx) => mail.endsWith(sfx))) {
+    throw server.httpErrors.badRequest()
+  }
+}
+
 export const authRouter = rootChain
   .router()
   .handle('GET', '/dev', (C) =>
@@ -88,24 +100,10 @@ export const authRouter = rootChain
         }
 
         const to = req.body.mail
-        if (!isemail.validate(to)) {
-          throw server.httpErrors.badRequest()
-        }
-        if (!MAIL_WHITELIST.some((sfx) => to.endsWith(sfx))) {
-          throw server.httpErrors.badRequest()
-        }
-        if (MAIL_BLACKLIST.some((sfx) => to.endsWith(sfx))) {
-          throw server.httpErrors.badRequest()
-        }
+        validateMail(to)
 
-        let code = generateCode()
-        while (await redis.exists(`mail:${code}`)) {
-          code = generateCode()
-        }
-
-        await redis.set(`mail:${code}`, to, {
-          EX: 60 * 5
-        })
+        const code = generateCode()
+        await redis.set(`mail:${to}`, code, 'EX', 5 * 60)
 
         await sendMail(
           to,
@@ -120,24 +118,33 @@ export const authRouter = rootChain
     C.handler()
       .body(
         Type.Object({
+          mail: Type.String(),
           code: Type.String()
         })
       )
       .handle(async (ctx, req) => {
-        const authEmail = await redis.get(`mail:${req.body.code}`)
-        if (!authEmail) {
+        const { mail, code } = req.body
+        validateMail(mail)
+
+        const answer = await redis.get(`mail:${mail}`)
+        if (!answer) {
+          throw server.httpErrors.forbidden()
+        }
+        await redis.del(`mail:${mail}`)
+
+        if (answer !== code) {
           throw server.httpErrors.forbidden()
         }
 
-        const user = await Users.findOne({ authEmail })
+        const user = await Users.findOne({ mail })
         if (user) return user
         return createUser({
-          name: authEmail.split('@')[0],
+          name: mail.split('@')[0],
           group: 'social',
           tags: [],
-          email: authEmail,
+          email: mail,
           problemStatus: {},
-          authEmail
+          authEmail: mail
         })
       })
   )

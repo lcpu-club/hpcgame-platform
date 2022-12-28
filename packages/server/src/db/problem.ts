@@ -5,9 +5,10 @@ export interface IProblem {
   title: string
   content: string
   score: number
+  submissionLimit: number
   category: string
   tags: string[]
-  file: string
+  meta: Record<string, unknown>
 }
 
 export const Problems = db.collection<IProblem>('problems')

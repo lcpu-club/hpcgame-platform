@@ -16,7 +16,9 @@ const columns: DataTableColumns = [
     title: 'ID',
     key: '_id',
     render: (row) =>
-      h(RouterLink, { to: `/admin/user/${row._id}` }, () => h('code', row._id))
+      h(RouterLink, { to: `/admin/user/${row._id}` }, () =>
+        h('code', row._id as string)
+      )
   },
   { title: 'Name', key: 'name' }
 ]

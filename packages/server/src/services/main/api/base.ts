@@ -2,11 +2,11 @@ import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { Type } from '@sinclair/typebox'
 import type { FastifyRequest } from 'fastify'
 import { createRoot } from 'fastify-typeful'
-import { type IUser, verifyAuthToken } from '../../../db/user.js'
+import { verifyAuthToken, type IUserInfo } from '../../../db/user.js'
 import { pagingSchema } from '../../../utils/paging.js'
 import { server } from '../index.js'
 
-function requires(this: { user: IUser }, cond: boolean) {
+function requires(this: { user: IUserInfo }, cond: boolean) {
   if (this.user.group === 'admin') return
   if (!cond) throw server.httpErrors.forbidden()
 }

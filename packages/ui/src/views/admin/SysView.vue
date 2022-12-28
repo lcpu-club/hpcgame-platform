@@ -40,7 +40,7 @@ const columns: DataTableColumns<{ _id: string }> = [
 ]
 
 const { state, isLoading, error } = useAsyncState(
-  () => mainApi.kv.list.$get.fetch(),
+  () => mainApi.kv['admin/list'].$get.fetch(),
   [],
   { immediate: true }
 )

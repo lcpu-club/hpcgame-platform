@@ -6,7 +6,9 @@
   "license": "MIT",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.238.0",
+    "@aws-sdk/s3-request-presigner": "^3.238.0",
     "@fastify/cors": "^8.2.0",
+    "@fastify/rate-limit": "^7.6.0",
     "@fastify/sensible": "^5.2.0",
     "@fastify/type-provider-typebox": "^2.4.0",
     "@pku-internals/iaaa": "portal:../../external/iaaa",
@@ -14,6 +16,7 @@
     "dotenv": "^16.0.3",
     "fastify": "^4.10.2",
     "fastify-typeful": "^0.1.1",
+    "ioredis": "^5.2.4",
     "isemail": "^3.2.0",
     "minimist": "^1.2.7",
     "mongodb": "^4.13.0",
@@ -21,8 +24,7 @@
     "node-fetch": "^3.3.0",
     "nodemailer": "^6.8.0",
     "nsqjs": "^0.13.0",
-    "pino": "^8.8.0",
-    "redis": "^4.5.1"
+    "pino": "^8.8.0"
   },
   "devDependencies": {
     "@fastify/swagger": "^8.2.1",

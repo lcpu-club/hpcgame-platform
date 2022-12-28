@@ -1,9 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import type { Filter } from 'mongodb'
-import { nanoid } from 'nanoid'
-import { Events, IEvent } from '../../../db/message.js'
-import { server } from '../index.js'
-import { unprotectedChain } from './base.js'
+import { Events, type IEvent } from '../../../db/message.js'
+import { adminChain, unprotectedChain } from './base.js'
 
 export const messageRouter = unprotectedChain
   .router()
@@ -16,7 +14,7 @@ export const messageRouter = unprotectedChain
       )
       .handle(async (ctx, req) => {
         const filter: Filter<IEvent> = {
-          timestamp: { $gte: req.query.since },
+          createdAt: { $gte: req.query.since },
           $or: ctx.user
             ? [
                 { global: true },
@@ -26,13 +24,16 @@ export const messageRouter = unprotectedChain
             : [{ global: true }]
         }
         return Events.find(filter, {
-          sort: { timestamp: -1 },
+          sort: { createdAt: -1 },
           limit: 10
         }).toArray()
       })
   )
-  .handle('PUT', '/', (C) =>
-    C.handler()
+  .handle(
+    'PUT',
+    '/admin',
+    adminChain
+      .handler()
       .body(
         Type.Object({
           _id: Type.String(),
@@ -42,13 +43,12 @@ export const messageRouter = unprotectedChain
             userId: Type.String(),
             title: Type.String(),
             content: Type.String(),
-            timestamp: Type.Number(),
+            createdAt: Type.Number(),
             metadata: Type.Record(Type.String(), Type.Unknown())
           })
         })
       )
       .handle(async (ctx, req) => {
-        if (ctx.user?.group !== 'admin') throw server.httpErrors.notFound()
         const { _id, $set } = req.body
         await Events.updateOne({ _id }, { $set }, { upsert: true })
         return 0

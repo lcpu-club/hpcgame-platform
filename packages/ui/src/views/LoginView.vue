@@ -3,14 +3,9 @@
     <div class="shadow max-w-128">
       <NCard title="欢迎参加HPC Game" segmented>
         <NAlert title="注意事项" type="info">
-          <ul>
-            <li>对于校内选手：请使用IAAA统一登录。</li>
-            <li>对于校外选手：请使用邮件验证码登录。</li>
-          </ul>
-          我们允许校外选手登录并一同参与比赛。<br />
-          校外选手将不参与评奖，但可以正常查看题目并提交答案。将按与校内选手相同的标准计分，显示在总排行榜上。<br />
-          请注意，一个自然人只允许使用一个账号参加比赛。<br />
-          校内选手使用IAAA以外的登录方式视为放弃评奖资格。
+          比赛面向全国高校同学，请使用<code>edu.cn</code>域名邮箱或经协作单位报名登记的邮箱登陆。<br />
+          请注意，每位选手只允许使用一个账号参赛。<br />
+          北京大学校内选手不使用IAAA登陆视作放弃校内奖项参评资格。
         </NAlert>
         <template #footer>
           <div class="flex flex-col items-center">

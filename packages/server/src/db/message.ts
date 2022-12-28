@@ -8,10 +8,11 @@ export interface IEvent {
 
   title: string
   content: string
-  timestamp: number
   metadata: Record<string, unknown>
+
+  createdAt: number
 }
 
 export const Events = db.collection<IEvent>('events')
 
-await Events.createIndex({ timestamp: -1 }, { unique: false })
+await Events.createIndex({ createdAt: -1 }, { unique: false })

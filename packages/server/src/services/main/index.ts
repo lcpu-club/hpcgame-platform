@@ -1,12 +1,22 @@
 import { fastify } from 'fastify'
 import { fastifySensible } from '@fastify/sensible'
+import fastifyRateLimit from '@fastify/rate-limit'
 import { fastifySwaggerUi } from '@fastify/swagger-ui'
 import { fastifySwagger } from '@fastify/swagger'
+import fastifyCors from '@fastify/cors'
+import type { GetRouterDescriptor } from 'fastify-typeful'
 import { API_HOST, API_PORT, DEV_MODE } from '../../config/index.js'
 import { logger } from '../../logger/index.js'
+import { redis } from '../../cache/index.js'
+import { rootRouter } from './api/index.js'
+import { client } from '../../db/index.js'
 
 export const server = fastify({ logger })
+export const { httpErrors } = server
 await server.register(fastifySensible)
+await server.register(fastifyRateLimit, {
+  redis
+})
 
 if (DEV_MODE) {
   await server.register(fastifyCors, {
@@ -44,10 +54,6 @@ if (DEV_MODE) {
   })
 }
 
-import { rootRouter } from './api/index.js'
-import type { GetRouterDescriptor } from 'fastify-typeful'
-import { client } from '../../db/index.js'
-import fastifyCors from '@fastify/cors'
 await server.register(rootRouter.toPlugin())
 
 await client.connect()

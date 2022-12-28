@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { SysKVItems } from '../../../db/syskv.js'
+import { SysKVItems, sysSet, sysTryGet } from '../../../db/syskv.js'
 import { rootChain, adminChain } from './base.js'
 
 export const kvRouter = rootChain
@@ -12,12 +12,12 @@ export const kvRouter = rootChain
         })
       )
       .handle(async (ctx, req) => {
-        return SysKVItems.findOne({ _id: req.params.key })
+        return sysTryGet(req.params.key)
       })
   )
   .handle(
     'PUT',
-    '/',
+    '/admin',
     adminChain
       .handler()
       .body(
@@ -27,17 +27,13 @@ export const kvRouter = rootChain
         })
       )
       .handle(async (ctx, req) => {
-        await SysKVItems.updateOne(
-          { _id: req.body._id },
-          { $set: { value: req.body.value } },
-          { upsert: true }
-        )
+        await sysSet(req.body._id, req.body.value)
         return 0
       })
   )
   .handle(
     'DELETE',
-    '/',
+    '/admin',
     adminChain
       .handler()
       .body(
@@ -52,7 +48,7 @@ export const kvRouter = rootChain
   )
   .handle(
     'GET',
-    '/list',
+    '/admin/list',
     adminChain.handler().handle(async () => {
       return SysKVItems.find({}, { projection: { _id: 1 } }).toArray()
     })

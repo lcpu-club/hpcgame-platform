@@ -922,6 +922,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-sdk/s3-request-presigner@npm:^3.238.0":
+  version: 3.238.0
+  resolution: "@aws-sdk/s3-request-presigner@npm:3.238.0"
+  dependencies:
+    "@aws-sdk/middleware-endpoint": 3.226.0
+    "@aws-sdk/middleware-sdk-s3": 3.231.0
+    "@aws-sdk/protocol-http": 3.226.0
+    "@aws-sdk/signature-v4-multi-region": 3.226.0
+    "@aws-sdk/smithy-client": 3.234.0
+    "@aws-sdk/types": 3.226.0
+    "@aws-sdk/util-create-request": 3.234.0
+    "@aws-sdk/util-format-url": 3.226.0
+    tslib: ^2.3.1
+  checksum: c977afe38a7c1a976b12d956c3257d4174ed4129d5708bc635ee80b29e531800111e20d1d861206ebc538f0d1398487f2db52b720965e3c95c1927a6c161cb1c
+  languageName: node
+  linkType: hard
+
 "@aws-sdk/service-error-classification@npm:3.229.0":
   version: 3.229.0
   resolution: "@aws-sdk/service-error-classification@npm:3.229.0"
@@ -1071,6 +1088,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@aws-sdk/util-create-request@npm:3.234.0":
+  version: 3.234.0
+  resolution: "@aws-sdk/util-create-request@npm:3.234.0"
+  dependencies:
+    "@aws-sdk/middleware-stack": 3.226.0
+    "@aws-sdk/smithy-client": 3.234.0
+    "@aws-sdk/types": 3.226.0
+    tslib: ^2.3.1
+  checksum: c647a09a072237e6a708afcbdbff7d035c676215ff973448a406c8d72be1816516f581964f17d877bf8afb5ffeaa8a0c54acc8805ed8ba9664d698a1dd2ce113
+  languageName: node
+  linkType: hard
+
 "@aws-sdk/util-defaults-mode-browser@npm:3.234.0":
   version: 3.234.0
   resolution: "@aws-sdk/util-defaults-mode-browser@npm:3.234.0"
@@ -1104,6 +1133,17 @@ __metadata:
     "@aws-sdk/types": 3.226.0
     tslib: ^2.3.1
   checksum: a05d38c4901801ff8c33d3469b8248ae07a2bb761e8b87f9eb62d7b977bd447fc8a1601c18692a035662818b223be97957d63d389b5393fdd65227cc25aa7903
+  languageName: node
+  linkType: hard
+
+"@aws-sdk/util-format-url@npm:3.226.0":
+  version: 3.226.0
+  resolution: "@aws-sdk/util-format-url@npm:3.226.0"
+  dependencies:
+    "@aws-sdk/querystring-builder": 3.226.0
+    "@aws-sdk/types": 3.226.0
+    tslib: ^2.3.1
+  checksum: 5997b0536c86c07948edd8291008a0818b0ca12d20f8c60e053793d420155981b2ddb4b2bc10cc5f8546a0223e83c7619947035b0ade20cc981b5900b7db0e73
   languageName: node
   linkType: hard
 
@@ -1535,6 +1575,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/rate-limit@npm:^7.6.0":
+  version: 7.6.0
+  resolution: "@fastify/rate-limit@npm:7.6.0"
+  dependencies:
+    fastify-plugin: ^4.0.0
+    ms: ^2.1.3
+    tiny-lru: ^10.0.0
+  checksum: 47613673a78dba1b15576814b1a639b06e62e38a380017396ed7651afcc23ad219775c90f37eddd4274a653c6c4a7e019d0e1bf1e9c8f306e8f87cf481580d7f
+  languageName: node
+  linkType: hard
+
 "@fastify/sensible@npm:^5.2.0":
   version: 5.2.0
   resolution: "@fastify/sensible@npm:5.2.0"
@@ -1613,7 +1664,9 @@ __metadata:
   resolution: "@hpcgame-platform/server@workspace:packages/server"
   dependencies:
     "@aws-sdk/client-s3": ^3.238.0
+    "@aws-sdk/s3-request-presigner": ^3.238.0
     "@fastify/cors": ^8.2.0
+    "@fastify/rate-limit": ^7.6.0
     "@fastify/sensible": ^5.2.0
     "@fastify/swagger": ^8.2.1
     "@fastify/swagger-ui": ^1.3.0
@@ -1626,6 +1679,7 @@ __metadata:
     dotenv: ^16.0.3
     fastify: ^4.10.2
     fastify-typeful: ^0.1.1
+    ioredis: ^5.2.4
     isemail: ^3.2.0
     minimist: ^1.2.7
     mongodb: ^4.13.0
@@ -1634,7 +1688,6 @@ __metadata:
     nodemailer: ^6.8.0
     nsqjs: ^0.13.0
     pino: ^8.8.0
-    redis: ^4.5.1
     typeful-fetch: ^0.1.4
   peerDependencies:
     typeful-fetch: "*"
@@ -1657,6 +1710,9 @@ __metadata:
     crypto-js: ^4.1.1
     eslint: ^8.22.0
     eslint-plugin-vue: ^9.3.0
+    github-markdown-css: ^5.1.0
+    markdown-it: ^13.0.1
+    markdown-it-katex: ^2.0.3
     naive-ui: ^2.34.2
     npm-run-all: ^4.1.5
     prettier: ^2.7.1
@@ -1708,6 +1764,13 @@ __metadata:
   version: 1.2.1
   resolution: "@humanwhocodes/object-schema@npm:1.2.1"
   checksum: a824a1ec31591231e4bad5787641f59e9633827d0a2eaae131a288d33c9ef0290bd16fda8da6f7c0fcb014147865d12118df10db57f27f41e20da92369fcb3f1
+  languageName: node
+  linkType: hard
+
+"@ioredis/commands@npm:^1.1.1":
+  version: 1.2.0
+  resolution: "@ioredis/commands@npm:1.2.0"
+  checksum: 9b20225ba36ef3e5caf69b3c0720597c3016cc9b1e157f519ea388f621dd9037177f84cfe7e25c4c32dad7dd90c70ff9123cd411f747e053cf292193c9c461e2
   languageName: node
   linkType: hard
 
@@ -2088,62 +2151,6 @@ __metadata:
     node-fetch: ^3.3.0
   languageName: node
   linkType: soft
-
-"@redis/bloom@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@redis/bloom@npm:1.1.0"
-  peerDependencies:
-    "@redis/client": ^1.0.0
-  checksum: 8e02a1cd58c1cf0c56d23f3621640a473ed09b588d1b88c7789fcdb87f2f7b2ce53f231058ab828c119c07c0f850175a19960cab0dbbc1d5f2b4ec20d1d43e17
-  languageName: node
-  linkType: hard
-
-"@redis/client@npm:1.4.2":
-  version: 1.4.2
-  resolution: "@redis/client@npm:1.4.2"
-  dependencies:
-    cluster-key-slot: 1.1.1
-    generic-pool: 3.9.0
-    yallist: 4.0.0
-  checksum: a85f7ee15f6431b3b13fd7b3ebc2e274f451629ec3d9298afd70413eb4cb3dca422cc323755728ff83782ba320306d1e45298ce8c429db939b0aa8759f5a7bca
-  languageName: node
-  linkType: hard
-
-"@redis/graph@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@redis/graph@npm:1.1.0"
-  peerDependencies:
-    "@redis/client": ^1.0.0
-  checksum: d3df807108a42929ed65269c691fe6ab7eda55de91318f02a22b2d637c1bfef8817fccd17025904f5a0be8cf1cea5941334ec9f10719336da5d8f1c54cd4997e
-  languageName: node
-  linkType: hard
-
-"@redis/json@npm:1.0.4":
-  version: 1.0.4
-  resolution: "@redis/json@npm:1.0.4"
-  peerDependencies:
-    "@redis/client": ^1.0.0
-  checksum: de07f9c37abed603dec352593eb69fc8a94475e7f86b4f65b9805394492d448a1e4181db74269d80eb9dba6f3ae8a41804204821db36bb801cd7c1e30ac7ec80
-  languageName: node
-  linkType: hard
-
-"@redis/search@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@redis/search@npm:1.1.0"
-  peerDependencies:
-    "@redis/client": ^1.0.0
-  checksum: dc0f1c8234580fb839e1135f76a70654461cb03be8918799a2a0cd79dd9815e0978feb99bcc01f5be37dabd95460f6cdba9f61a90a4d39183205883e12855afd
-  languageName: node
-  linkType: hard
-
-"@redis/time-series@npm:1.0.4":
-  version: 1.0.4
-  resolution: "@redis/time-series@npm:1.0.4"
-  peerDependencies:
-    "@redis/client": ^1.0.0
-  checksum: a5fca079deb04a2f204a7f9a375a6ff698a119d5dd53f7581fa8fd9e3bacacf1ecb0253b97fada484a012fea7a98014bc0f4f79707d4e92ff61c00318f2bfe04
-  languageName: node
-  linkType: hard
 
 "@rushstack/eslint-patch@npm:^1.1.4":
   version: 1.2.0
@@ -3076,10 +3083,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cluster-key-slot@npm:1.1.1":
-  version: 1.1.1
-  resolution: "cluster-key-slot@npm:1.1.1"
-  checksum: 2fb7390e7950075acb09fc8aad3dc939abb64b139ba1b5f6341efdd0beda8cdc8b508e5f30d943370cf30ea0c13741c579e0846efd007b328bdc1a5a712264da
+"cluster-key-slot@npm:^1.1.0":
+  version: 1.1.2
+  resolution: "cluster-key-slot@npm:1.1.2"
+  checksum: be0ad2d262502adc998597e83f9ded1b80f827f0452127c5a37b22dfca36bab8edf393f7b25bb626006fb9fb2436106939ede6d2d6ecf4229b96a47f27edd681
   languageName: node
   linkType: hard
 
@@ -3308,6 +3315,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"denque@npm:^2.0.1":
+  version: 2.1.0
+  resolution: "denque@npm:2.1.0"
+  checksum: 1d4ae1d05e59ac3a3481e7b478293f4b4c813819342273f3d5b826c7ffa9753c520919ba264f377e09108d24ec6cf0ec0ac729a5686cbb8f32d797126c5dae74
+  languageName: node
+  linkType: hard
+
 "depd@npm:2.0.0":
   version: 2.0.0
   resolution: "depd@npm:2.0.0"
@@ -3388,6 +3402,13 @@ __metadata:
   dependencies:
     iconv-lite: ^0.6.2
   checksum: bb98632f8ffa823996e508ce6a58ffcf5856330fde839ae42c9e1f436cc3b5cc651d4aeae72222916545428e54fd0f6aa8862fd8d25bdbcc4589f1e3f3715e7f
+  languageName: node
+  linkType: hard
+
+"entities@npm:~3.0.1":
+  version: 3.0.1
+  resolution: "entities@npm:3.0.1"
+  checksum: aaf7f12033f0939be91f5161593f853f2da55866db55ccbf72f45430b8977e2b79dbd58c53d0fdd2d00bd7d313b75b0968d09f038df88e308aa97e39f9456572
   languageName: node
   linkType: hard
 
@@ -4089,13 +4110,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"generic-pool@npm:3.9.0":
-  version: 3.9.0
-  resolution: "generic-pool@npm:3.9.0"
-  checksum: 3d89e9b2018d2e3bbf44fec78c76b2b7d56d6a484237aa9daf6ff6eedb14b0899dadd703b5d810219baab2eb28e5128fb18b29e91e602deb2eccac14492d8ca8
-  languageName: node
-  linkType: hard
-
 "get-intrinsic@npm:^1.0.2, get-intrinsic@npm:^1.1.1, get-intrinsic@npm:^1.1.3":
   version: 1.1.3
   resolution: "get-intrinsic@npm:1.1.3"
@@ -4114,6 +4128,13 @@ __metadata:
     call-bind: ^1.0.2
     get-intrinsic: ^1.1.1
   checksum: 9ceff8fe968f9270a37a1f73bf3f1f7bda69ca80f4f80850670e0e7b9444ff99323f7ac52f96567f8b5f5fbe7ac717a0d81d3407c7313e82810c6199446a5247
+  languageName: node
+  linkType: hard
+
+"github-markdown-css@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "github-markdown-css@npm:5.1.0"
+  checksum: e3472770dedc9508d30a788bc522beb0c993f08b1f098389619174414c3ce558727d8b3d0c6eed50d156ee0cf04ab667e4bca5149dedc7869b54bd38db0cc5fb
   languageName: node
   linkType: hard
 
@@ -4432,6 +4453,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ioredis@npm:^5.2.4":
+  version: 5.2.4
+  resolution: "ioredis@npm:5.2.4"
+  dependencies:
+    "@ioredis/commands": ^1.1.1
+    cluster-key-slot: ^1.1.0
+    debug: ^4.3.4
+    denque: ^2.0.1
+    lodash.defaults: ^4.2.0
+    lodash.isarguments: ^3.1.0
+    redis-errors: ^1.2.0
+    redis-parser: ^3.0.0
+    standard-as-callback: ^2.1.0
+  checksum: c3a7df407a41ae516bede8b6db853c568198b13fe4a4785f66be5cd541087121b9d45fb9a6b1b6a5fb668c29ce52ab4685642b994803bdfa0a35f794ea8ef7ae
+  languageName: node
+  linkType: hard
+
 "ip@npm:^2.0.0":
   version: 2.0.0
   resolution: "ip@npm:2.0.0"
@@ -4685,6 +4723,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"katex@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "katex@npm:0.6.0"
+  dependencies:
+    match-at: ^0.1.0
+  bin:
+    katex: cli.js
+  checksum: 4595339a5c3431c05a5f767515789a0fc516141102c0ff5208f1bf3e50a4b43c2fa1f1f1130f6a877c4d6b25915e3ebcfc98bd473a286acfd7892225f5c25be0
+  languageName: node
+  linkType: hard
+
 "kolorist@npm:^1.6.0":
   version: 1.6.0
   resolution: "kolorist@npm:1.6.0"
@@ -4713,6 +4762,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"linkify-it@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "linkify-it@npm:4.0.1"
+  dependencies:
+    uc.micro: ^1.0.1
+  checksum: 3e0a29921269c14eb7ac6f5db2da68d4854ea9acca6e9014a323f75f2dd39b197ffab57c1fbd6a906ceb021aad3ee6d7ba7d0181236dd9630ffc452b392f7f71
+  languageName: node
+  linkType: hard
+
 "load-json-file@npm:^4.0.0":
   version: 4.0.0
   resolution: "load-json-file@npm:4.0.0"
@@ -4738,6 +4796,20 @@ __metadata:
   version: 4.17.21
   resolution: "lodash-es@npm:4.17.21"
   checksum: 05cbffad6e2adbb331a4e16fbd826e7faee403a1a04873b82b42c0f22090f280839f85b95393f487c1303c8a3d2a010048bf06151a6cbe03eee4d388fb0a12d2
+  languageName: node
+  linkType: hard
+
+"lodash.defaults@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "lodash.defaults@npm:4.2.0"
+  checksum: 84923258235592c8886e29de5491946ff8c2ae5c82a7ac5cddd2e3cb697e6fbdfbbb6efcca015795c86eec2bb953a5a2ee4016e3735a3f02720428a40efbb8f1
+  languageName: node
+  linkType: hard
+
+"lodash.isarguments@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "lodash.isarguments@npm:3.1.0"
+  checksum: ae1526f3eb5c61c77944b101b1f655f846ecbedcb9e6b073526eba6890dc0f13f09f72e11ffbf6540b602caee319af9ac363d6cdd6be41f4ee453436f04f13b5
   languageName: node
   linkType: hard
 
@@ -4817,6 +4889,44 @@ __metadata:
     socks-proxy-agent: ^7.0.0
     ssri: ^9.0.0
   checksum: 2332eb9a8ec96f1ffeeea56ccefabcb4193693597b132cd110734d50f2928842e22b84cfa1508e921b8385cdfd06dda9ad68645fed62b50fff629a580f5fb72c
+  languageName: node
+  linkType: hard
+
+"markdown-it-katex@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "markdown-it-katex@npm:2.0.3"
+  dependencies:
+    katex: ^0.6.0
+  checksum: e522db07e84005f08bc5af5ca65615a611423b72d3b9445860379907b49e3670958e385cf05c109ddd402842fb67ea2718d416bf99c8118d9ae9b2b0cc0919c0
+  languageName: node
+  linkType: hard
+
+"markdown-it@npm:^13.0.1":
+  version: 13.0.1
+  resolution: "markdown-it@npm:13.0.1"
+  dependencies:
+    argparse: ^2.0.1
+    entities: ~3.0.1
+    linkify-it: ^4.0.1
+    mdurl: ^1.0.1
+    uc.micro: ^1.0.5
+  bin:
+    markdown-it: bin/markdown-it.js
+  checksum: faf5891d389dc433bcf21d3fbff2009beb044b42b117c92f4848899780ca1a2282a209e3ff4672db4afed726a7248304ec473e6e242a7d6498af7113d31974e7
+  languageName: node
+  linkType: hard
+
+"match-at@npm:^0.1.0":
+  version: 0.1.1
+  resolution: "match-at@npm:0.1.1"
+  checksum: ff2836878441322024824ec46c45b40ae8684e19b1a0ee676a398b62db42ec4b7ab32f4b14fb0f1918c130b7b659457293f23c448d9187b7e77a2b5c3ec7ace0
+  languageName: node
+  linkType: hard
+
+"mdurl@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "mdurl@npm:1.0.1"
+  checksum: 71731ecba943926bfbf9f9b51e28b5945f9411c4eda80894221b47cc105afa43ba2da820732b436f0798fd3edbbffcd1fc1415843c41a87fea08a41cc1e3d02b
   languageName: node
   linkType: hard
 
@@ -5690,17 +5800,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redis@npm:^4.5.1":
-  version: 4.5.1
-  resolution: "redis@npm:4.5.1"
+"redis-errors@npm:^1.0.0, redis-errors@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "redis-errors@npm:1.2.0"
+  checksum: f28ac2692113f6f9c222670735aa58aeae413464fd58ccf3fce3f700cae7262606300840c802c64f2b53f19f65993da24dc918afc277e9e33ac1ff09edb394f4
+  languageName: node
+  linkType: hard
+
+"redis-parser@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "redis-parser@npm:3.0.0"
   dependencies:
-    "@redis/bloom": 1.1.0
-    "@redis/client": 1.4.2
-    "@redis/graph": 1.1.0
-    "@redis/json": 1.0.4
-    "@redis/search": 1.1.0
-    "@redis/time-series": 1.0.4
-  checksum: edb40d54b74d18251f553368e6dd43104d249c3cb8f1a651d169d74f81c70de8911fbbcd1e83d27f413c746bb2f5d44891f7ef20ddff1ba9d727558855143d2e
+    redis-errors: ^1.0.0
+  checksum: 89290ae530332f2ae37577647fa18208d10308a1a6ba750b9d9a093e7398f5e5253f19855b64c98757f7129cccce958e4af2573fdc33bad41405f87f1943459a
   languageName: node
   linkType: hard
 
@@ -6142,6 +6254,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"standard-as-callback@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "standard-as-callback@npm:2.1.0"
+  checksum: 88bec83ee220687c72d94fd86a98d5272c91d37ec64b66d830dbc0d79b62bfa6e47f53b71646011835fc9ce7fae62739545d13124262b53be4fbb3e2ebad551c
+  languageName: node
+  linkType: hard
+
 "statuses@npm:2.0.1":
   version: 2.0.1
   resolution: "statuses@npm:2.0.1"
@@ -6475,6 +6594,13 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 9096d8f6c16cb80ef3bf96fcbbd055bf1c4a43bd14f3b7be45a9fbe7ada46ec977f604d5feed3263b4f2aa7d4c7477ce5f9cd87de0d6feedec69a983f3a4f93e
+  languageName: node
+  linkType: hard
+
+"uc.micro@npm:^1.0.1, uc.micro@npm:^1.0.5":
+  version: 1.0.6
+  resolution: "uc.micro@npm:1.0.6"
+  checksum: 6898bb556319a38e9cf175e3628689347bd26fec15fc6b29fa38e0045af63075ff3fea4cf1fdba9db46c9f0cbf07f2348cd8844889dd31ebd288c29fe0d27e7a
   languageName: node
   linkType: hard
 
@@ -6859,7 +6985,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yallist@npm:4.0.0, yallist@npm:^4.0.0":
+"yallist@npm:^4.0.0":
   version: 4.0.0
   resolution: "yallist@npm:4.0.0"
   checksum: 343617202af32df2a15a3be36a5a8c0c8545208f3d3dfbc6bb7c3e3b7e8c6f8e7485432e4f3b88da3031a6e20afa7c711eded32ddfb122896ac5d914e75848d5

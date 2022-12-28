@@ -24,7 +24,7 @@ async function load() {
 
 async function save(data: unknown) {
   const { _id, value } = data as { _id: string; value: unknown }
-  await mainApi.kv.$put.body({ _id, value }).fetch()
+  await mainApi.kv.admin.$put.body({ _id, value }).fetch()
   router.push('/admin/sys/edit/' + _id)
 }
 </script>

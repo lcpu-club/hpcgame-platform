@@ -3,6 +3,7 @@ import { StringEnum } from '../utils/type.js'
 import { db } from './base.js'
 
 export const SubmissionStatusSchema = StringEnum([
+  'created',
   'pending',
   'running',
   'finished'
@@ -13,10 +14,12 @@ export interface ISubmission {
   _id: string
   userId: string
   problemId: string
-  file: string
-  timestamp: number
   score: number
   status: SubmissionStatus
+
+  createdAt: number
+  updatedAt: number
 }
 
 export const Submissions = db.collection<ISubmission>('submissions')
+await Submissions.createIndex({ userId: 1, problemId: 1 })

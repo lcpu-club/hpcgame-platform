@@ -1,8 +1,4 @@
-import { createClient } from 'redis'
+import Redis from 'ioredis'
 import { REDIS_URL } from '../config/index.js'
 
-export const redis = createClient({
-  url: REDIS_URL
-})
-
-await redis.connect()
+export const redis = new Redis(REDIS_URL)

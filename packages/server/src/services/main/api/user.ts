@@ -1,13 +1,16 @@
 import { Type } from '@sinclair/typebox'
 import { Users } from '../../../db/user.js'
 import { pagingToOptions } from '../../../utils/paging.js'
+import { httpErrors } from '../index.js'
 import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
 
 export const userRouter = protectedChain
   .router()
   .handle('GET', '/', (C) =>
     C.handler().handle(async (ctx) => {
-      return ctx.user
+      const user = await Users.findOne({ _id: ctx.user._id })
+      if (!user) throw httpErrors.notFound()
+      return user
     })
   )
   .handle('PATCH', '/', (C) =>
@@ -45,3 +48,4 @@ export const userRouter = protectedChain
         return users
       })
   )
+  .handle('PUT', '/update', (C) => C.handler())

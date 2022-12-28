@@ -21,7 +21,7 @@ export async function loadSchedule() {
     const data = await mainApi.kv['load/:key'].$get
       .params({ key: 'schedule' })
       .fetch()
-    return (data?.value ?? defaultSchedule) as IGameSchedule
+    return (data ?? defaultSchedule) as IGameSchedule
   } catch (err) {
     console.log(err)
     return defaultSchedule

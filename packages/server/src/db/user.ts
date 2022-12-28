@@ -1,5 +1,6 @@
 import type { Static } from '@sinclair/typebox'
 import { nanoid } from 'nanoid'
+import { redis } from '../cache/index.js'
 import { StringEnum } from '../utils/type.js'
 import { db } from './base.js'
 
@@ -18,6 +19,8 @@ export interface IUserAuthSource {
 
 export interface ProblemStatus {
   score: number
+  submissionCount: number
+  effectiveSubmissionId: string
 }
 
 export interface IUser {
@@ -43,14 +46,29 @@ export function generateAuthToken(userId: string) {
   return userId + ':' + token
 }
 
+export type IUserInfo = Pick<IUser, '_id' | 'group'>
+
 export async function verifyAuthToken(token: unknown) {
   if (typeof token !== 'string') return null
   const userId = token.split(':')[0]
   if (typeof userId !== 'string') return null
-  const user = await Users.findOne({ _id: userId })
-  if (!user) return null
-  if (user.authToken !== token) return null
-  return user
+  const cached = await redis.get('user:' + token)
+  if (!cached) {
+    const user = await Users.findOne(
+      { _id: userId },
+      { projection: { _id: 1, group: 1, authToken: 1 } }
+    )
+    if (!user) return null
+    const { authToken, ...rest } = user
+    await redis.set('user:' + authToken, JSON.stringify(rest))
+    return user
+  }
+  return JSON.parse(cached) as IUserInfo
+}
+
+export async function expireUserInfo(_id: string) {
+  const keys = await redis.keys('user:' + _id + ':*')
+  await redis.del(...keys)
 }
 
 export async function createUser(user: Omit<IUser, '_id' | 'authToken'>) {

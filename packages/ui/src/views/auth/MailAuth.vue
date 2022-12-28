@@ -67,6 +67,7 @@ const router = useRouter()
 const loginTask = useAsyncState(async () => {
   const user = await mainApi.auth['mail/verify'].$post
     .body({
+      mail: mail.value,
       code: code.value
     })
     .fetch()
