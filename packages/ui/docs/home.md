@@ -97,4 +97,4 @@
 
 **特别鸣谢：**
 
-超聚变数字技术有限公司![超聚变](图片)
+超聚变数字技术有限公司![超聚变](https://partner.xfusion.com/static/img/common/pc/logo.svg)
