@@ -59,7 +59,11 @@ const router = createRouter({
       component: () => import('@/views/TermsView.vue')
     },
     ...userRoutes,
-    ...adminRoutes
+    ...adminRoutes,
+    {
+      path: '/:pathMatch(.*)*',
+      component: () => import('@/views/NotFoundView.vue')
+    }
   ]
 })
 
