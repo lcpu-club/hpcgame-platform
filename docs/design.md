@@ -59,6 +59,8 @@ interface JudgeStatus {
   done: boolean
   // 得分。倘若没有评测完成，请上报0。
   score: number
+  // 消息。展示给用户的消息。
+  message: string
   // 时间戳。在NSQ无序消息情形中，将据此字段判断是否更新。
   timestamp: number
 }
