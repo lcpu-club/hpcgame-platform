@@ -95,9 +95,7 @@ export const authRouter = rootChain
         })
       )
       .handle(async (ctx, req) => {
-        if (!(await recaptchaVerify(req.body.response))) {
-          throw server.httpErrors.badRequest()
-        }
+        await recaptchaVerify(req.body.response)
 
         const to = req.body.mail
         validateMail(to)
