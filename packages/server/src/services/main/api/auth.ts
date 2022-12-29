@@ -59,7 +59,8 @@ export const authRouter = rootChain
           group: req.query.group,
           tags: [],
           email: 'no@email.at.all',
-          problemStatus: {}
+          problemStatus: {},
+          metadata: {}
         })
       })
   )
@@ -82,7 +83,11 @@ export const authRouter = rootChain
           tags: isNewComer(iaaaId) ? ['newcomer'] : [],
           email: `${resp.userInfo.identityId}@pku.edu.cn`,
           problemStatus: {},
-          iaaaId
+          iaaaId,
+          metadata: {
+            realname: resp.userInfo.name,
+            organization: resp.userInfo.dept
+          }
         })
       })
   )
@@ -106,7 +111,15 @@ export const authRouter = rootChain
         await sendMail(
           to,
           `HPC Game验证码`,
-          `您的验证码是<code>${code}</code>。请在5分钟内使用。`
+          `
+<div>
+  <center><img src="https://asset.zisu.dev/svg/hpcgame_logo_text.svg" height="128"></center>
+  <center><h2>您的验证码是</h2></center>
+  <center><h1><code style="background: #eee">${code}</code></h1><h1></h1></center>
+  <center><h2>请在5分钟内使用。</h2></center>
+  <hr>
+  <center>该邮件为系统自动发送，请勿回复。</center>
+</div>`
         )
 
         return 0
@@ -142,7 +155,8 @@ export const authRouter = rootChain
           tags: [],
           email: mail,
           problemStatus: {},
-          authEmail: mail
+          authEmail: mail,
+          metadata: {}
         })
       })
   )

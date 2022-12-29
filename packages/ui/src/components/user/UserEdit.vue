@@ -19,6 +19,16 @@
         <UserTags :tags="state.tags" show-empty />
       </div>
       <hr class="pb-2" />
+      <h1 class="text-lg pb-2">个人信息</h1>
+      <div class="grid grid-cols-[100px,1fr] items-center gap-2 pb-2">
+        <div>真实姓名</div>
+        <NInput :readonly="isPKU" v-model:value="state.metadata.realname" />
+        <div>QQ</div>
+        <NInput v-model:value="state.metadata.qq" />
+        <div>学校或组织名称</div>
+        <NInput :readonly="isPKU" v-model:value="state.metadata.organization" />
+      </div>
+      <hr class="pb-2" />
       <h1 class="text-lg pb-2">登录信息</h1>
       <div class="grid grid-cols-[100px,1fr] items-center gap-2 pb-2">
         <div>IAAA账号</div>
@@ -41,11 +51,14 @@ import { mainApi, userInfo } from '@/api'
 import { useTaskContext } from '@/utils/async'
 import { useAsyncState } from '@vueuse/core'
 import { NButton, NCard, NInput, NSpace } from 'naive-ui'
+import { computed } from 'vue'
 import AsyncState from '../misc/AsyncState.vue'
 import UserGroup from './UserGroup.vue'
 import UserTags from './UserTags.vue'
 
 const task = useTaskContext()
+
+const isPKU = computed(() => userInfo.value.group === 'pku')
 
 const { state, isLoading, error, execute } = useAsyncState(
   () => mainApi.user.$get.fetch(),
@@ -55,12 +68,12 @@ const { state, isLoading, error, execute } = useAsyncState(
 
 function save() {
   task.run(async () => {
-    const { name, email } = state.value
+    const { name, email, metadata } = state.value
     return mainApi.user.$patch
-      .body({ name, email })
+      .body({ name, email, metadata })
       .fetch()
       .then(() => {
-        userInfo.value = { ...userInfo.value, name, email }
+        userInfo.value = { ...userInfo.value, name, email, metadata }
       })
   })
 }

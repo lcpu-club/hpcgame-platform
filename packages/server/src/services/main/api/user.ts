@@ -19,12 +19,33 @@ export const userRouter = protectedChain
         Type.Partial(
           Type.Object({
             name: Type.String({ minLength: 1, maxLength: 32 }),
-            email: Type.String({ format: 'email' })
+            email: Type.String({ format: 'email' }),
+            metadata: Type.Partial(
+              Type.Object({
+                qq: Type.String({
+                  minLength: 6,
+                  maxLength: 12,
+                  pattern: '^[0-9]+$'
+                }),
+                realname: Type.String({ minLength: 2, maxLength: 16 }),
+                organization: Type.String({ minLength: 2, maxLength: 30 })
+              })
+            )
           })
         )
       )
       .handle(async (ctx, req) => {
-        await Users.updateOne({ _id: ctx.user._id }, { $set: req.body })
+        if (ctx.user.group === 'pku') {
+          // PKU users have their realname and organization set by IAAA
+          // Thus, only allow them to update their QQ number
+          const { metadata, ...rest } = req.body
+          await Users.updateOne(
+            { _id: ctx.user._id },
+            { $set: { ...rest, [`metadata.qq`]: metadata?.qq } }
+          )
+        } else {
+          await Users.updateOne({ _id: ctx.user._id }, { $set: req.body })
+        }
         return 0
       })
   )

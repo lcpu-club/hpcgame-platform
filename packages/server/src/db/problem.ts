@@ -8,7 +8,7 @@ export interface IProblem {
   submissionLimit: number
   category: string
   tags: string[]
-  meta: Record<string, unknown>
+  metadata: Record<string, unknown>
 }
 
 export const Problems = db.collection<IProblem>('problems')

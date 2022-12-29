@@ -6,6 +6,7 @@
 
 <script setup lang="ts">
 import { kTaskContext } from '@/utils/async'
+import { getErrorMessage } from '@/utils/error'
 import { NSpin, useNotification } from 'naive-ui'
 import { provide, ref } from 'vue'
 
@@ -18,13 +19,15 @@ provide(kTaskContext, {
     try {
       const result = await task()
       notification.success({
-        title: '操作成功'
+        title: '操作成功',
+        duration: 5000
       })
       return [null, result]
     } catch (err) {
       notification.error({
         title: '操作失败',
-        description: '' + err
+        description: await getErrorMessage(err),
+        duration: 5000
       })
       return [err, null]
     }

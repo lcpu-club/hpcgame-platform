@@ -34,6 +34,12 @@ export interface IUser {
   iaaaId?: string
   authEmail?: string
   problemStatus: Record<string, ProblemStatus>
+
+  metadata: {
+    qq?: string
+    realname?: string
+    organization?: string
+  }
 }
 
 export const Users = db.collection<IUser>('users')

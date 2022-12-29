@@ -12,8 +12,8 @@ import { rootRouter } from './api/index.js'
 import { client } from '../../db/index.js'
 
 export const server = fastify({ logger })
-export const { httpErrors } = server
 await server.register(fastifySensible)
+export const { httpErrors } = server
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: fastify-rate-limit types are broken
 await server.register(fastifyRateLimit.default, {
