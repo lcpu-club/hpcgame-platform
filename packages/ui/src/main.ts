@@ -1,3 +1,4 @@
+import '@/utils/analysis'
 import 'virtual:windi.css'
 import 'virtual:windi-devtools'
 import '@/styles/main.css'
