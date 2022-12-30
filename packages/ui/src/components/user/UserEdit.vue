@@ -33,7 +33,7 @@
       <div class="grid grid-cols-[100px,1fr] items-center gap-2 pb-2">
         <div>IAAA账号</div>
         <NInput readonly :value="state.iaaaId ?? '未绑定'" />
-        <div>登陆邮箱</div>
+        <div>登录邮箱</div>
         <NInput readonly :value="state.authEmail ?? '未绑定'" />
       </div>
     </AsyncState>
