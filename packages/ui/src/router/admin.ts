@@ -33,6 +33,15 @@ export const adminRoutes: RouteRecordRaw[] = [
         path: 'problem',
         component: () => import('@/views/admin/ProblemView.vue')
       },
+      {
+        path: 'problem/new',
+        component: () => import('@/views/admin/ProblemNewView.vue')
+      },
+      {
+        path: 'problem/edit/:id',
+        component: () => import('@/views/admin/ProblemEditView.vue'),
+        props: true
+      },
 
       {
         path: 'submission',

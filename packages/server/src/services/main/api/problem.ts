@@ -64,6 +64,20 @@ export const problemRouter = protectedChain
         return message
       })
   )
+  .handle('DELETE', '/admin', (C) =>
+    C.handler()
+      .query(
+        Type.Object({
+          _id: Type.String()
+        })
+      )
+      .handle(async (ctx, req) => {
+        ctx.requires(false)
+        const { _id } = req.query
+        await Problems.deleteOne({ _id })
+        return 0
+      })
+  )
   .handle('PUT', '/admin', (C) =>
     C.handler()
       .body(
@@ -76,7 +90,7 @@ export const problemRouter = protectedChain
             submissionLimit: Type.Number(),
             category: Type.String(),
             tags: Type.Array(Type.String()),
-            meta: Type.Record(Type.String(), Type.Unknown())
+            metadata: Type.Record(Type.String(), Type.Unknown())
           })
         })
       )

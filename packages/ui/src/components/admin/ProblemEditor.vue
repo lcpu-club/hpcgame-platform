@@ -4,32 +4,32 @@
   >
     <div>ID</div>
     <NInput :readonly="!props.isNew" v-model:value="model._id" />
-    <div>全局消息</div>
-    <NSwitch v-model:value="model.global" />
-    <div>用户组</div>
-    <NInput v-model:value="model.group" />
-    <div>用户ID</div>
-    <NInput v-model:value="model.userId" />
     <div>标题</div>
     <NInput v-model:value="model.title" />
     <div>内容</div>
     <NInput type="textarea" v-model:value="model.content" />
-    <div>创建时间</div>
-    <NDatePicker type="datetime" v-model:value="model.createdAt" />
+    <div>分数</div>
+    <NInputNumber v-model:value="model.score" />
+    <div>最多提交次数</div>
+    <NInputNumber v-model:value="model.submissionLimit" />
+    <div>分类</div>
+    <NInput v-model:value="model.category" />
+    <div>标签</div>
+    <NSelect v-model:value="model.tags" multiple tag filterable />
     <div>元数据</div>
     <JSONEditor v-model="model.metadata" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { NDatePicker, NInput, NSwitch } from 'naive-ui'
+import { NInput, NInputNumber, NSelect } from 'naive-ui'
 import { ref } from 'vue'
 import JSONEditor from '../misc/JSONEditor.vue'
-import type { IMessage } from '@hpcgame-platform/server/src/db'
+import type { IProblem } from '@hpcgame-platform/server/src/db'
 
 const props = defineProps<{
   isNew?: boolean
-  model: IMessage
+  model: IProblem
 }>()
 
 const model = ref(props.model)

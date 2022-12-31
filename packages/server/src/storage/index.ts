@@ -17,15 +17,26 @@ export const s3 = new S3Client({
     secretAccessKey: MINIO_SECRET_KEY
   },
   endpoint: MINIO_ENDPOINT,
-  forcePathStyle: true
+  forcePathStyle: true,
+  region: 'us-east-1'
 })
+
+const urlBase =
+  (MINIO_ENDPOINT.endsWith('/') ? MINIO_ENDPOINT : MINIO_ENDPOINT + '/') +
+  MINIO_BUCKET +
+  '/'
+const urlBaseLength = urlBase.length
+
+function normalizeUrl(url: string) {
+  return url.substring(urlBaseLength)
+}
 
 export async function getUploadUrl(key: string, expiresIn = 60) {
   const command = new PutObjectCommand({
     Bucket: MINIO_BUCKET,
     Key: key
   })
-  return getSignedUrl(s3, command, { expiresIn })
+  return normalizeUrl(await getSignedUrl(s3, command, { expiresIn }))
 }
 
 export async function getDownloadUrl(key: string, expiresIn = 60) {
@@ -33,5 +44,5 @@ export async function getDownloadUrl(key: string, expiresIn = 60) {
     Bucket: MINIO_BUCKET,
     Key: key
   })
-  return getSignedUrl(s3, command, { expiresIn })
+  return normalizeUrl(await getSignedUrl(s3, command, { expiresIn }))
 }

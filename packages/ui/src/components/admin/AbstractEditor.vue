@@ -1,5 +1,5 @@
 <template>
-  <NCard title="Title">
+  <NCard :title="props.title ?? '编辑'">
     <AsyncState :loading="isLoading" :error="error">
       <component :is="props.editor" v-bind="props.editorProps" :model="state" />
     </AsyncState>
@@ -28,6 +28,7 @@ const props = defineProps<{
   remove?: () => Promise<string>
   editor: unknown
   editorProps?: unknown
+  title?: string
 }>()
 
 const { state, isLoading, error, execute } = useAsyncState(props.load, null, {

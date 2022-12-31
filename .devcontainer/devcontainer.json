@@ -28,6 +28,7 @@
 	},
 	"forwardPorts": [
 		"nsqadmin:4171",
+		"minio:9000",
 		"minio:9090"
 	],
 	"postCreateCommand": "corepack yarn install"

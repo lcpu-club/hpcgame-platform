@@ -1,3 +1,4 @@
+import { adminRouter } from './admin.js'
 import { authRouter } from './auth.js'
 import { rootChain } from './base.js'
 import { kvRouter } from './kv.js'
@@ -16,3 +17,4 @@ export const rootRouter = rootChain
   .route('/problem', problemRouter)
   .route('/submission', submissionRouter)
   .route('/ranklist', ranklistRouter)
+  .route('/admin', adminRouter)
