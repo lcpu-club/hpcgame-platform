@@ -5,7 +5,7 @@
         <NTabPane name="global" tab="系统通知">
           <GlobalMessages />
         </NTabPane>
-        <NTabPane name="self" tab="个人通知">
+        <NTabPane v-if="loggedIn" name="self" tab="个人通知">
           <SelfMessages />
         </NTabPane>
       </NTabs>
@@ -14,6 +14,7 @@
 </template>
 
 <script setup lang="ts">
+import { loggedIn } from '@/api'
 import GlobalMessages from '@/components/message/GlobalMessages.vue'
 import SelfMessages from '@/components/message/SelfMessages.vue'
 import { NTabs, NTabPane } from 'naive-ui'
