@@ -17,7 +17,10 @@ const props = defineProps<{
 }>()
 
 async function load() {
-  return mainApi.kv['load/:key'].$get.params({ key: props.id }).fetch()
+  const value = await mainApi.kv['load/:key'].$get
+    .params({ key: props.id })
+    .fetch()
+  return { _id: props.id, value }
 }
 
 async function save(data: unknown) {

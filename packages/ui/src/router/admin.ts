@@ -20,7 +20,7 @@ export const adminRoutes: RouteRecordRaw[] = [
       },
       {
         path: 'sys/edit/:id',
-        component: () => import('@/views/admin/SysItemView.vue'),
+        component: () => import('@/views/admin/SysEditView.vue'),
         props: true
       },
 
