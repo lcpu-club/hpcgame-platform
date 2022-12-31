@@ -20,6 +20,7 @@
     "markdown-it": "^13.0.1",
     "markdown-it-katex": "^2.0.3",
     "naive-ui": "^2.34.2",
+    "nanoid": "^4.0.0",
     "typeful-fetch": "^0.1.4",
     "vue": "^3.2.45",
     "vue-recaptcha": "^2.0.3",

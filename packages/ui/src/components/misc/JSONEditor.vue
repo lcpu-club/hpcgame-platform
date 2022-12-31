@@ -6,15 +6,17 @@
  -->
 
 <template>
-  <NAlert v-if="error" type="error" title="错误">
-    {{ error }}
-  </NAlert>
-  <NInput
-    type="textarea"
-    :value="json"
-    @update:value="onUpdate"
-    class="font-mono"
-  />
+  <div>
+    <NAlert v-if="error" type="error" title="错误">
+      {{ error }}
+    </NAlert>
+    <NInput
+      type="textarea"
+      :value="json"
+      @update:value="onUpdate"
+      class="font-mono"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">

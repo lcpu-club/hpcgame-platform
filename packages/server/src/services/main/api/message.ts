@@ -1,7 +1,14 @@
 import { Type } from '@sinclair/typebox'
 import type { Filter } from 'mongodb'
-import { Events, type IEvent } from '../../../db/message.js'
-import { adminChain, unprotectedChain } from './base.js'
+import { Messages, type IMessage } from '../../../db/message.js'
+import { pagingSchema, pagingToOptions } from '../../../utils/paging.js'
+import { httpErrors } from '../index.js'
+import {
+  adminChain,
+  adminFilterSchema,
+  adminSearchSchema,
+  unprotectedChain
+} from './base.js'
 
 export const messageRouter = unprotectedChain
   .router()
@@ -13,7 +20,7 @@ export const messageRouter = unprotectedChain
         })
       )
       .handle(async (ctx, req) => {
-        const filter: Filter<IEvent> = {
+        const filter: Filter<IMessage> = {
           createdAt: { $gte: req.query.since },
           $or: ctx.user
             ? [
@@ -23,10 +30,46 @@ export const messageRouter = unprotectedChain
               ]
             : [{ global: true }]
         }
-        return Events.find(filter, {
+        return Messages.find(filter, {
           sort: { createdAt: -1 },
           limit: 10
         }).toArray()
+      })
+  )
+  .handle('GET', '/', (C) =>
+    C.handler()
+      .query(pagingSchema)
+      .handle(async (ctx, req) => {
+        const filter: Filter<IMessage> = {
+          $or: ctx.user
+            ? [
+                { global: true },
+                { group: ctx.user.group },
+                { userId: ctx.user._id }
+              ]
+            : [{ global: true }]
+        }
+        return Messages.find(filter, {
+          sort: { createdAt: -1 },
+          ...pagingToOptions(req.query)
+        }).toArray()
+      })
+  )
+  .handle(
+    'GET',
+    '/admin',
+    adminChain
+      .handler()
+      .query(
+        Type.Object({
+          _id: Type.String()
+        })
+      )
+      .handle(async (ctx, req) => {
+        const { _id } = req.query
+        const message = await Messages.findOne({ _id })
+        if (!message) throw httpErrors.notFound()
+        return message
       })
   )
   .handle(
@@ -50,7 +93,46 @@ export const messageRouter = unprotectedChain
       )
       .handle(async (ctx, req) => {
         const { _id, $set } = req.body
-        await Events.updateOne({ _id }, { $set }, { upsert: true })
+        await Messages.updateOne({ _id }, { $set }, { upsert: true })
         return 0
+      })
+  )
+  .handle(
+    'DELETE',
+    '/admin',
+    adminChain
+      .handler()
+      .query(
+        Type.Object({
+          _id: Type.String()
+        })
+      )
+      .handle(async (ctx, req) => {
+        const { _id } = req.query
+        await Messages.deleteOne({ _id })
+        return 0
+      })
+  )
+  .handle(
+    'POST',
+    '/count',
+    adminChain
+      .handler()
+      .body(adminFilterSchema)
+      .handle(async (ctx, req) => {
+        return Messages.countDocuments(req.body.filter)
+      })
+  )
+  .handle(
+    'POST',
+    '/search',
+    adminChain
+      .handler()
+      .body(adminSearchSchema)
+      .handle(async (ctx, req) => {
+        const users = await Messages.find(req.body.filter, {
+          ...pagingToOptions(req.body)
+        }).toArray()
+        return users
       })
   )

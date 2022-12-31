@@ -1,6 +1,6 @@
 import { db } from './base.js'
 
-export interface IEvent {
+export interface IMessage {
   _id: string
   global: boolean
   group: string
@@ -13,6 +13,6 @@ export interface IEvent {
   createdAt: number
 }
 
-export const Events = db.collection<IEvent>('events')
+export const Messages = db.collection<IMessage>('messages')
 
-await Events.createIndex({ createdAt: -1 }, { unique: false })
+await Messages.createIndex({ createdAt: -1 }, { unique: false })

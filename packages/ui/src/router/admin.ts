@@ -9,6 +9,7 @@ export const adminRoutes: RouteRecordRaw[] = [
         path: '',
         component: () => import('@/views/admin/HomeView.vue')
       },
+
       {
         path: 'sys',
         component: () => import('@/views/admin/SysView.vue')
@@ -22,22 +23,36 @@ export const adminRoutes: RouteRecordRaw[] = [
         component: () => import('@/views/admin/SysItemView.vue'),
         props: true
       },
+
       {
         path: 'user',
         component: () => import('@/views/admin/UserView.vue')
       },
+
       {
         path: 'problem',
         component: () => import('@/views/admin/ProblemView.vue')
       },
+
       {
         path: 'submission',
         component: () => import('@/views/admin/SubmissionView.vue')
       },
+
       {
         path: 'message',
         component: () => import('@/views/admin/MessageView.vue')
       },
+      {
+        path: 'message/new',
+        component: () => import('@/views/admin/MessageNewView.vue')
+      },
+      {
+        path: 'message/edit/:id',
+        component: () => import('@/views/admin/MessageEditView.vue'),
+        props: true
+      },
+
       {
         path: 'ranklist',
         component: () => import('@/views/admin/RanklistView.vue')
