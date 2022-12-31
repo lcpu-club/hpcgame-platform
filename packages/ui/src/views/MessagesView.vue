@@ -5,7 +5,9 @@
         <NTabPane name="global" tab="系统通知">
           <GlobalMessages />
         </NTabPane>
-        <NTabPane name="self" tab="个人通知"> <SelfMessages /> </NTabPane>
+        <NTabPane name="self" tab="个人通知">
+          <SelfMessages />
+        </NTabPane>
       </NTabs>
     </div>
   </div>

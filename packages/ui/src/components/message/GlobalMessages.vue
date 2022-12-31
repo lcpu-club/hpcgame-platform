@@ -20,6 +20,7 @@ import { useAsyncState } from '@vueuse/core'
 import AsyncState from '../misc/AsyncState.vue'
 import { mainApi } from '@/api'
 import MessageCard from './MessageCard.vue'
+import { NAlert } from 'naive-ui'
 
 const { state, isLoading, error } = useAsyncState(async () => {
   return mainApi.message.global.$get.fetch()
