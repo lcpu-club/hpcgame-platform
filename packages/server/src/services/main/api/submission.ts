@@ -60,7 +60,7 @@ export const submissionRouter = protectedChain
               { [`problemStatus.${problemId}`]: { $exists: false } },
               {
                 [`problemStatus.${problemId}.submissionCount`]: {
-                  $lt: problem.submissionLimit
+                  $lt: problem.maxSubmissionCount
                 }
               }
             ]
@@ -92,7 +92,8 @@ export const submissionRouter = protectedChain
     C.handler()
       .body(
         Type.Object({
-          _id: Type.String()
+          _id: Type.String(),
+          size: Type.Number()
         })
       )
       .handle(async (ctx, req) => {
@@ -103,9 +104,19 @@ export const submissionRouter = protectedChain
           status: 'created'
         })
         if (!submission) throw server.httpErrors.notFound()
+        const problem = await Problems.findOne(
+          { _id: submission.problemId },
+          { projection: { maxSubmissionSize: 1 } }
+        )
+        if (!problem) throw server.httpErrors.badRequest()
+        if (req.body.size > problem.maxSubmissionSize)
+          throw server.httpErrors.badRequest()
 
         return {
-          url: await getUploadUrl(`submission/${req.body._id}/data.tar`)
+          url: await getUploadUrl(
+            `submission/${req.body._id}/data.tar`,
+            req.body.size
+          )
         }
       })
   )
@@ -117,17 +128,7 @@ export const submissionRouter = protectedChain
         })
       )
       .handle(async (ctx, req) => {
-        const { _id } = req.body
-        const submission = await Submissions.findOne({
-          _id,
-          userId: ctx.user._id,
-          status: 'created'
-        })
-        if (!submission) throw server.httpErrors.notFound()
-
-        return {
-          url: await getUploadUrl(`submission/${req.body._id}/data.tar`)
-        }
+        // TODO: implement
       })
   )
   // Update a submission

@@ -87,7 +87,8 @@ export const problemRouter = protectedChain
             title: Type.String(),
             content: Type.String(),
             score: Type.Number(),
-            submissionLimit: Type.Number(),
+            maxSubmissionCount: Type.Number(),
+            maxSubmissionSize: Type.Number(),
             category: Type.String(),
             tags: Type.Array(Type.String()),
             metadata: Type.Record(Type.String(), Type.Unknown())

@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { getUploadUrl } from '../../../storage/index.js'
+import { getDownloadUrl, getUploadUrl } from '../../../storage/index.js'
 import { adminChain } from './base.js'
 
 export const adminRouter = adminChain
@@ -8,12 +8,26 @@ export const adminRouter = adminChain
     C.handler()
       .body(
         Type.Object({
+          ossKey: Type.String(),
+          size: Type.Number()
+        })
+      )
+      .handle(async (ctx, req) => {
+        return {
+          url: await getUploadUrl(req.body.ossKey, req.body.size)
+        }
+      })
+  )
+  .handle('POST', '/getDownloadUrl', (C) =>
+    C.handler()
+      .body(
+        Type.Object({
           ossKey: Type.String()
         })
       )
       .handle(async (ctx, req) => {
         return {
-          url: await getUploadUrl(req.body.ossKey)
+          url: await getDownloadUrl(req.body.ossKey)
         }
       })
   )

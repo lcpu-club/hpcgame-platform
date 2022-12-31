@@ -31,10 +31,11 @@ function normalizeUrl(url: string) {
   return url.substring(urlBaseLength)
 }
 
-export async function getUploadUrl(key: string, expiresIn = 60) {
+export async function getUploadUrl(key: string, size: number, expiresIn = 60) {
   const command = new PutObjectCommand({
     Bucket: MINIO_BUCKET,
-    Key: key
+    Key: key,
+    ContentLength: size
   })
   return normalizeUrl(await getSignedUrl(s3, command, { expiresIn }))
 }
