@@ -5,8 +5,9 @@ import {
   kGameSchedule,
   sysGet
 } from '../../../db/syskv.js'
-import { server } from '../index.js'
-import { protectedChain } from './base.js'
+import { pagingToOptions } from '../../../utils/paging.js'
+import { httpErrors, server } from '../index.js'
+import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
 
 const problemQuerySchema = Type.Object({
   problemId: Type.String()
@@ -48,6 +49,21 @@ export const problemRouter = protectedChain
         return problem.content
       })
   )
+  .handle('GET', '/admin', (C) =>
+    C.handler()
+      .query(
+        Type.Object({
+          _id: Type.String()
+        })
+      )
+      .handle(async (ctx, req) => {
+        ctx.requires(false)
+        const { _id } = req.query
+        const message = await Problems.findOne({ _id })
+        if (!message) throw httpErrors.notFound()
+        return message
+      })
+  )
   .handle('PUT', '/admin', (C) =>
     C.handler()
       .body(
@@ -71,7 +87,22 @@ export const problemRouter = protectedChain
         return 0
       })
   )
-  // Delete problem
-  .handle('DELETE', '/admin', (C) => C.handler())
-  .handle('POST', '/admin/count', (C) => C.handler())
-  .handle('POST', '/admin/search', (C) => C.handler())
+  .handle('POST', '/admin/count', (C) =>
+    C.handler()
+      .body(adminFilterSchema)
+      .handle(async (ctx, req) => {
+        ctx.requires(false)
+        return Problems.countDocuments(req.body.filter)
+      })
+  )
+  .handle('POST', '/admin/search', (C) =>
+    C.handler()
+      .body(adminSearchSchema)
+      .handle(async (ctx, req) => {
+        ctx.requires(false)
+        const users = await Problems.find(req.body.filter, {
+          ...pagingToOptions(req.body)
+        }).toArray()
+        return users
+      })
+  )

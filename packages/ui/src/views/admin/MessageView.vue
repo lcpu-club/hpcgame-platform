@@ -34,7 +34,7 @@ const columns: DataTableColumns = [
 ]
 
 async function load(page: number, perPage: number) {
-  return mainApi.message.search.$post
+  return mainApi.message['admin/search'].$post
     .body({
       page,
       perPage,
@@ -44,7 +44,7 @@ async function load(page: number, perPage: number) {
 }
 
 async function count() {
-  return mainApi.message.count.$post
+  return mainApi.message['admin/count'].$post
     .body({
       filter: {}
     })

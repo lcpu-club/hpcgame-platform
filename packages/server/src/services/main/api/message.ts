@@ -120,7 +120,7 @@ export const messageRouter = unprotectedChain
   )
   .handle(
     'POST',
-    '/count',
+    '/admin/count',
     adminChain
       .handler()
       .body(adminFilterSchema)
@@ -130,7 +130,7 @@ export const messageRouter = unprotectedChain
   )
   .handle(
     'POST',
-    '/search',
+    '/admin/search',
     adminChain
       .handler()
       .body(adminSearchSchema)

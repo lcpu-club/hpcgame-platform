@@ -50,7 +50,7 @@ export const userRouter = protectedChain
       })
   )
   .handle('DELETE', '/', (C) => C.handler())
-  .handle('POST', '/count', (C) =>
+  .handle('POST', '/admin/count', (C) =>
     C.handler()
       .body(adminFilterSchema)
       .handle(async (ctx, req) => {
@@ -58,7 +58,7 @@ export const userRouter = protectedChain
         return Users.countDocuments(req.body.filter)
       })
   )
-  .handle('POST', '/search', (C) =>
+  .handle('POST', '/admin/search', (C) =>
     C.handler()
       .body(adminSearchSchema)
       .handle(async (ctx, req) => {
@@ -69,4 +69,4 @@ export const userRouter = protectedChain
         return users
       })
   )
-  .handle('PUT', '/update', (C) => C.handler())
+  .handle('PUT', '/admin', (C) => C.handler())
