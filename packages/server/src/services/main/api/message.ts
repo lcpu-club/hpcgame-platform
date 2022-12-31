@@ -7,6 +7,7 @@ import {
   adminChain,
   adminFilterSchema,
   adminSearchSchema,
+  protectedChain,
   unprotectedChain
 } from './base.js'
 
@@ -36,23 +37,27 @@ export const messageRouter = unprotectedChain
         }).toArray()
       })
   )
-  .handle('GET', '/', (C) =>
-    C.handler()
+  .handle('GET', '/global', (C) =>
+    C.handler().handle(async () => {
+      return Messages.find(
+        { global: true },
+        {
+          sort: { createdAt: -1 }
+        }
+      ).toArray()
+    })
+  )
+  .handle(
+    'GET',
+    '/self',
+    protectedChain
+      .handler()
       .query(pagingSchema)
       .handle(async (ctx, req) => {
-        const filter: Filter<IMessage> = {
-          $or: ctx.user
-            ? [
-                { global: true },
-                { group: ctx.user.group },
-                { userId: ctx.user._id }
-              ]
-            : [{ global: true }]
-        }
-        return Messages.find(filter, {
-          sort: { createdAt: -1 },
-          ...pagingToOptions(req.query)
-        }).toArray()
+        return Messages.find(
+          { $or: [{ userId: ctx.user._id }, { group: ctx.user.group }] },
+          { ...pagingToOptions(req.query), sort: { createdAt: -1 } }
+        ).toArray()
       })
   )
   .handle(
