@@ -1,12 +1,16 @@
 <template>
+  <div class="mb-2" :class="{ ['hpc-exceeded']: limitExceeded }">
+    上传次数限制：{{ status?.submissionCount ?? 0 }}次/{{ props.maxCount }}次
+  </div>
   <FileUploader
+    v-if="!limitExceeded"
     :validator="validator"
     :generator="generator"
     @uploaded="onUploaded"
   />
   <NButton
     :loading="running"
-    :disabled="!submissionId"
+    :disabled="!submissionId || limitExceeded"
     type="info"
     size="large"
     @click="run"
@@ -22,15 +26,21 @@ import FileUploader from '@/components/misc/FileUploader.vue'
 import { useSimpleAsyncTask } from '@/utils/async'
 import { s3url } from '@/utils/misc'
 import { NButton } from 'naive-ui'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { getProblemStatusRef } from '@/utils/problems'
 
 const props = defineProps<{
   problemId: string
   maxSize: number
+  maxCount: number
 }>()
 
 const submissionId = ref('')
+const status = getProblemStatusRef(props.problemId)
+const limitExceeded = computed(
+  () => status.value && status.value.submissionCount >= props.maxCount
+)
 
 async function validator(file: File) {
   const isTar = file.name.endsWith('.tar') && file.type === 'application/x-tar'
@@ -68,3 +78,9 @@ const { run, running } = useSimpleAsyncTask(async () => {
   router.push(`/submissions/${submissionId.value}`)
 })
 </script>
+
+<style scoped>
+.hpc-exceeded {
+  color: #f56c6c;
+}
+</style>

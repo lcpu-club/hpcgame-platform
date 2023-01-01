@@ -18,6 +18,7 @@
         <ProblemSubmit
           :problem-id="problem._id"
           :max-size="problem.maxSubmissionSize"
+          :max-count="problem.maxSubmissionCount"
         />
       </template>
     </NCard>

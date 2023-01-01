@@ -6,7 +6,7 @@
         class="p-6 w-full flex justify-center"
       >
         <NAlert type="info" title="提示" class="flex-1 max-w-256">
-          还没有题目，请稍候...
+          还没有题目放出，请稍候...
         </NAlert>
       </div>
       <div

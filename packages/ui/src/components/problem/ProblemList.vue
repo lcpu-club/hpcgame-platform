@@ -7,9 +7,11 @@
 <script setup lang="ts">
 // import { userInfo } from '@/api'
 import { computed, h } from 'vue'
-import { useProblemsData } from '@/utils/problems'
+import { useProblemsData, getProblemColor } from '@/utils/problems'
 import { NCard, NMenu, type MenuOption } from 'naive-ui'
 import { RouterLink } from 'vue-router'
+import { renderNIcon } from '@/utils/renderIcon'
+import { mdiCircle } from '@mdi/js'
 
 const problemsData = useProblemsData()
 const menuOptions = computed<MenuOption[]>(() =>
@@ -19,7 +21,10 @@ const menuOptions = computed<MenuOption[]>(() =>
     children: item.problems.map((problem) => ({
       label: () =>
         h(RouterLink, { to: `/problems/${problem._id}` }, () => problem.title),
-      key: problem._id
+      key: problem._id,
+      icon: renderNIcon(mdiCircle, {
+        color: getProblemColor(problem._id)
+      })
     }))
   }))
 )
