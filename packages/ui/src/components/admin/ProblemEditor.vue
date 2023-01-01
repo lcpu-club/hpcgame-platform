@@ -14,6 +14,8 @@
     <NInputNumber v-model:value="model.maxSubmissionCount" />
     <div>最大提交大小</div>
     <NInputNumber v-model:value="model.maxSubmissionSize" />
+    <div>评测参数</div>
+    <NInput v-model:value="model.runnerArgs" />
     <div>分类</div>
     <NInput v-model:value="model.category" />
     <div>标签</div>
@@ -42,6 +44,7 @@ import type { IProblem } from '@hpcgame-platform/server/src/db'
 import FileUploader from '../misc/FileUploader.vue'
 import { mainApi } from '@/api'
 import FileDownloader from '../misc/FileDownloader.vue'
+import { s3url } from '@/utils/misc'
 
 const props = defineProps<{
   isNew?: boolean
@@ -62,7 +65,7 @@ async function generator(file: File) {
       size: file.size
     })
     .fetch()
-  return import.meta.env.VITE_MINIO_ENDPOINT + url
+  return { url: s3url(url) }
 }
 
 async function downloadGenerator() {
@@ -71,6 +74,6 @@ async function downloadGenerator() {
       ossKey: `problem/${props.model._id}/data.tar`
     })
     .fetch()
-  return import.meta.env.VITE_MINIO_ENDPOINT + url
+  return s3url(url)
 }
 </script>

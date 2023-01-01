@@ -7,6 +7,7 @@ export interface IProblem {
   score: number
   maxSubmissionCount: number
   maxSubmissionSize: number
+  runnerArgs: string
   category: string
   tags: string[]
   metadata: Record<string, unknown>

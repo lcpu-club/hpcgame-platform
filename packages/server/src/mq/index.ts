@@ -21,3 +21,21 @@ export async function createReader(topic: string, channel: string) {
   reader.connect()
   return reader
 }
+
+export const judgeRequestTopic = 'runner.judge.request'
+export interface IJudgeRequestMsg {
+  runner_args: string
+  problem_id: string
+  submission_id: string
+  user_id: string
+  user_group: string
+}
+
+export const judgeStatusTopic = 'runner.judge.status'
+export interface JudgeStatus {
+  submission_id: string
+  done: boolean
+  score: number
+  message: string
+  timestamp: number
+}

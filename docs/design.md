@@ -37,7 +37,7 @@ graph LR
 ##### 评测请求
 
 ```ts
-// topic: runner:judge:request
+// topic: runner.judge.request
 interface JudgeRequest {
   // 运行参数。该参数在Problem模型中定义。
   runner_args: string
@@ -51,7 +51,7 @@ interface JudgeRequest {
 ##### 评测状态上报
 
 ```ts
-// topic: runner:judge:status
+// topic: runner.judge.status
 interface JudgeStatus {
   // 提交ID。MainAPI将根据该ID更新评测状态。
   submission_id: string
@@ -62,40 +62,6 @@ interface JudgeStatus {
   // 消息。展示给用户的消息。
   message: string
   // 时间戳。在NSQ无序消息情形中，将据此字段判断是否更新。
-  timestamp: number
-}
-```
-
-##### 试验场操作请求
-
-```ts
-// topic: runner:sandbox:request
-interface SandboxRequest {
-  // 运行参数。该参数在Problem模型中定义。
-  runner_args: string
-  // 题面ID。请Runner从OSS获取题面数据。
-  problem_id: string
-  // 试验场ID。请Runner从OSS获取试验场数据。
-  sandbox_id: string
-  // 操作类型。注意，纵使销毁了一个试验场，他的ID仍然不变。
-  operation: 'create' | 'destroy' | 'start' | 'stop'
-}
-```
-
-##### 试验场状态上报
-
-```ts
-// topic: runner:sandbox:status
-interface SandboxStatus {
-  // 试验场ID。MainAPI将根据该ID更新试验场状态。
-  sandbox_id: string
-  // 操作类型。
-  operation: 'create' | 'destroy' | 'start' | 'stop'
-  // 操作是否成功。
-  success: boolean
-  // 附加的消息。
-  message: string
-  // 时间戳。将根据本字段生成推送通知。
   timestamp: number
 }
 ```

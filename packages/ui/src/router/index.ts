@@ -1,6 +1,8 @@
 import { isAdmin, loggedIn, userInfo } from '@/api'
 import { createRouter, createWebHistory } from 'vue-router'
 import { adminRoutes } from './admin'
+import { loginRoutes } from './login'
+import { problemsRoutes } from './problems'
 import { userRoutes } from './user'
 
 const router = createRouter({
@@ -15,40 +17,13 @@ const router = createRouter({
       component: () => import('@/views/AboutView.vue')
     },
     {
-      path: '/problems',
-      component: () => import('@/views/ProblemsView.vue')
-    },
-    {
       path: '/ranklist',
       component: () => import('@/views/RanklistView.vue')
     },
     {
-      path: '/login',
-      name: 'login',
-      component: () => import('@/views/LoginView.vue')
-    },
-    {
-      path: '/login/dev',
-      component: () => import('@/views/auth/DevAuth.vue'),
-      beforeEnter(to, from, enter) {
-        if (import.meta.env.VITE_DEV_MODE) {
-          enter()
-        } else {
-          enter('/')
-        }
-      }
-    },
-    {
-      path: '/login/iaaa',
-      component: () => import('@/views/auth/IaaaAuth.vue')
-    },
-    {
-      path: '/auth/iaaa',
-      component: () => import('@/views/auth/IaaaCallback.vue')
-    },
-    {
-      path: '/login/mail',
-      component: () => import('@/views/auth/MailAuth.vue')
+      path: '/submissions/:id',
+      component: () => import('@/views/SubmissionView.vue'),
+      props: ({ params: { id } }) => ({ id, key: id })
     },
     {
       path: '/messages',
@@ -58,8 +33,10 @@ const router = createRouter({
       path: '/terms',
       component: () => import('@/views/TermsView.vue')
     },
+    ...loginRoutes,
     ...userRoutes,
     ...adminRoutes,
+    ...problemsRoutes,
     {
       path: '/:pathMatch(.*)*',
       component: () => import('@/views/NotFoundView.vue')

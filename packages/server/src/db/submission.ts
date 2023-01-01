@@ -16,6 +16,7 @@ export interface ISubmission {
   problemId: string
   score: number
   status: SubmissionStatus
+  message: string
 
   createdAt: number
   updatedAt: number

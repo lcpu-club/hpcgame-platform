@@ -12,13 +12,45 @@
         <NInputNumber v-model:value="ts" />
       </div>
     </NCard>
+    <NCard title="OSS">
+      <div class="grid grid-cols-1 gap-2">
+        <NInput v-model:value="key" />
+        <FileUploader :generator="generatorUpload" />
+        <FileDownloader :generator="generatorDownload" open-in-new>
+          下载<code>{{ key }}</code>
+        </FileDownloader>
+      </div>
+    </NCard>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NCard, NDatePicker, NInputNumber } from 'naive-ui'
+import { NCard, NDatePicker, NInput, NInputNumber } from 'naive-ui'
 import { version } from '@/utils/meta'
 import { ref } from 'vue'
+import FileUploader from '@/components/misc/FileUploader.vue'
+import { mainApi } from '@/api'
+import FileDownloader from '@/components/misc/FileDownloader.vue'
 
 const ts = ref(Date.now())
+const key = ref('')
+
+async function generatorUpload(file: File) {
+  const { url } = await mainApi.admin.getUploadUrl.$post
+    .body({
+      ossKey: key.value,
+      size: file.size
+    })
+    .fetch()
+  return { url }
+}
+
+async function generatorDownload() {
+  const { url } = await mainApi.admin.getDownloadUrl.$post
+    .body({
+      ossKey: key.value
+    })
+    .fetch()
+  return url
+}
 </script>

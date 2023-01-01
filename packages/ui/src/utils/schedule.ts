@@ -1,25 +1,21 @@
 import { mainApi } from '@/api'
 import { ref } from 'vue'
+import type {
+  kGameSchedule,
+  InferSysType
+} from '@hpcgame-platform/server/src/db/syskv'
 
-export interface IGameStage {
-  name: string
-  since: number
-}
-
-const defaultStage = { name: '未知', since: 0 }
-
-export interface IGameSchedule {
-  stages: IGameStage[]
-}
+export type IGameSchedule = InferSysType<typeof kGameSchedule>
 
 const defaultSchedule: IGameSchedule = {
-  stages: [defaultStage]
+  start: 0,
+  end: 0
 }
 
 export async function loadSchedule() {
   try {
     const data = await mainApi.kv['load/:key'].$get
-      .params({ key: 'schedule' })
+      .params({ key: 'game_schedule' })
       .fetch()
     return (data ?? defaultSchedule) as IGameSchedule
   } catch (err) {
@@ -30,22 +26,15 @@ export async function loadSchedule() {
 
 export const schedule = ref<IGameSchedule>(await loadSchedule())
 
-export function getCurrentStage(schedule: IGameSchedule) {
-  const now = Date.now()
-  return schedule.stages.find((stage) => stage.since <= now) ?? defaultStage
-}
+// export function updateCurrentStage() {
+//   currentStage.value = getCurrentStage(schedule.value)
+// }
 
-export const currentStage = ref(getCurrentStage(schedule.value))
+// function updateTask() {
+//   updateCurrentStage()
+//   requestIdleCallback(updateTask, {
+//     timeout: 5000
+//   })
+// }
 
-export function updateCurrentStage() {
-  currentStage.value = getCurrentStage(schedule.value)
-}
-
-function updateTask() {
-  updateCurrentStage()
-  requestIdleCallback(updateTask, {
-    timeout: 5000
-  })
-}
-
-updateTask()
+// updateTask()

@@ -25,6 +25,7 @@ async function load(): Promise<IProblem> {
     score: 100,
     maxSubmissionCount: 20,
     maxSubmissionSize: 10 * 1024 * 1024,
+    runnerArgs: '',
     category: '其他',
     tags: ['简单题'],
     metadata: {}

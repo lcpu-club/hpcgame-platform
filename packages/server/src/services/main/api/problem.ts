@@ -9,10 +9,6 @@ import { pagingToOptions } from '../../../utils/paging.js'
 import { httpErrors, server } from '../index.js'
 import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
 
-const problemQuerySchema = Type.Object({
-  problemId: Type.String()
-})
-
 async function shouldShowProblems(group: string) {
   const schedule = await sysGet(kGameSchedule, defaultGameSchedule)
   return Date.now() >= schedule.start || group === 'admin' || group === 'staff'
@@ -28,25 +24,28 @@ export const problemRouter = protectedChain
 
       const problems = await Problems.find(
         {},
-        { projection: { content: 0 } }
+        { projection: { content: 0, runnerArgs: 0 } }
       ).toArray()
-      return problems as Array<Omit<IProblem, 'content' | 'file'>>
+      return problems as Array<Omit<IProblem, 'content'>>
     })
   )
   .handle('GET', '/render', (C) =>
     C.handler()
-      .query(problemQuerySchema)
+      .query(
+        Type.Object({
+          _id: Type.String()
+        })
+      )
       .handle(async (ctx, req) => {
         if (!(await shouldShowProblems(ctx.user.group))) {
           throw server.httpErrors.notFound()
         }
 
-        const problem = await Problems.findOne(
-          { _id: req.query.problemId },
-          { projection: { content: 1 } }
-        )
+        const problem = await Problems.findOne(req.query, {
+          projection: { content: 1 }
+        })
         if (!problem) throw req.server.httpErrors.notFound()
-        return problem.content
+        return { result: problem.content }
       })
   )
   .handle('GET', '/admin', (C) =>
@@ -89,6 +88,7 @@ export const problemRouter = protectedChain
             score: Type.Number(),
             maxSubmissionCount: Type.Number(),
             maxSubmissionSize: Type.Number(),
+            runnerArgs: Type.String(),
             category: Type.String(),
             tags: Type.Array(Type.String()),
             metadata: Type.Record(Type.String(), Type.Unknown())

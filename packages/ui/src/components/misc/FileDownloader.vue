@@ -12,10 +12,15 @@ const props = defineProps<{
   btnProps?: ButtonProps
   generator: () => Promise<string>
   filename?: string
+  openInNew?: boolean
 }>()
 
 const { run, running } = useSimpleAsyncTask(async () => {
   const url = await props.generator()
+  if (props.openInNew) {
+    window.open(url)
+    return
+  }
   const link = document.createElement('a')
   link.href = url
   link.download = props.filename ?? ''
