@@ -23,6 +23,8 @@
 - GPU 上的并行计算：GPU 并行计算，主要介绍 CUDA 和 AI 方面的计算优化
 - 综合应用提升：综合运用高性能计算的知识，解决一些有趣的问题
 
+比赛平台基于MIT协议开源，将会在赛后进行整理。本次比赛平台部署与北京大学学生Linux俱乐部的社团服务器上，我们在此感谢[北京大学开源数据实验室](https://osslab-pku.github.io)对俱乐部和高校开源的大力支持。
+
 ## 赛程安排
 
 |                                 比赛环节                                 |               时间                |                     说明                     |
@@ -97,4 +99,4 @@
 
 **特别鸣谢：**
 
-超聚变数字技术有限公司 <img src="https://partner.xfusion.com/static/img/common/pc/logo.svg" alt="xfusion" width="120px">
+[超聚变数字技术有限公司](https://www.xfusion.com) <img src="https://partner.xfusion.com/static/img/common/pc/logo.svg" alt="xfusion" width="120px">
