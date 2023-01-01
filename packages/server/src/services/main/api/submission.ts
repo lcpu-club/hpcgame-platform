@@ -122,7 +122,7 @@ export const submissionRouter = protectedChain
           status: 'created',
           message: '',
           createdAt: Date.now(),
-          updatedAt: Date.now()
+          updatedAt: 0
         })
         return { _id: id }
       })

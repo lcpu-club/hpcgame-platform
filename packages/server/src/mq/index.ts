@@ -32,7 +32,7 @@ export interface IJudgeRequestMsg {
 }
 
 export const judgeStatusTopic = 'runner.judge.status'
-export interface JudgeStatus {
+export interface IJudgeStatusMsg {
   submission_id: string
   done: boolean
   score: number
