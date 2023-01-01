@@ -18,13 +18,19 @@
     <NDatePicker readonly type="datetime" v-model:value="model.createdAt" />
     <div>更新时间</div>
     <NInputNumber readonly v-model:value="model.updatedAt" />
+    <div>重测</div>
+    <NButton v-if="!isNew" @click="run" :loading="running" type="error">
+      重新评测
+    </NButton>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NDatePicker, NInput, NInputNumber } from 'naive-ui'
+import { NButton, NDatePicker, NInput, NInputNumber } from 'naive-ui'
 import { ref } from 'vue'
 import type { ISubmission } from '@hpcgame-platform/server/src/db'
+import { useSimpleAsyncTask } from '@/utils/async'
+import { mainApi } from '@/api'
 
 const props = defineProps<{
   isNew?: boolean
@@ -32,4 +38,10 @@ const props = defineProps<{
 }>()
 
 const model = ref(props.model)
+
+const { run, running } = useSimpleAsyncTask(async () => {
+  await mainApi.submission.admin.resubmit.$post
+    .body({ _id: model.value._id })
+    .fetch()
+})
 </script>
