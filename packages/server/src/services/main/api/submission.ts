@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import { nanoid } from 'nanoid'
 import { Problems } from '../../../db/problem.js'
-import { Submissions } from '../../../db/submission.js'
+import { Submissions, SubmissionStatusSchema } from '../../../db/submission.js'
 import {
   sysGet,
   kGameSchedule,
@@ -11,8 +11,9 @@ import { Users } from '../../../db/user.js'
 import { IJudgeRequestMsg, judgeRequestTopic } from '../../../mq/index.js'
 import { publishAsync } from '../../../mq/writer.js'
 import { getDownloadUrl, getUploadUrl } from '../../../storage/index.js'
+import { pagingToOptions } from '../../../utils/paging.js'
 import { httpErrors, server } from '../index.js'
-import { protectedChain } from './base.js'
+import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
 
 async function shouldAllowSubmit(group: string) {
   const schedule = await sysGet(kGameSchedule, defaultGameSchedule)
@@ -217,9 +218,100 @@ export const submissionRouter = protectedChain
         return 0
       })
   )
-  // Update a submission
-  .handle('PUT', '/admin', (C) => C.handler())
-  // Delete a submission
-  .handle('DELETE', '/admin', (C) => C.handler())
-  .handle('POST', '/admin/count', (C) => C.handler())
-  .handle('POST', '/admin/search', (C) => C.handler())
+  .route('/admin', (C) =>
+    C.transform((ctx) => {
+      ctx.requires(false)
+      return ctx
+    })
+      .router()
+      .handle('GET', '/', (C) =>
+        C.handler()
+          .query(
+            Type.Object({
+              _id: Type.String()
+            })
+          )
+          .handle(async (ctx, req) => {
+            const submission = await Submissions.findOne(req.query)
+            if (!submission) throw req.server.httpErrors.notFound()
+            return submission
+          })
+      )
+      .handle('PUT', '/', (C) =>
+        C.handler()
+          .body(
+            Type.Object({
+              _id: Type.String(),
+              $set: Type.Object({
+                score: Type.Number(),
+                status: SubmissionStatusSchema,
+                message: Type.String(),
+                createdAt: Type.Number(),
+                updatedAt: Type.Number()
+              })
+            })
+          )
+          .handle(async (ctx, req) => {
+            const { _id, $set } = req.body
+            await Submissions.updateOne({ _id }, { $set })
+            return 0
+          })
+      )
+      .handle('DELETE', '/', (C) =>
+        C.handler()
+          .query(
+            Type.Object({
+              _id: Type.String()
+            })
+          )
+          .handle(async (ctx, req) => {
+            const { _id } = req.query
+            await Submissions.deleteOne({ _id })
+            return 0
+          })
+      )
+      .handle('POST', '/count', (C) =>
+        C.handler()
+          .body(adminFilterSchema)
+          .handle(async (ctx, req) => {
+            return Submissions.countDocuments(req.body.filter)
+          })
+      )
+      .handle('POST', '/search', (C) =>
+        C.handler()
+          .body(adminSearchSchema)
+          .handle(async (ctx, req) => {
+            const users = await Submissions.find(req.body.filter, {
+              ...pagingToOptions(req.body)
+            }).toArray()
+            return users
+          })
+      )
+      .handle('POST', '/resubmit', (C) =>
+        C.handler()
+          .body(
+            Type.Object({
+              _id: Type.String()
+            })
+          )
+          .handle(async (ctx, req) => {
+            const { value } = await Submissions.findOneAndUpdate(req.body, {
+              $set: { status: 'pending' }
+            })
+            if (!value) throw httpErrors.notFound()
+
+            const problem = await Problems.findOne({ _id: value.problemId })
+            if (!problem) throw httpErrors.internalServerError()
+
+            await publishAsync(judgeRequestTopic, {
+              runner_args: problem.runnerArgs,
+              problem_id: problem._id,
+              submission_id: value._id,
+              user_id: ctx.user._id,
+              user_group: ctx.user.group
+            } as IJudgeRequestMsg)
+
+            return 0
+          })
+      )
+  )
