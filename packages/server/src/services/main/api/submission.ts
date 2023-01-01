@@ -8,7 +8,7 @@ import {
   defaultGameSchedule
 } from '../../../db/syskv.js'
 import { Users } from '../../../db/user.js'
-import { IJudgeRequestMsg, judgeRequestTopic } from '../../../mq/index.js'
+import { type IJudgeRequestMsg, judgeRequestTopic } from '../../../mq/index.js'
 import { publishAsync } from '../../../mq/writer.js'
 import { getDownloadUrl, getUploadUrl } from '../../../storage/index.js'
 import { pagingToOptions } from '../../../utils/paging.js'
