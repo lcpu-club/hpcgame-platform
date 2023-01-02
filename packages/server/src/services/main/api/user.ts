@@ -112,7 +112,7 @@ export const userRouter = protectedChain
           )
           .handle(async (ctx, req) => {
             const { _id, $set } = req.body
-            await Users.updateOne({ _id }, { $set }, { upsert: true })
+            await Users.updateOne({ _id }, { $set })
             await expireUserInfo(_id)
             return 0
           })

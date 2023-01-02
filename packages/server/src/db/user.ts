@@ -69,7 +69,13 @@ export async function verifyAuthToken(token: unknown) {
 
 export async function expireUserInfo(_id: string) {
   const keys = await redis.keys('user:' + _id + ':*')
-  await redis.del(...keys)
+  if (keys.length) {
+    const pipeline = redis.pipeline()
+    for (const key of keys) {
+      pipeline.del(key)
+    }
+    await pipeline.exec()
+  }
 }
 
 export async function createUser(user: Omit<IUser, '_id' | 'authToken'>) {
