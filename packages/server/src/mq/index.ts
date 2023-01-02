@@ -35,6 +35,8 @@ export const judgeStatusTopic = 'runner.judge.status'
 export interface IJudgeStatusMsg {
   submission_id: string
   done: boolean
+  success: boolean
+  error: string
   score: number
   message: string
   timestamp: number

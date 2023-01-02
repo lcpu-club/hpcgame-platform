@@ -147,7 +147,7 @@ export const authRouter = rootChain
           throw server.httpErrors.forbidden()
         }
 
-        const user = await Users.findOne({ mail })
+        const user = await Users.findOne({ authEmail: mail })
         if (user) return user
         return createUser({
           name: mail.split('@')[0],

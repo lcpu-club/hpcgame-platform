@@ -21,11 +21,11 @@ graph LR
 ### 对象存储键值
 
 - 题目
-  - 题目数据：`problem/{problem_id}/data.tar`
+  - 题目数据：`problem/{problem_id}/data`
   - 题面附件：`problem/{problem_id}/attachment/{filename}`
 - 提交
-  - 提交文件：`submission/{submission_id}/data.tar`
-  - 评测日志：`submission/{submission_id}/log.txt`
+  - 提交文件：`submission/{submission_id}/data`
+  - 评测日志：`submission/{submission_id}/result.json`
   - 评测产物：`submission/{submission_id}/artifact/{filename}`
 
 ### NSQ 消息结构
@@ -57,6 +57,10 @@ interface JudgeStatus {
   submission_id: string
   // 评测是否完成。MainAPI将根据此字段更新Submission的状态。
   done: boolean
+  // 评测是否成功
+  success: boolean
+  // 评测错误消息
+  error: string
   // 得分。倘若没有评测完成，请上报0。
   score: number
   // 消息。展示给用户的消息。
