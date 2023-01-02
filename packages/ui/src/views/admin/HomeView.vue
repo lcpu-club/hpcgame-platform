@@ -31,6 +31,7 @@ import { ref } from 'vue'
 import FileUploader from '@/components/misc/FileUploader.vue'
 import { mainApi } from '@/api'
 import FileDownloader from '@/components/misc/FileDownloader.vue'
+import { s3url } from '@/utils/misc'
 
 const ts = ref(Date.now())
 const key = ref('')
@@ -42,7 +43,7 @@ async function generatorUpload(file: File) {
       size: file.size
     })
     .fetch()
-  return { url }
+  return { url: s3url(url) }
 }
 
 async function generatorDownload() {
@@ -51,6 +52,6 @@ async function generatorDownload() {
       ossKey: key.value
     })
     .fetch()
-  return url
+  return s3url(url)
 }
 </script>

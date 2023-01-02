@@ -48,6 +48,7 @@ import AsyncState from '@/components/misc/AsyncState.vue'
 import { useAsyncState } from '@vueuse/core'
 import { mainApi } from '@/api'
 import FileDownloader from '@/components/misc/FileDownloader.vue'
+import { s3url } from '@/utils/misc'
 
 const props = defineProps<{
   id: string
@@ -61,6 +62,6 @@ async function generator() {
   const { url } = await mainApi.submission.getDownloadUrl.$post
     .body({ _id: props.id })
     .fetch()
-  return url
+  return s3url(url)
 }
 </script>
