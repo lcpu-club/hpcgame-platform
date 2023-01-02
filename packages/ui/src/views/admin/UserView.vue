@@ -20,7 +20,8 @@ const columns: DataTableColumns = [
         h('code', row._id as string)
       )
   },
-  { title: 'Name', key: 'name' }
+  { title: 'Name', key: 'name' },
+  { title: 'Group', key: 'group' }
 ]
 
 async function load(page: number, perPage: number) {
