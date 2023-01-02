@@ -6,12 +6,13 @@
  -->
 
 <template>
-  <div>
+  <div class="self-stretch place-self-stretch justify-self-stretch">
     <NAlert v-if="error" type="error" title="错误">
       {{ error }}
     </NAlert>
     <NInput
       type="textarea"
+      :readonly="props.readonly"
       :value="json"
       @update:value="onUpdate"
       class="font-mono"
@@ -24,6 +25,7 @@ import { NAlert, NInput } from 'naive-ui'
 import { ref } from 'vue'
 
 const props = defineProps<{
+  readonly?: boolean
   modelValue: unknown
 }>()
 

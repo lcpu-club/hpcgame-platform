@@ -28,6 +28,11 @@ export const adminRoutes: RouteRecordRaw[] = [
         path: 'user',
         component: () => import('@/views/admin/UserView.vue')
       },
+      {
+        path: 'user/edit/:id',
+        component: () => import('@/views/admin/UserEditView.vue'),
+        props: true
+      },
 
       {
         path: 'problem',

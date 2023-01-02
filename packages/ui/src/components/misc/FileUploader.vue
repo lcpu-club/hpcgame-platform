@@ -1,5 +1,7 @@
 <template>
-  <div class="grid grid-cols-1 justify-items-stretch">
+  <div
+    class="grid grid-cols-1 justify-items-stretch self-stretch justify-self-stretch place-self-stretch"
+  >
     <NUpload
       ref="upload"
       :custom-request="customRequest"

@@ -16,7 +16,7 @@ const columns: DataTableColumns = [
     title: 'ID',
     key: '_id',
     render: (row) =>
-      h(RouterLink, { to: `/admin/user/${row._id}` }, () =>
+      h(RouterLink, { to: `/admin/user/edit/${row._id}` }, () =>
         h('code', row._id as string)
       )
   },
@@ -24,7 +24,7 @@ const columns: DataTableColumns = [
 ]
 
 async function load(page: number, perPage: number) {
-  return mainApi.user['admin/search'].$post
+  return mainApi.user.admin.search.$post
     .body({
       page,
       perPage,
@@ -34,7 +34,7 @@ async function load(page: number, perPage: number) {
 }
 
 async function count() {
-  return mainApi.user['admin/count'].$post
+  return mainApi.user.admin.count.$post
     .body({
       filter: {}
     })

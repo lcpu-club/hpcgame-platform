@@ -5,7 +5,7 @@ import {
   kGameSchedule,
   defaultGameSchedule
 } from '../../../db/syskv.js'
-import { Users } from '../../../db/user.js'
+import { expireUserInfo, UserGroupSchema, Users } from '../../../db/user.js'
 import { pagingToOptions } from '../../../utils/paging.js'
 import { httpErrors } from '../index.js'
 import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
@@ -74,23 +74,61 @@ export const userRouter = protectedChain
     })
   )
   .handle('DELETE', '/', (C) => C.handler())
-  .handle('POST', '/admin/count', (C) =>
-    C.handler()
-      .body(adminFilterSchema)
-      .handle(async (ctx, req) => {
-        ctx.requires(false)
-        return Users.countDocuments(req.body.filter)
-      })
+  .route('/admin', (C) =>
+    C.transform((ctx) => {
+      ctx.requires(false)
+      return ctx
+    })
+      .router()
+      .handle('POST', '/count', (C) =>
+        C.handler()
+          .body(adminFilterSchema)
+          .handle(async (ctx, req) => {
+            return Users.countDocuments(req.body.filter)
+          })
+      )
+      .handle('POST', '/search', (C) =>
+        C.handler()
+          .body(adminSearchSchema)
+          .handle(async (ctx, req) => {
+            const users = await Users.find(req.body.filter, {
+              ...pagingToOptions(req.body)
+            }).toArray()
+            return users
+          })
+      )
+      .handle('PUT', '/', (C) =>
+        C.handler()
+          .body(
+            Type.Object({
+              _id: Type.String(),
+              $set: Type.Object({
+                name: Type.String({ minLength: 1, maxLength: 32 }),
+                group: UserGroupSchema,
+                tags: Type.Array(Type.String({ minLength: 1, maxLength: 32 })),
+                email: Type.String({ format: 'email' })
+              })
+            })
+          )
+          .handle(async (ctx, req) => {
+            const { _id, $set } = req.body
+            await Users.updateOne({ _id }, { $set }, { upsert: true })
+            await expireUserInfo(_id)
+            return 0
+          })
+      )
+      .handle('GET', '/', (C) =>
+        C.handler()
+          .query(
+            Type.Object({
+              _id: Type.String()
+            })
+          )
+          .handle(async (ctx, req) => {
+            const { _id } = req.query
+            const message = await Users.findOne({ _id })
+            if (!message) throw httpErrors.notFound()
+            return message
+          })
+      )
   )
-  .handle('POST', '/admin/search', (C) =>
-    C.handler()
-      .body(adminSearchSchema)
-      .handle(async (ctx, req) => {
-        ctx.requires(false)
-        const users = await Users.find(req.body.filter, {
-          ...pagingToOptions(req.body)
-        }).toArray()
-        return users
-      })
-  )
-  .handle('PUT', '/admin', (C) => C.handler())
