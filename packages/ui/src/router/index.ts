@@ -45,6 +45,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  window.$nprogress?.start()
   if (to.path.startsWith('/login')) {
     return loggedIn.value ? next('/') : next()
   }
@@ -55,6 +56,10 @@ router.beforeEach((to, from, next) => {
     return isAdmin.value ? next() : next('/')
   }
   return next()
+})
+
+router.afterEach(() => {
+  window.$nprogress?.finish()
 })
 
 export default router

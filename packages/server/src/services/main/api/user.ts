@@ -1,12 +1,11 @@
 import { Type } from '@sinclair/typebox'
-import { nanoid } from 'nanoid'
+import { getSCOWCredentialsForUser } from '../../../db/scow.js'
 import {
   sysGet,
   kGameSchedule,
   defaultGameSchedule
 } from '../../../db/syskv.js'
 import { Users } from '../../../db/user.js'
-import { createPlatformUser } from '../../../scow/index.js'
 import { pagingToOptions } from '../../../utils/paging.js'
 import { httpErrors } from '../index.js'
 import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
@@ -21,60 +20,11 @@ async function shouldAllowSCOWAccess(group: string) {
   )
 }
 
-export async function getSCOWCredentialsFor(_id: string) {
-  const newPass = nanoid(32)
-  const { value } = await Users.findOneAndUpdate(
-    {
-      _id,
-      scowCredentials: { $exists: false }
-    },
-    { $set: { scowCredentials: { pass: newPass } } }
-  )
-  if (value) {
-    // Create SCOW user
-    try {
-      await createPlatformUser(
-        value._id,
-        newPass,
-        value.group,
-        value.metadata.realname,
-        value.authEmail
-      )
-      return { pass: newPass }
-    } catch (err) {
-      // Rollback
-      await Users.updateOne({ _id }, { $unset: { scowCredentials: 1 } })
-      throw err
-    }
-  }
-  const user = await Users.findOne(
-    { _id },
-    {
-      projection: {
-        _id: 1,
-        scowCredentials: 1,
-        group: 1,
-        metadata: 1,
-        authEmail: 1
-      }
-    }
-  )
-  const pass = user?.scowCredentials?.pass
-  if (!pass) {
-    throw httpErrors.internalServerError('Failed to generate SCOW credentials')
-  }
-
-  return { pass }
-}
-
 export const userRouter = protectedChain
   .router()
   .handle('GET', '/', (C) =>
     C.handler().handle(async (ctx) => {
-      const user = await Users.findOne(
-        { _id: ctx.user._id },
-        { projection: { scowCredentials: 0 } }
-      )
+      const user = await Users.findOne({ _id: ctx.user._id })
       if (!user) throw httpErrors.notFound()
       return user
     })
@@ -120,7 +70,7 @@ export const userRouter = protectedChain
       if (!(await shouldAllowSCOWAccess(ctx.user.group))) {
         throw httpErrors.forbidden('SCOW is not available now')
       }
-      return getSCOWCredentialsFor(ctx.user._id)
+      return getSCOWCredentialsForUser(ctx.user._id)
     })
   )
   .handle('DELETE', '/', (C) => C.handler())

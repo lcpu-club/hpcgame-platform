@@ -1,6 +1,6 @@
 import { redis } from '../cache/index.js'
 import { db } from './base.js'
-import { UserGroup } from './user.js'
+import type { UserGroup } from './user.js'
 
 export interface ISysKVItem {
   _id: string

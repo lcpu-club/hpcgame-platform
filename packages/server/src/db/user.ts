@@ -35,10 +35,6 @@ export interface IUser {
     realname?: string
     organization?: string
   }
-
-  scowCredentials?: {
-    pass: string
-  }
 }
 
 export const Users = db.collection<IUser>('users')

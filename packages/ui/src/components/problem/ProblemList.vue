@@ -1,7 +1,15 @@
 <template>
-  <NCard class="shadow" title="题目列表" segmented content-style="padding: 0;">
-    <NMenu :options="menuOptions" :root-indent="16" :indent="0" />
-  </NCard>
+  <div class="grid grid-cols-1 gap-2">
+    <ConnectScow />
+    <NCard
+      class="shadow"
+      title="题目列表"
+      segmented
+      content-style="padding: 0;"
+    >
+      <NMenu :options="menuOptions" :root-indent="16" :indent="0" />
+    </NCard>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -12,6 +20,7 @@ import { NCard, NMenu, type MenuOption } from 'naive-ui'
 import { RouterLink } from 'vue-router'
 import { renderNIcon } from '@/utils/renderIcon'
 import { mdiCircle } from '@mdi/js'
+import ConnectScow from '@/components/scow/ConnectScow.vue'
 
 const problemsData = useProblemsData()
 const menuOptions = computed<MenuOption[]>(() =>

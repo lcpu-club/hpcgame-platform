@@ -15,8 +15,9 @@
   "dependencies": {
     "@mdi/js": "^7.1.96",
     "@vueuse/core": "^9.9.0",
+    "@wooorm/starry-night": "^1.5.0",
     "crypto-js": "^4.1.1",
-    "github-markdown-css": "^5.1.0",
+    "hast-util-to-html": "^8.0.3",
     "markdown-it": "^13.0.1",
     "markdown-it-katex": "^2.0.3",
     "naive-ui": "^2.34.2",

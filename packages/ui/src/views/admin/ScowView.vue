@@ -12,19 +12,20 @@
           </NButton>
         </NSpace>
         <NSpace>
-          <NInput v-model:value="userId" />
+          <NInput v-model:value="userId" placeholder="用户ID" />
+          <NInput v-model:value="problemId" placeholder="题目ID" />
           <NButton
             :loading="loadTask.running.value"
             @click="loadTask.run"
             type="info"
           >
-            以该用户身份登录SCOW
+            以{{ problemId ? '评测机' : '用户' }}身份登录SCOW
           </NButton>
         </NSpace>
         <div>
-          用户名：<code>{{ userId }}</code>
+          用户名：<code>{{ user }}</code>
           <br />
-          密码：<code>{{ password }}</code>
+          密码：<code>{{ pass }}</code>
         </div>
       </NSpace>
     </NCard>
@@ -46,19 +47,26 @@ const initTask = useSimpleAsyncTask(
 )
 
 const userId = ref(userInfo.value._id)
-const password = ref('')
+const problemId = ref('')
+const user = ref('')
+const pass = ref('')
 
 const { open } = useSCOW()
 
 const loadTask = useSimpleAsyncTask(
   async () => {
-    const { pass } = await mainApi.admin.getSCOWCredentialsFor.$post
-      .body({
-        _id: userId.value
-      })
-      .fetch()
-    password.value = pass
-    open(userId.value, pass)
+    const api = problemId.value
+      ? mainApi.admin.getSCOWCredentialsForProblem.$post.body({
+          _id: userId.value,
+          problemId: problemId.value
+        })
+      : mainApi.admin.getSCOWCredentialsForUser.$post.body({
+          _id: userId.value
+        })
+    const { _id, password } = await api.fetch()
+    user.value = _id
+    pass.value = password
+    open(_id, password)
   },
   { notifyOnSuccess: true }
 )

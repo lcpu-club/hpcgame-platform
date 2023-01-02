@@ -1,8 +1,11 @@
 import { Type } from '@sinclair/typebox'
+import {
+  getSCOWCredentialsForUser,
+  getSCOWCredentialsForProblem
+} from '../../../db/scow.js'
 import { initSCOW } from '../../../scow/index.js'
 import { getDownloadUrl, getUploadUrl } from '../../../storage/index.js'
 import { adminChain } from './base.js'
-import { getSCOWCredentialsFor } from './user.js'
 
 export const adminRouter = adminChain
   .router()
@@ -39,7 +42,7 @@ export const adminRouter = adminChain
       return 0
     })
   )
-  .handle('POST', '/getSCOWCredentialsFor', (C) =>
+  .handle('POST', '/getSCOWCredentialsForUser', (C) =>
     C.handler()
       .body(
         Type.Object({
@@ -47,6 +50,18 @@ export const adminRouter = adminChain
         })
       )
       .handle(async (_, req) => {
-        return getSCOWCredentialsFor(req.body._id)
+        return getSCOWCredentialsForUser(req.body._id)
+      })
+  )
+  .handle('POST', '/getSCOWCredentialsForProblem', (C) =>
+    C.handler()
+      .body(
+        Type.Object({
+          _id: Type.String(),
+          problemId: Type.String()
+        })
+      )
+      .handle(async (_, req) => {
+        return getSCOWCredentialsForProblem(req.body._id, req.body.problemId)
       })
   )

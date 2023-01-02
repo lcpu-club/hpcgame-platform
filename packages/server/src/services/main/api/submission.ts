@@ -1,6 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import { nanoid } from 'nanoid'
 import { Problems } from '../../../db/problem.js'
+import { getSCOWCredentialsForProblem } from '../../../db/scow.js'
 import { Submissions, SubmissionStatusSchema } from '../../../db/submission.js'
 import {
   sysGet,
@@ -194,7 +195,17 @@ export const submissionRouter = protectedChain
         if (!(await shouldAllowSubmit(ctx.user.group))) {
           throw httpErrors.badRequest()
         }
-        const { value } = await Submissions.findOneAndUpdate(
+
+        const submission = await Submissions.findOne({ _id: req.body._id })
+        if (!submission) throw httpErrors.notFound()
+        if (submission.status !== 'created') throw httpErrors.badRequest()
+
+        const creds = await getSCOWCredentialsForProblem(
+          ctx.user._id,
+          submission.problemId
+        )
+
+        const { modifiedCount } = await Submissions.updateOne(
           {
             _id: req.body._id,
             userId: ctx.user._id,
@@ -202,18 +213,22 @@ export const submissionRouter = protectedChain
           },
           { $set: { status: 'pending' } }
         )
-        if (!value) throw httpErrors.notFound()
+        if (!modifiedCount) throw httpErrors.badRequest()
 
-        const problem = await Problems.findOne({ _id: value.problemId })
+        const problem = await Problems.findOne({
+          _id: submission.problemId
+        })
         if (!problem) throw httpErrors.internalServerError()
 
-        await publishAsync(judgeRequestTopic, {
+        await publishAsync<IJudgeRequestMsg>(judgeRequestTopic, {
           runner_args: problem.runnerArgs,
+          runner_user: creds._id,
+          runner_pass: creds.password,
           problem_id: problem._id,
-          submission_id: value._id,
+          submission_id: submission._id,
           user_id: ctx.user._id,
           user_group: ctx.user.group
-        } as IJudgeRequestMsg)
+        })
 
         return 0
       })
@@ -300,16 +315,23 @@ export const submissionRouter = protectedChain
             })
             if (!value) throw httpErrors.notFound()
 
+            const creds = await getSCOWCredentialsForProblem(
+              ctx.user._id,
+              value.problemId
+            )
+
             const problem = await Problems.findOne({ _id: value.problemId })
             if (!problem) throw httpErrors.internalServerError()
 
-            await publishAsync(judgeRequestTopic, {
+            await publishAsync<IJudgeRequestMsg>(judgeRequestTopic, {
               runner_args: problem.runnerArgs,
+              runner_user: creds._id,
+              runner_pass: creds.password,
               problem_id: problem._id,
               submission_id: value._id,
               user_id: ctx.user._id,
               user_group: ctx.user.group
-            } as IJudgeRequestMsg)
+            })
 
             return 0
           })

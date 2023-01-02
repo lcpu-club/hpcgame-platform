@@ -25,6 +25,8 @@ export async function createReader(topic: string, channel: string) {
 export const judgeRequestTopic = 'runner.judge.request'
 export interface IJudgeRequestMsg {
   runner_args: string
+  runner_user: string
+  runner_pass: string
   problem_id: string
   submission_id: string
   user_id: string

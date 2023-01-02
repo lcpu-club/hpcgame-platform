@@ -1,13 +1,15 @@
 <template>
-  <NConfigProvider :locale="zhCN" :date-locale="dateZhCN">
-    <NNotificationProvider placement="bottom-right">
-      <NDialogProvider>
-        <NLoadingBarProvider>
-          <DefaultLayout />
-        </NLoadingBarProvider>
-      </NDialogProvider>
-    </NNotificationProvider>
-  </NConfigProvider>
+  <NLoadingBarProvider>
+    <NConfigProvider :locale="zhCN" :date-locale="dateZhCN">
+      <NNotificationProvider placement="bottom-right">
+        <NDialogProvider>
+          <NLoadingBarProvider>
+            <DefaultLayout />
+          </NLoadingBarProvider>
+        </NDialogProvider>
+      </NNotificationProvider>
+    </NConfigProvider>
+  </NLoadingBarProvider>
 </template>
 
 <script setup lang="ts">

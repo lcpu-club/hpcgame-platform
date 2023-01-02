@@ -1,17 +1,12 @@
 import { SCOW } from 'scow-api'
-import { ServiceError, status } from '@grpc/grpc-js'
+import { type ServiceError, status } from '@grpc/grpc-js'
 import {
   SCOW_ADMIN_NAME,
   SCOW_ADMIN_PASS,
   SCOW_GRPC_ADDR,
   SCOW_TENANT_NAME
 } from '../config/index.js'
-import { UserGroup, UserGroups } from '../db/user.js'
-import {
-  defaultUserChargeLimit,
-  kUserChargeLimit,
-  sysGet
-} from '../db/syskv.js'
+import { type UserGroup, UserGroups } from '../db/user.js'
 
 export const scow = new SCOW(SCOW_GRPC_ADDR)
 
@@ -29,6 +24,14 @@ async function ignoreMeaninglessError<T>(promise: Promise<T>) {
     }
     throw e
   }
+}
+
+export function getUserAccount(group: UserGroup) {
+  return `${SCOW_TENANT_NAME}_user_${group}`
+}
+
+export function getRunnerAccount(group: UserGroup) {
+  return `${SCOW_TENANT_NAME}_runner_${group}`
 }
 
 export async function initSCOW() {
@@ -63,7 +66,7 @@ export async function initSCOW() {
     await _(
       scow.account.invoke('createAccount', {
         tenantName: SCOW_TENANT_NAME,
-        accountName: `${SCOW_TENANT_NAME}_runner_${group}`,
+        accountName: getRunnerAccount(group),
         ownerId: SCOW_ADMIN_NAME,
         comment: `Account for runner for HPCGP group ${group}`
       })
@@ -71,7 +74,7 @@ export async function initSCOW() {
     await _(
       scow.account.invoke('createAccount', {
         tenantName: SCOW_TENANT_NAME,
-        accountName: `${SCOW_TENANT_NAME}_user_${group}`,
+        accountName: getUserAccount(group),
         ownerId: SCOW_ADMIN_NAME,
         comment: `Account for user in HPCGP group ${group}`
       })
@@ -79,12 +82,13 @@ export async function initSCOW() {
   }
 }
 
-export async function createPlatformUser(
+export async function createSCOWUser(
   identityId: string,
   password: string,
-  group: UserGroup,
+  accountName: string,
   name?: string,
-  email?: string
+  email?: string,
+  limit?: number
 ) {
   const _ = ignoreMeaninglessError
   await _(
@@ -96,7 +100,6 @@ export async function createPlatformUser(
       password
     })
   )
-  const accountName = `${SCOW_TENANT_NAME}_user_${group}`
   await _(
     scow.user.invoke('addUserToAccount', {
       tenantName: SCOW_TENANT_NAME,
@@ -104,8 +107,7 @@ export async function createPlatformUser(
       accountName
     })
   )
-  const limit = await sysGet(kUserChargeLimit, defaultUserChargeLimit)
-  if (limit[group]) {
+  if (limit) {
     await _(
       scow.jobChargeLimit.invoke('setJobChargeLimit', {
         tenantName: SCOW_TENANT_NAME,
@@ -113,7 +115,7 @@ export async function createPlatformUser(
         userId: identityId,
         limit: {
           positive: true,
-          yuan: limit[group],
+          yuan: limit,
           decimalPlace: 0
         }
       })
