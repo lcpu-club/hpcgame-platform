@@ -13,13 +13,24 @@ export function useTaskContext() {
   return injected
 }
 
-export function useSimpleAsyncTask(task: () => Promise<unknown>) {
+export function useSimpleAsyncTask(
+  task: () => Promise<unknown>,
+  options?: {
+    notifyOnSuccess?: boolean
+  }
+) {
   const notification = useNotification()
   const running = ref(false)
   const run = async () => {
     try {
       running.value = true
       await task()
+      if (options?.notifyOnSuccess) {
+        notification.success({
+          title: '操作成功',
+          duration: 5000
+        })
+      }
     } catch (err) {
       notification.error({
         title: '操作失败',

@@ -50,7 +50,10 @@ export const authRouter = rootChain
       )
       .handle(async (ctx, req) => {
         if (!DEV_MODE) throw req.server.httpErrors.notFound()
-        const user = await Users.findOne({ name: req.query.name })
+        const user = await Users.findOne(
+          { name: req.query.name },
+          { projection: { scowCredentials: 0 } }
+        )
         if (user) {
           return user
         }
@@ -75,7 +78,10 @@ export const authRouter = rootChain
         const resp = await validate(req.ip, IAAA_ID, IAAA_KEY, req.body.token)
         if (!resp.success) throw server.httpErrors.forbidden(resp.errMsg)
         const iaaaId = resp.userInfo.identityId
-        const user = await Users.findOne({ iaaaId })
+        const user = await Users.findOne(
+          { iaaaId },
+          { projection: { scowCredentials: 0 } }
+        )
         if (user) return user
         return createUser({
           name: resp.userInfo.name,
@@ -147,7 +153,10 @@ export const authRouter = rootChain
           throw server.httpErrors.forbidden()
         }
 
-        const user = await Users.findOne({ authEmail: mail })
+        const user = await Users.findOne(
+          { authEmail: mail },
+          { projection: { scowCredentials: 0 } }
+        )
         if (user) return user
         return createUser({
           name: mail.split('@')[0],

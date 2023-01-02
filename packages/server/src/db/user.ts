@@ -4,13 +4,8 @@ import { redis } from '../cache/index.js'
 import { StringEnum } from '../utils/type.js'
 import { db } from './base.js'
 
-export const UserGroupSchema = StringEnum([
-  'banned',
-  'pku',
-  'social',
-  'staff',
-  'admin'
-])
+export const UserGroups = ['banned', 'pku', 'social', 'staff', 'admin'] as const
+export const UserGroupSchema = StringEnum(UserGroups)
 export type UserGroup = Static<typeof UserGroupSchema>
 
 export interface IUserAuthSource {
@@ -39,6 +34,10 @@ export interface IUser {
     qq?: string
     realname?: string
     organization?: string
+  }
+
+  scowCredentials?: {
+    pass: string
   }
 }
 

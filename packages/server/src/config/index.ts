@@ -53,7 +53,7 @@ export const SMTP_USER = string('SMTP_USER')
 export const SMTP_PASS = string('SMTP_PASS')
 export const MAIL_FROM = string('MAIL_FROM')
 export const MAIL_SENDER = string('MAIL_SENDER', 'HPC Game System')
-export const MAIL_WHITELIST: string[] = json('MAIL_WHITELIST', ['.edu.cn', 'ucas.ac.cn', 'ict.ac.cn']) // 增加国科大和中科院计算所
+export const MAIL_WHITELIST: string[] = json('MAIL_WHITELIST', ['.edu.cn'])
 export const MAIL_BLACKLIST: string[] = json('MAIL_BLACKLIST', [])
 
 // Redis
@@ -61,3 +61,9 @@ export const REDIS_URL = string('REDIS_URL', 'redis://localhost:6379')
 
 // Recaptcha
 export const RECAPTCHA_SECRET = string('RECAPTCHA_SECRET')
+
+// SCOW
+export const SCOW_GRPC_ADDR = string('SCOW_GRPC_ADDR')
+export const SCOW_TENANT_NAME = string('SCOW_TENANT_NAME', 'hpcgame')
+export const SCOW_ADMIN_NAME = string('SCOW_ADMIN_NAME', 'hpcgame_admin')
+export const SCOW_ADMIN_PASS = string('SCOW_ADMIN_PASS', 'hpcgame_admin')

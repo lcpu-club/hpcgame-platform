@@ -42,7 +42,8 @@ const menuOptions: MenuOption[] = [
   ['/admin/problem', '题面管理'],
   ['/admin/submission', '提交管理'],
   ['/admin/message', '通知管理'],
-  ['/admin/ranklist', '排行榜管理']
+  ['/admin/ranklist', '排行榜管理'],
+  ['/admin/scow', 'SCOW集成']
 ].map(([to, label]) => ({
   label: () => h(RouterLink, { to }, () => label),
   key: to

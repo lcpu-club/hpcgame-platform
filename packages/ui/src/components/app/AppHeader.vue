@@ -17,15 +17,33 @@
       </div>
     </div>
     <div class="flex-1 h-full border-r"></div>
-    <RouterLink v-slot="{ navigate }" to="/messages" custom>
-      <NButton @click="navigate" class="px-4" text> 通知 </NButton>
-    </RouterLink>
+    <div class="ml-4 mr-2">
+      <RouterLink v-slot="{ navigate }" to="/messages" custom>
+        <NBadge dot>
+          <NButton
+            tag="a"
+            href="/messages"
+            @click="navigate"
+            type="primary"
+            ghost
+          >
+            通知
+          </NButton>
+        </NBadge>
+      </RouterLink>
+    </div>
     <UserIndicatorProxy />
   </NLayoutHeader>
 </template>
 
 <script setup lang="ts">
-import { NLayoutHeader, NMenu, type MenuOption, NButton } from 'naive-ui'
+import {
+  NLayoutHeader,
+  NMenu,
+  type MenuOption,
+  NButton,
+  NBadge
+} from 'naive-ui'
 import { h, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import UserIndicatorProxy from '@/components/user/UserIndicatorProxy.vue'

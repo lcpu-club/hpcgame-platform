@@ -1,5 +1,6 @@
 import { redis } from '../cache/index.js'
 import { db } from './base.js'
+import { UserGroup } from './user.js'
 
 export interface ISysKVItem {
   _id: string
@@ -48,4 +49,15 @@ export const kGameSchedule = 'game_schedule' as ISysKey<{
 export const defaultGameSchedule = {
   start: 0,
   end: 0
+}
+
+export const kUserChargeLimit = 'user_charge_limit' as ISysKey<
+  Record<UserGroup, number>
+>
+export const defaultUserChargeLimit: Record<UserGroup, number> = {
+  admin: 0,
+  banned: 1,
+  pku: 20,
+  social: 10,
+  staff: 50
 }

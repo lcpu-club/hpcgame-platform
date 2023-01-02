@@ -70,6 +70,11 @@ export const adminRoutes: RouteRecordRaw[] = [
       {
         path: 'ranklist',
         component: () => import('@/views/admin/RanklistView.vue')
+      },
+
+      {
+        path: 'scow',
+        component: () => import('@/views/admin/ScowView.vue')
       }
     ]
   }
