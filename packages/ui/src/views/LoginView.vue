@@ -5,7 +5,7 @@
         <NAlert title="注意事项" type="info">
           比赛面向全国高校同学，请使用<code>edu.cn</code>域名邮箱或经协作单位报名登记的邮箱登陆。<br />
           请注意，每位选手只允许使用一个账号参赛。<br />
-          北京大学校内选手不使用IAAA登陆视作放弃校内奖项参评资格。
+          北京大学选手不使用IAAA登陆视作放弃校内奖项参评资格。
         </NAlert>
         <template #footer>
           <div class="flex flex-col items-center">

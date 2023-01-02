@@ -53,7 +53,7 @@ export const SMTP_USER = string('SMTP_USER')
 export const SMTP_PASS = string('SMTP_PASS')
 export const MAIL_FROM = string('MAIL_FROM')
 export const MAIL_SENDER = string('MAIL_SENDER', 'HPC Game System')
-export const MAIL_WHITELIST: string[] = json('MAIL_WHITELIST', ['.edu.cn'])
+export const MAIL_WHITELIST: string[] = json('MAIL_WHITELIST', ['.edu.cn', 'ucas.ac.cn', 'ict.ac.cn']) // 增加国科大和中科院计算所
 export const MAIL_BLACKLIST: string[] = json('MAIL_BLACKLIST', [])
 
 // Redis
