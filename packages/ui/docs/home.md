@@ -115,4 +115,6 @@
 
 **特别鸣谢：**
 
-[超聚变数字技术有限公司](https://www.xfusion.com) <img src="https://partner.xfusion.com/static/img/common/pc/logo.svg" alt="xfusion" width="120px">
+[超聚变数字技术有限公司](https://www.xfusion.com)
+
+ <img src="https://partner.xfusion.com/static/img/common/pc/logo.svg" alt="xfusion" width="240px">
