@@ -6,7 +6,6 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import {
   MINIO_ACCESS_KEY,
-  MINIO_BUCKET,
   MINIO_ENDPOINT,
   MINIO_SECRET_KEY
 } from '../config/index.js'
@@ -21,28 +20,36 @@ export const s3 = new S3Client({
   region: 'us-east-1'
 })
 
-const urlBase =
-  (MINIO_ENDPOINT.endsWith('/') ? MINIO_ENDPOINT : MINIO_ENDPOINT + '/') +
-  MINIO_BUCKET +
-  '/'
+const urlBase = MINIO_ENDPOINT.endsWith('/')
+  ? MINIO_ENDPOINT
+  : MINIO_ENDPOINT + '/'
 const urlBaseLength = urlBase.length
 
 function normalizeUrl(url: string) {
   return url.substring(urlBaseLength)
 }
 
-export async function getUploadUrl(key: string, size: number, expiresIn = 60) {
+export async function getUploadUrl(
+  bucket: string,
+  key: string,
+  size: number,
+  expiresIn = 60
+) {
   const command = new PutObjectCommand({
-    Bucket: MINIO_BUCKET,
+    Bucket: bucket,
     Key: key,
     ContentLength: size
   })
   return normalizeUrl(await getSignedUrl(s3, command, { expiresIn }))
 }
 
-export async function getDownloadUrl(key: string, expiresIn = 60) {
+export async function getDownloadUrl(
+  bucket: string,
+  key: string,
+  expiresIn = 60
+) {
   const command = new GetObjectCommand({
-    Bucket: MINIO_BUCKET,
+    Bucket: bucket,
     Key: key
   })
   return normalizeUrl(await getSignedUrl(s3, command, { expiresIn }))

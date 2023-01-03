@@ -1,10 +1,12 @@
 import { Type } from '@sinclair/typebox'
+import { MINIO_BUCKET_PROBLEM } from '../../../config/index.js'
 import { type IProblem, Problems } from '../../../db/problem.js'
 import {
   defaultGameSchedule,
   kGameSchedule,
   sysGet
 } from '../../../db/syskv.js'
+import { getDownloadUrl } from '../../../storage/index.js'
 import { pagingToOptions } from '../../../utils/paging.js'
 import { httpErrors, server } from '../index.js'
 import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
@@ -41,11 +43,43 @@ export const problemRouter = protectedChain
           throw server.httpErrors.notFound()
         }
 
-        const problem = await Problems.findOne(req.query, {
-          projection: { content: 1 }
-        })
+        const problem = await Problems.findOne(
+          { _id: req.query._id },
+          { projection: { content: 1 } }
+        )
         if (!problem) throw req.server.httpErrors.notFound()
         return { result: problem.content }
+      })
+  )
+  .handle('POST', '/getDownloadUrl', (C) =>
+    C.handler()
+      .body(
+        Type.Object({
+          _id: Type.String(),
+          key: Type.String({
+            minLength: 1,
+            maxLength: 32,
+            pattern: '^[a-zA-Z0-9_]+(\\.[a-zA-Z0-9_]+)*$'
+          })
+        })
+      )
+      .handle(async (ctx, req) => {
+        if (!(await shouldShowProblems(ctx.user.group))) {
+          throw server.httpErrors.notFound()
+        }
+
+        const problem = await Problems.findOne(
+          { _id: req.body._id },
+          { projection: { _id: 1 } }
+        )
+        if (!problem) throw req.server.httpErrors.notFound()
+
+        return {
+          url: await getDownloadUrl(
+            MINIO_BUCKET_PROBLEM,
+            `${problem._id}/attachment/${req.body.key}`
+          )
+        }
       })
   )
   .handle('GET', '/admin', (C) =>

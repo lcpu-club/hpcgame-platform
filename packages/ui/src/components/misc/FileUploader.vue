@@ -21,7 +21,7 @@
         </div>
         <NText style="font-size: 16px"> 点击或者拖动文件到该区域来上传 </NText>
         <NP depth="3" style="margin: 8px 0 0 0">
-          请上传以<code>tar</code>格式压缩的数据包
+          <slot />
         </NP>
       </NUploadDragger>
     </NUpload>
@@ -92,8 +92,9 @@ async function beforeUpload(data: {
     return true
   } catch (err) {
     notification.error({
-      title: '上传失败',
-      content: await getErrorMessage(err)
+      title: '检查失败',
+      content: await getErrorMessage(err),
+      duration: 5000
     })
     return false
   }
@@ -130,7 +131,8 @@ async function customRequest(options: UploadCustomRequestOptions) {
   } catch (err) {
     notification.error({
       title: '上传失败',
-      content: await getErrorMessage(err)
+      content: await getErrorMessage(err),
+      duration: 5000
     })
     options.onError()
   }

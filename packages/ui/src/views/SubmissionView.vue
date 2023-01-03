@@ -34,7 +34,12 @@
         </NTable>
       </AsyncState>
       <template #action v-if="state">
-        <FileDownloader :generator="generator" :btn-props="{ type: 'primary' }">
+        <FileDownloader
+          :generator="generator"
+          :file="filename"
+          :btn-props="{ type: 'primary' }"
+          :filename="filename"
+        >
           下载提交数据
         </FileDownloader>
       </template>
@@ -49,6 +54,7 @@ import { useAsyncState } from '@vueuse/core'
 import { mainApi } from '@/api'
 import FileDownloader from '@/components/misc/FileDownloader.vue'
 import { s3url } from '@/utils/misc'
+import { computed } from 'vue'
 
 const props = defineProps<{
   id: string
@@ -58,9 +64,14 @@ const { state, isLoading, error } = useAsyncState(async () => {
   return mainApi.submission.$get.query({ _id: props.id }).fetch()
 }, null as never)
 
+const ext = computed(() => state.value?.metadata?.ext ?? 'unknown')
+const filename = computed(
+  () => `submission-${props.id}${ext.value ? '.' + ext.value : ''}`
+)
+
 async function generator() {
   const { url } = await mainApi.submission.getDownloadUrl.$post
-    .body({ _id: props.id })
+    .body({ _id: props.id, key: 'data' })
     .fetch()
   return s3url(url)
 }

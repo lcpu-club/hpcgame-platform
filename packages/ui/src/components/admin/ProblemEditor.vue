@@ -31,7 +31,9 @@
         下载数据
       </FileDownloader>
       <div>更新评测数据</div>
-      <FileUploader :validator="validator" :generator="generator" />
+      <FileUploader :validator="validator" :generator="generator">
+        请上传以<code>tar</code>格式压缩的数据包
+      </FileUploader>
     </template>
   </div>
 </template>
@@ -58,9 +60,12 @@ async function validator(file: File) {
   return '格式错误'
 }
 
+const bucket = import.meta.env.VITE_BUCKET_PROBLEM
+
 async function generator(file: File) {
   const { url } = await mainApi.admin.getUploadUrl.$post
     .body({
+      bucket,
       ossKey: `problem/${props.model._id}/data.tar`,
       size: file.size
     })
@@ -71,6 +76,7 @@ async function generator(file: File) {
 async function downloadGenerator() {
   const { url } = await mainApi.admin.getDownloadUrl.$post
     .body({
+      bucket,
       ossKey: `problem/${props.model._id}/data.tar`
     })
     .fetch()

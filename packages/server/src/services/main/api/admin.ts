@@ -13,13 +13,18 @@ export const adminRouter = adminChain
     C.handler()
       .body(
         Type.Object({
+          bucket: Type.String(),
           ossKey: Type.String(),
           size: Type.Number()
         })
       )
       .handle(async (ctx, req) => {
         return {
-          url: await getUploadUrl(req.body.ossKey, req.body.size)
+          url: await getUploadUrl(
+            req.body.bucket,
+            req.body.ossKey,
+            req.body.size
+          )
         }
       })
   )
@@ -27,12 +32,13 @@ export const adminRouter = adminChain
     C.handler()
       .body(
         Type.Object({
+          bucket: Type.String(),
           ossKey: Type.String()
         })
       )
       .handle(async (ctx, req) => {
         return {
-          url: await getDownloadUrl(req.body.ossKey)
+          url: await getDownloadUrl(req.body.bucket, req.body.ossKey)
         }
       })
   )

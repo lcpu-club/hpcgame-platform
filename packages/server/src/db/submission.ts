@@ -20,6 +20,10 @@ export interface ISubmission {
 
   createdAt: number
   updatedAt: number
+
+  metadata: {
+    ext?: string
+  }
 }
 
 export const Submissions = db.collection<ISubmission>('submissions')

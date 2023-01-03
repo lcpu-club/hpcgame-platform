@@ -19,6 +19,7 @@
           :problem-id="problem._id"
           :max-size="problem.maxSubmissionSize"
           :max-count="problem.maxSubmissionCount"
+          :allowed-extensions="allowedExtensions"
         />
       </template>
     </NCard>
@@ -49,6 +50,9 @@ const props = defineProps<{
 const problemsData = useProblemsData()
 const problem = computed(() =>
   problemsData.value.problems.find((p) => p._id === props.id)
+)
+const allowedExtensions = computed(
+  () => (problem.value?.metadata.allowedExtensions as string[]) ?? ['tar']
 )
 
 const { state, isLoading, error } = useAsyncState(async () => {

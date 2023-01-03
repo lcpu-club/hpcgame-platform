@@ -36,7 +36,11 @@ export const NSQ_LOOKUPD_ADDR = string('NSQ_LOOKUPD_ADDR', '127.0.0.1:4161')
 export const MINIO_ENDPOINT = string('MINIO_ENDPOINT', 'localhost:9000')
 export const MINIO_ACCESS_KEY = string('MINIO_ACCESS_KEY')
 export const MINIO_SECRET_KEY = string('MINIO_SECRET_KEY')
-export const MINIO_BUCKET = string('MINIO_BUCKET', 'hpc')
+export const MINIO_BUCKET_SUBMISSION = string(
+  'MINIO_BUCKET_SUBMISSION',
+  'submission'
+)
+export const MINIO_BUCKET_PROBLEM = string('MINIO_BUCKET_PROBLEM', 'problem')
 
 // Application
 export const DEV_MODE = boolean('DEV_MODE', false)

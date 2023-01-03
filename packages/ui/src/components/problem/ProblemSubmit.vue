@@ -7,7 +7,9 @@
     :validator="validator"
     :generator="generator"
     @uploaded="onUploaded"
-  />
+  >
+    允许的格式：<code>{{ props.allowedExtensions.join(',') }}</code>
+  </FileUploader>
   <NButton
     :loading="running"
     :disabled="!submissionId || limitExceeded"
@@ -34,6 +36,7 @@ const props = defineProps<{
   problemId: string
   maxSize: number
   maxCount: number
+  allowedExtensions: string[]
 }>()
 
 const submissionId = ref('')
@@ -43,8 +46,8 @@ const limitExceeded = computed(
 )
 
 async function validator(file: File) {
-  const isTar = file.name.endsWith('.tar') && file.type === 'application/x-tar'
-  if (!isTar) return '格式错误'
+  if (!props.allowedExtensions.some((ext) => file.name.endsWith(ext)))
+    return '不支持的文件格式'
   if (file.size > props.maxSize) return '文件过大'
   return
 }
@@ -59,7 +62,8 @@ async function generator(file: File) {
   const { url } = await submission.getUploadUrl.$post
     .body({
       _id,
-      size: file.size
+      size: file.size,
+      ext: file.name.split('.').pop() ?? ''
     })
     .fetch()
   return { url: s3url(url), metadata: { _id } }

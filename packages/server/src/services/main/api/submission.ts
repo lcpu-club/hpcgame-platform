@@ -1,5 +1,6 @@
 import { Type } from '@sinclair/typebox'
 import { nanoid } from 'nanoid/async'
+import { MINIO_BUCKET_SUBMISSION } from '../../../config/index.js'
 import { Problems } from '../../../db/problem.js'
 import { getSCOWCredentialsForProblem } from '../../../db/scow.js'
 import { Submissions, SubmissionStatusSchema } from '../../../db/submission.js'
@@ -13,6 +14,7 @@ import { type IJudgeRequestMsg, judgeRequestTopic } from '../../../mq/index.js'
 import { publishAsync } from '../../../mq/writer.js'
 import { getDownloadUrl, getUploadUrl } from '../../../storage/index.js'
 import { pagingToOptions } from '../../../utils/paging.js'
+import { StringEnum } from '../../../utils/type.js'
 import { httpErrors, server } from '../index.js'
 import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
 
@@ -124,7 +126,8 @@ export const submissionRouter = protectedChain
           status: 'created',
           message: '',
           createdAt: Date.now(),
-          updatedAt: 0
+          updatedAt: 0,
+          metadata: {}
         })
         return { _id: id }
       })
@@ -134,7 +137,14 @@ export const submissionRouter = protectedChain
       .body(
         Type.Object({
           _id: Type.String(),
-          size: Type.Number()
+          size: Type.Number(),
+          ext: Type.Optional(
+            Type.String({
+              minLength: 1,
+              maxLength: 16,
+              pattern: '^[a-zA-Z0-9]+$'
+            })
+          )
         })
       )
       .handle(async (ctx, req) => {
@@ -157,9 +167,17 @@ export const submissionRouter = protectedChain
         if (req.body.size > problem.maxSubmissionSize)
           throw server.httpErrors.badRequest()
 
+        if (req.body.ext) {
+          await Submissions.updateOne(
+            { _id },
+            { $set: { [`metadata.ext`]: req.body.ext } }
+          )
+        }
+
         return {
           url: await getUploadUrl(
-            `submission/${req.body._id}/data.tar`,
+            MINIO_BUCKET_SUBMISSION,
+            `${req.body._id}/data`,
             req.body.size
           )
         }
@@ -169,7 +187,8 @@ export const submissionRouter = protectedChain
     C.handler()
       .body(
         Type.Object({
-          _id: Type.String()
+          _id: Type.String(),
+          key: StringEnum(['data', 'result.json'])
         })
       )
       .handle(async (ctx, req) => {
@@ -180,7 +199,10 @@ export const submissionRouter = protectedChain
         })
         if (!submission) throw server.httpErrors.notFound()
         return {
-          url: await getDownloadUrl(`submission/${req.body._id}/data.tar`)
+          url: await getDownloadUrl(
+            MINIO_BUCKET_SUBMISSION,
+            `${req.body._id}/${req.body.key}`
+          )
         }
       })
   )
@@ -310,9 +332,10 @@ export const submissionRouter = protectedChain
             })
           )
           .handle(async (ctx, req) => {
-            const { value } = await Submissions.findOneAndUpdate(req.body, {
-              $set: { status: 'pending' }
-            })
+            const { value } = await Submissions.findOneAndUpdate(
+              { _id: req.body._id },
+              { $set: { status: 'pending' } }
+            )
             if (!value) throw httpErrors.notFound()
 
             const creds = await getSCOWCredentialsForProblem(
