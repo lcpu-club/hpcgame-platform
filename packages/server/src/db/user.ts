@@ -49,6 +49,17 @@ export async function generateAuthToken(userId: string) {
 
 export type IUserInfo = Pick<IUser, '_id' | 'group'>
 
+export async function expireUserInfo(_id: string) {
+  const keys = await redis.keys('user:' + _id + ':*')
+  if (keys.length) {
+    const pipeline = redis.pipeline()
+    for (const key of keys) {
+      pipeline.del(key)
+    }
+    await pipeline.exec()
+  }
+}
+
 export async function verifyAuthToken(token: unknown) {
   if (typeof token !== 'string') return null
   const userId = token.split(':')[0]
@@ -65,17 +76,6 @@ export async function verifyAuthToken(token: unknown) {
     return user
   }
   return JSON.parse(cached) as IUserInfo
-}
-
-export async function expireUserInfo(_id: string) {
-  const keys = await redis.keys('user:' + _id + ':*')
-  if (keys.length) {
-    const pipeline = redis.pipeline()
-    for (const key of keys) {
-      pipeline.del(key)
-    }
-    await pipeline.exec()
-  }
 }
 
 export async function createUser(user: Omit<IUser, '_id' | 'authToken'>) {

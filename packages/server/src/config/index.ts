@@ -71,3 +71,6 @@ export const SCOW_GRPC_ADDR = string('SCOW_GRPC_ADDR')
 export const SCOW_TENANT_NAME = string('SCOW_TENANT_NAME', 'hpcgame')
 export const SCOW_ADMIN_NAME = string('SCOW_ADMIN_NAME', 'hpcgame_admin')
 export const SCOW_ADMIN_PASS = string('SCOW_ADMIN_PASS', 'hpcgame_admin')
+
+// Runner
+export const RUNNER_SECRET = string('RUNNER_SECRET', '')
