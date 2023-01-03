@@ -61,3 +61,12 @@ export const defaultUserChargeLimit: Record<UserGroup, number> = {
   social: 10,
   staff: 50
 }
+
+export const kEmailConfig = 'email_config' as ISysKey<{
+  whitelist: string[]
+  blacklist: string[]
+}>
+export const defaultEmailConfig = {
+  whitelist: ['.edu.cn'],
+  blacklist: []
+}

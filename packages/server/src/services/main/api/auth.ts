@@ -3,8 +3,6 @@ import {
   DEV_MODE,
   IAAA_ID,
   IAAA_KEY,
-  MAIL_BLACKLIST,
-  MAIL_WHITELIST,
   NEWCOMER_YEAR
 } from '../../../config/index.js'
 import { createUser, UserGroupSchema, Users } from '../../../db/user.js'
@@ -15,6 +13,7 @@ import { redis } from '../../../cache/index.js'
 import isemail from 'isemail'
 import { sendMail } from '../../../mail/index.js'
 import { recaptchaVerify } from '../../../captcha/index.js'
+import { defaultEmailConfig, kEmailConfig, sysGet } from '../../../db/syskv.js'
 
 function isNewComer(identityId: string) {
   return identityId.length === 10 && identityId.startsWith(NEWCOMER_YEAR)
@@ -26,14 +25,15 @@ function generateCode() {
     .padStart(6, '0')
 }
 
-function validateMail(mail: string) {
+async function validateMail(mail: string) {
   if (!isemail.validate(mail)) {
     throw server.httpErrors.badRequest('Bad email format')
   }
-  if (!MAIL_WHITELIST.some((sfx) => mail.endsWith(sfx))) {
+  const config = await sysGet(kEmailConfig, defaultEmailConfig)
+  if (!config.whitelist.some((sfx) => mail.endsWith(sfx))) {
     throw server.httpErrors.badRequest('Email address not allowed')
   }
-  if (MAIL_BLACKLIST.some((sfx) => mail.endsWith(sfx))) {
+  if (config.blacklist.some((sfx) => mail.endsWith(sfx))) {
     throw server.httpErrors.badRequest('Email address not allowed')
   }
 }
@@ -103,7 +103,7 @@ export const authRouter = rootChain
         await recaptchaVerify(req.body.response)
 
         const to = req.body.mail
-        validateMail(to)
+        await validateMail(to)
 
         const code = generateCode()
         await redis.set(`mail:${to}`, code, 'EX', 5 * 60)
@@ -135,7 +135,7 @@ export const authRouter = rootChain
       )
       .handle(async (ctx, req) => {
         const { mail, code } = req.body
-        validateMail(mail)
+        await validateMail(mail)
 
         const answer = await redis.get(`mail:${mail}`)
         if (!answer) {
