@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid/async'
 import { Problems } from '../../../db/problem.js'
 import { getSCOWCredentialsForProblem } from '../../../db/scow.js'
 import { Submissions, SubmissionStatusSchema } from '../../../db/submission.js'
@@ -92,7 +92,7 @@ export const submissionRouter = protectedChain
         const problem = await Problems.findOne({ _id: problemId })
         if (!problem) throw req.server.httpErrors.badRequest()
 
-        const id = nanoid()
+        const id = await nanoid()
         const result = await Users.updateOne(
           {
             _id: ctx.user._id,

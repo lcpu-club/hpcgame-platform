@@ -1,5 +1,5 @@
 import type { Static } from '@sinclair/typebox'
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid/async'
 import { redis } from '../cache/index.js'
 import { StringEnum } from '../utils/type.js'
 import { db } from './base.js'
@@ -42,8 +42,8 @@ export const Users = db.collection<IUser>('users')
 await Users.createIndex({ iaaaId: 1 }, { unique: true, sparse: true })
 await Users.createIndex({ authEmail: 1 }, { unique: true, sparse: true })
 
-export function generateAuthToken(userId: string) {
-  const token = nanoid(32)
+export async function generateAuthToken(userId: string) {
+  const token = await nanoid(32)
   return userId + ':' + token
 }
 
@@ -79,8 +79,8 @@ export async function expireUserInfo(_id: string) {
 }
 
 export async function createUser(user: Omit<IUser, '_id' | 'authToken'>) {
-  const id = nanoid()
-  const authToken = generateAuthToken(id)
+  const id = await nanoid()
+  const authToken = await generateAuthToken(id)
   await Users.insertOne({ _id: id, ...user, authToken })
   return { _id: id, ...user, authToken }
 }

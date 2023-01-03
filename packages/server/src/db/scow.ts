@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid'
+import { nanoid, customAlphabet } from 'nanoid/async'
 import {
   createSCOWUser,
   getRunnerAccount,
@@ -20,14 +20,23 @@ export const SCOWCredentials = db.collection<ISCOWCredential>('scowCredentials')
 
 await SCOWCredentials.createIndex({ userId: 1, problemId: 1 }, { unique: true })
 
+// Valid Linux username: [a-z_][a-z0-9_-]*
+// ~2^157 unique IDs
+const SCOWId = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789_-', 30)
+
+async function generateSCOWId() {
+  // Valid Linux username: [a-z_][a-z0-9_-]*
+  return 'hp' + (await SCOWId())
+}
+
 export async function getSCOWCredentialsForUser(userId: string) {
   let cred = await SCOWCredentials.findOne({ userId, problemId: '' })
   if (!cred) {
     cred = {
-      _id: nanoid(),
+      _id: await generateSCOWId(),
       userId,
       problemId: '',
-      password: nanoid(32),
+      password: await nanoid(32),
       synced: false
     }
     await SCOWCredentials.insertOne(cred)
@@ -62,10 +71,10 @@ export async function getSCOWCredentialsForProblem(
   let cred = await SCOWCredentials.findOne({ userId, problemId })
   if (!cred) {
     cred = {
-      _id: nanoid(),
+      _id: await generateSCOWId(),
       userId,
       problemId,
-      password: nanoid(32),
+      password: await nanoid(32),
       synced: false
     }
     await SCOWCredentials.insertOne(cred)
