@@ -3,7 +3,11 @@ import {
   getSCOWCredentialsForUser,
   getSCOWCredentialsForProblem
 } from '../../../db/scow.js'
-import { initSCOW } from '../../../scow/index.js'
+import {
+  initSCOW,
+  setAccountBlock,
+  syncAccountStatusWithSlurm
+} from '../../../scow/index.js'
 import { getDownloadUrl, getUploadUrl } from '../../../storage/index.js'
 import { adminChain } from './base.js'
 
@@ -69,5 +73,24 @@ export const adminRouter = adminChain
       )
       .handle(async (_, req) => {
         return getSCOWCredentialsForProblem(req.body._id, req.body.problemId)
+      })
+  )
+  .handle('POST', '/syncAccountStatusWithSlurm', (C) =>
+    C.handler().handle(async () => {
+      const log = await syncAccountStatusWithSlurm()
+      return { log }
+    })
+  )
+  .handle('POST', '/scowSetAccountBlock', (C) =>
+    C.handler()
+      .body(
+        Type.Object({
+          accountName: Type.String(),
+          block: Type.Boolean()
+        })
+      )
+      .handle(async (ctx, req) => {
+        const log = await setAccountBlock(req.body.accountName, req.body.block)
+        return { log }
       })
   )

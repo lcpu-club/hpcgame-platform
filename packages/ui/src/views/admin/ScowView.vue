@@ -27,6 +27,30 @@
           <br />
           密码：<code>{{ pass }}</code>
         </div>
+        <NSpace>
+          <NInput v-model:value="accountName" placeholder="账户名" />
+          <NSwitch v-model:value="block" />
+        </NSpace>
+        <NSpace>
+          <NButton
+            :loading="blockTask.running.value"
+            @click="blockTask.run"
+            type="primary"
+            :disabled="!accountName"
+          >
+            {{ block ? '封锁' : '解封' }}账户{{ accountName }}
+          </NButton>
+          <NButton
+            :loading="syncTask.running.value"
+            @click="syncTask.run"
+            type="warning"
+          >
+            同步账户封锁状态
+          </NButton>
+        </NSpace>
+        <div>
+          <pre v-text="syncLog"></pre>
+        </div>
       </NSpace>
     </NCard>
   </div>
@@ -34,7 +58,7 @@
 
 <script setup lang="ts">
 import { useSimpleAsyncTask } from '@/utils/async'
-import { NButton, NCard, NInput, NSpace } from 'naive-ui'
+import { NButton, NCard, NInput, NSpace, NSwitch } from 'naive-ui'
 import { mainApi, userInfo } from '@/api'
 import { ref } from 'vue'
 import { useSCOW } from '@/utils/scow'
@@ -67,6 +91,33 @@ const loadTask = useSimpleAsyncTask(
     user.value = _id
     pass.value = password
     open(_id, password)
+  },
+  { notifyOnSuccess: true }
+)
+
+const accountName = ref('')
+const block = ref(false)
+const syncLog = ref('')
+
+const syncTask = useSimpleAsyncTask(
+  async () => {
+    const { log } = await mainApi.admin.syncAccountStatusWithSlurm.$post
+      .body({})
+      .fetch()
+    syncLog.value = log
+  },
+  { notifyOnSuccess: true }
+)
+
+const blockTask = useSimpleAsyncTask(
+  async () => {
+    const { log } = await mainApi.admin.scowSetAccountBlock.$post
+      .body({
+        accountName: accountName.value,
+        block: block.value
+      })
+      .fetch()
+    syncLog.value = log
   },
   { notifyOnSuccess: true }
 )

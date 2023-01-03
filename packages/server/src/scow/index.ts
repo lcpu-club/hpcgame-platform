@@ -122,3 +122,63 @@ export async function createSCOWUser(
     )
   }
 }
+
+export async function syncAccountStatusWithSlurm() {
+  const accounts = await scow.account.invoke('getAccounts', {
+    tenantName: SCOW_TENANT_NAME
+  })
+  let log = ''
+  for (const account of accounts.results) {
+    if (account.blocked) {
+      // Slurm will lost block status after restart
+      // Re-block the account to sync this status
+      log += `Re-block account ${account.accountName}\n`
+      try {
+        await scow.account.invoke('unblockAccount', {
+          tenantName: SCOW_TENANT_NAME,
+          accountName: account.accountName
+        })
+        log += `Unblock success, reblocking...\n`
+        await scow.account.invoke('blockAccount', {
+          tenantName: SCOW_TENANT_NAME,
+          accountName: account.accountName
+        })
+        log += `Re-block success\n\n`
+      } catch (e) {
+        const err = e as ServiceError
+        log += `Re-block account ${account.accountName} failed\n`
+        log += `Error code: ${err.code}\n`
+        log += `Error message: ${err.message}\n`
+        log += JSON.stringify(err, null, '  ')
+        log += '\n\n'
+      }
+    }
+  }
+  return log
+}
+
+export async function setAccountBlock(accountName: string, block: boolean) {
+  let log = ''
+  try {
+    if (block) {
+      await scow.account.invoke('blockAccount', {
+        tenantName: SCOW_TENANT_NAME,
+        accountName
+      })
+      log += `Block account ${accountName} success\n\n`
+    } else {
+      await scow.account.invoke('unblockAccount', {
+        tenantName: SCOW_TENANT_NAME,
+        accountName
+      })
+      log += `Unblock account ${accountName} success\n\n`
+    }
+  } catch (e) {
+    const err = e as ServiceError
+    log += `Error code: ${err.code}\n`
+    log += `Error message: ${err.message}\n`
+    log += JSON.stringify(err, null, '  ')
+    log += '\n\n'
+  }
+  return log
+}
