@@ -18,19 +18,32 @@
     <NDatePicker readonly type="datetime" v-model:value="model.createdAt" />
     <div>更新时间</div>
     <NInputNumber readonly v-model:value="model.updatedAt" />
+    <div>元数据</div>
+    <JSONEditor readonly v-model="model.metadata" />
     <div>重测</div>
     <NButton v-if="!isNew" @click="run" :loading="running" type="error">
       重新评测
     </NButton>
+    <div>下载提交数据</div>
+    <FileDownloader
+      :generator="downloadGenerator"
+      :btn-props="{ type: 'primary' }"
+      :filename="filename"
+    >
+      下载数据
+    </FileDownloader>
   </div>
 </template>
 
 <script setup lang="ts">
 import { NButton, NDatePicker, NInput, NInputNumber } from 'naive-ui'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { ISubmission } from '@hpcgame-platform/server/src/db'
 import { useSimpleAsyncTask } from '@/utils/async'
 import { mainApi } from '@/api'
+import FileDownloader from '@/components/misc/FileDownloader.vue'
+import JSONEditor from '@/components/misc/JSONEditor.vue'
+import { s3url } from '@/utils/misc'
 
 const props = defineProps<{
   isNew?: boolean
@@ -39,9 +52,24 @@ const props = defineProps<{
 
 const model = ref(props.model)
 
+const ext = computed(() => model.value?.metadata?.ext ?? 'unknown')
+const filename = computed(
+  () => `submission-${model.value._id}${ext.value ? '.' + ext.value : ''}`
+)
+
 const { run, running } = useSimpleAsyncTask(async () => {
   await mainApi.submission.admin.resubmit.$post
     .body({ _id: model.value._id })
     .fetch()
 })
+
+async function downloadGenerator() {
+  const { url } = await mainApi.admin.getDownloadUrl.$post
+    .body({
+      bucket: import.meta.env.VITE_BUCKET_SUBMISSION,
+      ossKey: `${props.model._id}/data`
+    })
+    .fetch()
+  return s3url(url)
+}
 </script>
