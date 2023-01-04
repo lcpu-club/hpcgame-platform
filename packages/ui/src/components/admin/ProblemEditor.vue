@@ -66,7 +66,7 @@ async function generator(file: File) {
   const { url } = await mainApi.admin.getUploadUrl.$post
     .body({
       bucket,
-      ossKey: `problem/${props.model._id}/data.tar`,
+      ossKey: `${props.model._id}/data.tar`,
       size: file.size
     })
     .fetch()
@@ -77,7 +77,7 @@ async function downloadGenerator() {
   const { url } = await mainApi.admin.getDownloadUrl.$post
     .body({
       bucket,
-      ossKey: `problem/${props.model._id}/data.tar`
+      ossKey: `${props.model._id}/data.tar`
     })
     .fetch()
   return s3url(url)
