@@ -3,6 +3,24 @@
     <NCard :title="problem.title" segmented>
       <AsyncState :loading="isLoading" :error="error">
         <article class="markdown-body" v-html="state"></article>
+        <template v-if="attachments.length">
+          <NDivider />
+          <h3>附件</h3>
+          <div
+            class="grid grid-cols-[auto,1fr] gap-2 auto-rows-fr place-items-center justify-items-start"
+          >
+            <template v-for="attachment in attachments" :key="attachment.key">
+              <div>{{ attachment.label }}</div>
+              <FileDownloader
+                :generator="getGeneratorFor(attachment.key)"
+                :filename="attachment.key"
+                :btn-props="{ type: 'info', ghost: true }"
+              >
+                下载<code>{{ attachment.key }}</code>
+              </FileDownloader>
+            </template>
+          </div>
+        </template>
       </AsyncState>
       <template #footer>
         <NSpace>
@@ -32,7 +50,7 @@
 
 <script setup lang="ts">
 import { useProblemsData } from '@/utils/problems'
-import { NCard, NSpace, NTag } from 'naive-ui'
+import { NCard, NSpace, NTag, NDivider } from 'naive-ui'
 import { computed } from 'vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import AsyncState from '@/components/misc/AsyncState.vue'
@@ -42,6 +60,8 @@ import { render } from '@/utils/md'
 import { prettyPrintBytes } from '@/utils/format'
 import ProblemSubmit from '@/components/problem/ProblemSubmit.vue'
 import SubmissionList from '@/components/submission/SubmissionList.vue'
+import { s3url } from '@/utils/misc'
+import FileDownloader from '@/components/misc/FileDownloader.vue'
 
 const props = defineProps<{
   id: string
@@ -54,6 +74,13 @@ const problem = computed(() =>
 const allowedExtensions = computed(
   () => (problem.value?.metadata.allowedExtensions as string[]) ?? ['tar']
 )
+interface IAttachment {
+  label: string
+  key: string
+}
+const attachments = computed(
+  () => (problem.value?.metadata.attachments ?? []) as IAttachment[]
+)
 
 const { state, isLoading, error } = useAsyncState(async () => {
   const { result } = await mainApi.problem.render.$get
@@ -61,4 +88,16 @@ const { state, isLoading, error } = useAsyncState(async () => {
     .fetch()
   return render(result)
 }, '')
+
+function getGeneratorFor(key: string) {
+  return async () => {
+    const { url } = await mainApi.problem.getDownloadUrl.$post
+      .body({
+        _id: props.id,
+        key
+      })
+      .fetch()
+    return s3url(url)
+  }
+}
 </script>
