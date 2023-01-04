@@ -1,7 +1,8 @@
-import type { useLoadingBar } from 'naive-ui'
+import type { useLoadingBar, useNotification } from 'naive-ui'
 
 declare global {
   interface Window {
-    $nprogress?: ReturnType<typeof useLoadingBar>
+    $loadingBar?: ReturnType<typeof useLoadingBar>
+    $notification?: ReturnType<typeof useNotification>
   }
 }

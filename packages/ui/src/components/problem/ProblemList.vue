@@ -7,6 +7,12 @@
       segmented
       content-style="padding: 0;"
     >
+      <template #header-extra>
+        <NButton type="info" @click="emit('refresh')">
+          <!--  -->
+          刷新题目
+        </NButton>
+      </template>
       <NMenu :options="menuOptions" :root-indent="16" :indent="0" />
     </NCard>
   </div>
@@ -16,11 +22,15 @@
 // import { userInfo } from '@/api'
 import { computed, h } from 'vue'
 import { useProblemsData, getProblemColor } from '@/utils/problems'
-import { NCard, NMenu, type MenuOption } from 'naive-ui'
+import { NButton, NCard, NMenu, type MenuOption } from 'naive-ui'
 import { RouterLink } from 'vue-router'
 import { renderNIcon } from '@/utils/renderIcon'
 import { mdiCircle } from '@mdi/js'
 import ConnectScow from '@/components/scow/ConnectScow.vue'
+
+const emit = defineEmits<{
+  (ev: 'refresh'): void
+}>()
 
 const problemsData = useProblemsData()
 const menuOptions = computed<MenuOption[]>(() =>

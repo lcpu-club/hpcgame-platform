@@ -20,11 +20,11 @@
 import { NCard, NSpace, NSpin } from 'naive-ui'
 import { useAsyncState } from '@vueuse/core'
 import { mainApi, userInfo } from '@/api'
-import { useRouter } from 'vue-router'
 import ErrorAlert from '@/components/misc/ErrorAlert.vue'
 import { HandlerFetchError } from 'typeful-fetch'
-
-const router = useRouter()
+import { finalizeLogin } from '@/utils/sync'
+import { nextTick } from 'vue'
+import { RouterLink } from 'vue-router'
 
 const { isLoading, error } = useAsyncState(async () => {
   const token = new URLSearchParams(window.location.search).get('token')
@@ -32,7 +32,9 @@ const { isLoading, error } = useAsyncState(async () => {
   try {
     const user = await mainApi.auth.iaaa.$post.body({ token }).fetch()
     userInfo.value = user
-    router.replace('/')
+    nextTick(() => {
+      finalizeLogin()
+    })
   } catch (err) {
     if (err instanceof HandlerFetchError) {
       const { message } = await err.response.json()

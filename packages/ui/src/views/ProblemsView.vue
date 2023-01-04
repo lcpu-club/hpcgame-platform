@@ -14,7 +14,7 @@
         class="p-6 pt-0 w-full grid grid-cols-[auto,1fr] gap-2 place-items-start justify-items-stretch"
       >
         <div class="pt-6 sticky top-0 flex">
-          <ProblemList class="min-w-64" />
+          <ProblemList class="min-w-64" @refresh="execute()" />
         </div>
         <div class="pt-6 flex">
           <RouterView v-slot="{ Component }">
@@ -42,7 +42,7 @@ import { NAlert, NSkeleton } from 'naive-ui'
 import { provide } from 'vue'
 import { loadProblemsData, kProblemsData } from '@/utils/problems'
 
-const { state, isLoading, error } = useAsyncState(
+const { state, isLoading, error, execute } = useAsyncState(
   loadProblemsData,
   null as never
 )

@@ -1,14 +1,28 @@
-import router from '@/router'
+import { hpcSyncChannel } from './shared'
 
-export const channel = new BroadcastChannel('hpc-sync')
-channel.addEventListener('message', (ev) => {
-  const { type } = ev.data
+hpcSyncChannel.addEventListener('message', (ev) => {
+  const { type, payload } = ev.data
   switch (type) {
+    case 'login':
+      return location.reload()
     case 'logout':
-      return router.replace('/')
+      return location.reload()
+    case 'notify':
+      return window.$notification?.create(payload)
+    case 'log':
+      return console.log(payload)
+    case 'set':
+      localStorage.setItem(payload.key, payload.value)
+      return
   }
 })
 
-export function doSync(type: 'logout') {
-  channel.postMessage({ type })
+export function finalizeLogout() {
+  hpcSyncChannel.postMessage({ type: 'logout' })
+  location.reload()
+}
+
+export function finalizeLogin() {
+  hpcSyncChannel.postMessage({ type: 'login' })
+  location.reload()
 }

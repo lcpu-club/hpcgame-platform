@@ -41,11 +41,11 @@
 import ReCaptcha from '@/components/misc/ReCaptcha.vue'
 import { useAsyncState } from '@vueuse/core'
 import { NCard, NButton, NInput, useNotification } from 'naive-ui'
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import { mainApi, userInfo } from '@/api'
-import { useRouter } from 'vue-router'
 import { useCountdown } from '@/utils/countdown'
 import { getErrorMessage } from '@/utils/error'
+import { finalizeLogin } from '@/utils/sync'
 
 const mail = ref('')
 const response = ref('')
@@ -86,8 +86,6 @@ const sendTask = useAsyncState(
   { immediate: false }
 )
 
-const router = useRouter()
-
 const loginTask = useAsyncState(
   async () => {
     try {
@@ -98,7 +96,9 @@ const loginTask = useAsyncState(
         })
         .fetch()
       userInfo.value = user
-      router.replace('/')
+      nextTick(() => {
+        finalizeLogin()
+      })
     } catch (err) {
       notification.error({
         title: '登陆失败',

@@ -5,15 +5,14 @@
 </template>
 <script setup lang="ts">
 import { userInfo } from '@/api'
-import { doSync } from '@/utils/sync'
+import { finalizeLogout } from '@/utils/sync'
 import { NButton } from 'naive-ui'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
+import { nextTick } from 'vue'
 
 function logout() {
   userInfo.value.authToken = ''
-  router.replace('/')
-  doSync('logout')
+  nextTick(() => {
+    finalizeLogout()
+  })
 }
 </script>

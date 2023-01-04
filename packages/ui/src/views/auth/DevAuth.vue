@@ -10,7 +10,8 @@
 
 <script setup lang="ts">
 import { mainApi, userInfo } from '@/api'
-import { ref } from 'vue'
+import { finalizeLogin } from '@/utils/sync'
+import { nextTick, ref } from 'vue'
 
 const name = ref('')
 const group = ref<'admin'>('admin')
@@ -20,5 +21,8 @@ async function login() {
     .query({ name: name.value, group: group.value })
     .fetch()
   userInfo.value = user
+  nextTick(() => {
+    finalizeLogin()
+  })
 }
 </script>
