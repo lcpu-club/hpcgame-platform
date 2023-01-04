@@ -26,23 +26,24 @@ const columns: DataTableColumns = [
       )
   },
   { title: 'ProblemID', key: 'problemId' },
-  { title: 'UserID', key: 'userId' }
+  { title: 'UserID', key: 'userId' },
+  { title: 'Status', key: 'status' }
 ]
 
-async function load(page: number, perPage: number) {
+async function load(page: number, perPage: number, filter: unknown) {
   return mainApi.submission.admin.search.$post
     .body({
       page,
       perPage,
-      filter: {}
+      filter
     })
     .fetch()
 }
 
-async function count() {
+async function count(filter: unknown) {
   return mainApi.submission.admin.count.$post
     .body({
-      filter: {}
+      filter
     })
     .fetch()
 }

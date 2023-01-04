@@ -1,6 +1,11 @@
 <template>
-  <div class="w-full grid grid-cols-1">
-    <ModelTable :columns="columns" :count="count" :load="load" />
+  <div>
+    <div class="flex justify-between pb-2">
+      <div class="text-lg">用户管理</div>
+    </div>
+    <div class="w-full grid grid-cols-1">
+      <ModelTable :columns="columns" :count="count" :load="load" />
+    </div>
   </div>
 </template>
 
@@ -24,20 +29,20 @@ const columns: DataTableColumns = [
   { title: 'Group', key: 'group' }
 ]
 
-async function load(page: number, perPage: number) {
+async function load(page: number, perPage: number, filter: unknown) {
   return mainApi.user.admin.search.$post
     .body({
       page,
       perPage,
-      filter: {}
+      filter
     })
     .fetch()
 }
 
-async function count() {
+async function count(filter: unknown) {
   return mainApi.user.admin.count.$post
     .body({
-      filter: {}
+      filter
     })
     .fetch()
 }
