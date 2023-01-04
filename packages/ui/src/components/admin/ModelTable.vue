@@ -1,9 +1,10 @@
 <template>
   <div class="w-full grid grid-cols-1 gap-2">
     <div class="grid grid-cols-[auto,1fr] gap-2">
-      <div class="grid grid-cols-1">
+      <div class="flex flex-col items-stretch">
         <div>Filter:</div>
         <NButton type="primary" @click="task.run(init)">Apply</NButton>
+        <code>Σ={{ paginationReactive.itemCount }}</code>
       </div>
       <JSONEditor v-model="filter" />
     </div>
