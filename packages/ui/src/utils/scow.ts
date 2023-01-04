@@ -4,7 +4,7 @@ export function useSCOW() {
   const notification = useNotification()
 
   async function open(username: string, password: string) {
-    const win = window.open('https://hpcgame.pku.edu.cn/demo/scow/')
+    const win = window.open(import.meta.env.VITE_SCOW_URL)
     if (!win) {
       notification.error({
         title: '无法打开SCOW',
