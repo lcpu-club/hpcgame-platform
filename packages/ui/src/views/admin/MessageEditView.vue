@@ -27,7 +27,7 @@ async function save(data: unknown) {
 }
 
 async function remove() {
-  await mainApi.message.admin.$delete.query({ _id: props.id }).fetch()
+  await mainApi.message.admin.$delete.query({ _id: props.id }).body({}).fetch()
   return '/admin/message'
 }
 </script>

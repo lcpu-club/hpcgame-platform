@@ -28,7 +28,10 @@ async function save(data: unknown) {
 }
 
 async function remove() {
-  await mainApi.submission.admin.$delete.query({ _id: props.id }).fetch()
+  await mainApi.submission.admin.$delete
+    .query({ _id: props.id })
+    .body({})
+    .fetch()
   return '/admin/submission'
 }
 </script>
