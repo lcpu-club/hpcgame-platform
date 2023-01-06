@@ -35,7 +35,8 @@ import { userInfo } from '@/api'
 
 const menuOptions: MenuOption[] = [
   ['/user/', '基本信息'],
-  ['/user/logout', '登出']
+  ['/user/logout', '登出'],
+  ['/terms', '参赛须知']
 ].map(([to, label]) => ({
   label: () => h(RouterLink, { to }, () => label),
   key: to
