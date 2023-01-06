@@ -46,7 +46,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   window.$loadingBar?.start()
-  if (to.path.startsWith('/login')) {
+  if (to.path.startsWith('/login') || to.path.startsWith('/auth')) {
     return loggedIn.value ? next('/') : next()
   }
   if (to.path.startsWith('/problems') || to.path.startsWith('/user')) {
