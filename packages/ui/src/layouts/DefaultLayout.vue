@@ -11,7 +11,7 @@ import { NLayout, useDialog, useLoadingBar, useNotification } from 'naive-ui'
 import AppHeader from '@/components/app/AppHeader.vue'
 import AppBody from '@/components/app/AppBody.vue'
 import AppFooter from '@/components/app/AppFooter.vue'
-import { requestPermissions } from '@/utils/permissions'
+import { enableNotification } from '@/utils/notification'
 
 const loadingBar = useLoadingBar()
 window.$loadingBar = loadingBar
@@ -22,5 +22,5 @@ window.$notification = notification
 const dialog = useDialog()
 window.$dialog = dialog
 
-requestPermissions()
+enableNotification()
 </script>
