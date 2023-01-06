@@ -3,5 +3,5 @@
 }
 
 pre code.hljs {
-  padding: 0;
+  padding: 0 !important;
 }
