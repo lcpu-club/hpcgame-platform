@@ -6,7 +6,9 @@ export async function loadProblemsData() {
   const categories = [...new Set(problems.map((p) => p.category))].map(
     (key) => ({
       category: key,
-      problems: problems.filter((p) => p.category === key).sort()
+      problems: problems
+        .filter((p) => p.category === key)
+        .sort((a, b) => a.title.localeCompare(b.title))
     })
   )
   return { problems, categories }
