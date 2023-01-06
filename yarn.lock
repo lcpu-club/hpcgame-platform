@@ -1757,6 +1757,9 @@ __metadata:
     crypto-js: ^4.1.1
     eslint: ^8.22.0
     eslint-plugin-vue: ^9.3.0
+    github-markdown-css: ^5.1.0
+    highlight.js: ^11.7.0
+    katex: ^0.16.4
     naive-ui: ^2.34.2
     nanoid: ^4.0.0
     npm-run-all: ^4.1.5
@@ -4484,6 +4487,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"github-markdown-css@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "github-markdown-css@npm:5.1.0"
+  checksum: e3472770dedc9508d30a788bc522beb0c993f08b1f098389619174414c3ce558727d8b3d0c6eed50d156ee0cf04ab667e4bca5149dedc7869b54bd38db0cc5fb
+  languageName: node
+  linkType: hard
+
 "glob-parent@npm:^5.1.2":
   version: 5.1.2
   resolution: "glob-parent@npm:5.1.2"
@@ -4741,7 +4751,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"highlight.js@npm:^11.5.0, highlight.js@npm:~11.7.0":
+"highlight.js@npm:^11.5.0, highlight.js@npm:^11.7.0, highlight.js@npm:~11.7.0":
   version: 11.7.0
   resolution: "highlight.js@npm:11.7.0"
   checksum: 19e3fb8b56f4b361b057a8523b989dfeb6479bbd1e29cec3fac6fa5c78d09927d5fa61b7dba6631fdb57cfdca9b3084aa4da49405ceaf4a67f67beae2ed5b77d
@@ -5211,6 +5221,17 @@ __metadata:
   bin:
     katex: cli.js
   checksum: 2da808bbd1d3be27715006cd86767dd3fcce3e317fb3bbd64d407328d2d90de17b5d83062b2cfd0e0d0de32e340efbac214862bc96892a5d1492462e553728d4
+  languageName: node
+  linkType: hard
+
+"katex@npm:^0.16.4":
+  version: 0.16.4
+  resolution: "katex@npm:0.16.4"
+  dependencies:
+    commander: ^8.0.0
+  bin:
+    katex: cli.js
+  checksum: 94eaf1fbd8365792308527695c09baa6d2d84e2d0170e4af44fb12be3ed403fb3430caff2410117f2f1a9dfdb329f61ab9611d97e645d9c89ee60940698a45cc
   languageName: node
   linkType: hard
 
