@@ -27,7 +27,8 @@ const columns: DataTableColumns = [
   },
   { title: 'ProblemID', key: 'problemId' },
   { title: 'UserID', key: 'userId' },
-  { title: 'Status', key: 'status' }
+  { title: 'Status', key: 'status' },
+  { title: 'Score', key: 'score' }
 ]
 
 async function load(page: number, perPage: number, filter: unknown) {
