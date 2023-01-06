@@ -17,7 +17,6 @@
     "@vueuse/core": "^9.9.0",
     "crypto-js": "^4.1.1",
     "github-markdown-css": "^5.1.0",
-    "highlight.js": "^11.7.0",
     "katex": "^0.16.4",
     "naive-ui": "^2.34.2",
     "nanoid": "^4.0.0",

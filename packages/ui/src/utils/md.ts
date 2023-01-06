@@ -9,6 +9,7 @@ import rehypeHighlight from 'rehype-highlight'
 import 'github-markdown-css/github-markdown-light.css'
 import 'katex/dist/katex.css'
 import 'highlight.js/styles/github.css'
+import 'lowlight/lib/all'
 
 export function render(source: string): string {
   const file = unified()
