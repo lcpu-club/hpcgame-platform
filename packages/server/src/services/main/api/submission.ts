@@ -13,7 +13,7 @@ import { Users } from '../../../db/user.js'
 import { type IJudgeRequestMsg, judgeRequestTopic } from '../../../mq/index.js'
 import { publishAsync } from '../../../mq/writer.js'
 import { getDownloadUrl, getUploadUrl } from '../../../storage/index.js'
-import { pagingToOptions } from '../../../utils/paging.js'
+import { unsafePagingToOptions } from '../../../utils/paging.js'
 import { StringEnum } from '../../../utils/type.js'
 import { httpErrors, server } from '../index.js'
 import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
@@ -319,7 +319,7 @@ export const submissionRouter = protectedChain
           .body(adminSearchSchema)
           .handle(async (ctx, req) => {
             const users = await Submissions.find(req.body.filter, {
-              ...pagingToOptions(req.body)
+              ...unsafePagingToOptions(req.body)
             }).toArray()
             return users
           })

@@ -1,7 +1,8 @@
 import { Type } from '@sinclair/typebox'
 import {
   getSCOWCredentialsForUser,
-  getSCOWCredentialsForProblem
+  getSCOWCredentialsForProblem,
+  SCOWCredentials
 } from '../../../db/scow.js'
 import {
   initSCOW,
@@ -9,6 +10,7 @@ import {
   syncAccountStatusWithSlurm
 } from '../../../scow/index.js'
 import { getDownloadUrl, getUploadUrl } from '../../../storage/index.js'
+import { httpErrors } from '../index.js'
 import { adminChain } from './base.js'
 
 export const adminRouter = adminChain
@@ -46,51 +48,75 @@ export const adminRouter = adminChain
         }
       })
   )
-  .handle('POST', '/initSCOW', (C) =>
-    C.handler().handle(async () => {
-      await initSCOW()
-      return 0
-    })
-  )
-  .handle('POST', '/getSCOWCredentialsForUser', (C) =>
-    C.handler()
-      .body(
-        Type.Object({
-          _id: Type.String()
+  .route('/scow', (C) =>
+    C.router()
+      .handle('POST', '/init', (C) =>
+        C.handler().handle(async () => {
+          await initSCOW()
+          return 0
         })
       )
-      .handle(async (_, req) => {
-        return getSCOWCredentialsForUser(req.body._id)
-      })
-  )
-  .handle('POST', '/getSCOWCredentialsForProblem', (C) =>
-    C.handler()
-      .body(
-        Type.Object({
-          _id: Type.String(),
-          problemId: Type.String()
+      .handle('POST', '/getCredentialForUser', (C) =>
+        C.handler()
+          .body(
+            Type.Object({
+              _id: Type.String()
+            })
+          )
+          .handle(async (_, req) => {
+            return getSCOWCredentialsForUser(req.body._id)
+          })
+      )
+      .handle('POST', '/getCredentialForProblem', (C) =>
+        C.handler()
+          .body(
+            Type.Object({
+              _id: Type.String(),
+              problemId: Type.String()
+            })
+          )
+          .handle(async (_, req) => {
+            return getSCOWCredentialsForProblem(
+              req.body._id,
+              req.body.problemId
+            )
+          })
+      )
+      .handle('POST', '/syncAccountStatusWithSlurm', (C) =>
+        C.handler().handle(async () => {
+          const log = await syncAccountStatusWithSlurm()
+          return { log }
         })
       )
-      .handle(async (_, req) => {
-        return getSCOWCredentialsForProblem(req.body._id, req.body.problemId)
-      })
-  )
-  .handle('POST', '/syncAccountStatusWithSlurm', (C) =>
-    C.handler().handle(async () => {
-      const log = await syncAccountStatusWithSlurm()
-      return { log }
-    })
-  )
-  .handle('POST', '/scowSetAccountBlock', (C) =>
-    C.handler()
-      .body(
-        Type.Object({
-          accountName: Type.String(),
-          block: Type.Boolean()
-        })
+      .handle('POST', '/setAccountBlock', (C) =>
+        C.handler()
+          .body(
+            Type.Object({
+              accountName: Type.String(),
+              block: Type.Boolean()
+            })
+          )
+          .handle(async (ctx, req) => {
+            const log = await setAccountBlock(
+              req.body.accountName,
+              req.body.block
+            )
+            return { log }
+          })
       )
-      .handle(async (ctx, req) => {
-        const log = await setAccountBlock(req.body.accountName, req.body.block)
-        return { log }
-      })
+      .handle('POST', '/credentialDetails', (C) =>
+        C.handler()
+          .body(
+            Type.Object({
+              scowUser: Type.String()
+            })
+          )
+          .handle(async (ctx, req) => {
+            const cred = await SCOWCredentials.findOne({
+              _id: req.body.scowUser
+            })
+            if (!cred) throw httpErrors.notFound()
+            return cred
+          })
+      )
   )

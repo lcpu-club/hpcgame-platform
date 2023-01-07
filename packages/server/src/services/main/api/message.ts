@@ -1,7 +1,11 @@
 import { Type } from '@sinclair/typebox'
 import type { Filter } from 'mongodb'
 import { Messages, type IMessage } from '../../../db/message.js'
-import { pagingSchema, pagingToOptions } from '../../../utils/paging.js'
+import {
+  pagingSchema,
+  pagingToOptions,
+  unsafePagingToOptions
+} from '../../../utils/paging.js'
 import { httpErrors } from '../index.js'
 import {
   adminChain,
@@ -136,7 +140,7 @@ export const messageRouter = unprotectedChain
       .body(adminSearchSchema)
       .handle(async (ctx, req) => {
         const users = await Messages.find(req.body.filter, {
-          ...pagingToOptions(req.body)
+          ...unsafePagingToOptions(req.body)
         }).toArray()
         return users
       })

@@ -7,7 +7,7 @@ import {
   sysGet
 } from '../../../db/syskv.js'
 import { getDownloadUrl } from '../../../storage/index.js'
-import { pagingToOptions } from '../../../utils/paging.js'
+import { unsafePagingToOptions } from '../../../utils/paging.js'
 import { httpErrors, server } from '../index.js'
 import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
 
@@ -150,7 +150,7 @@ export const problemRouter = protectedChain
       .handle(async (ctx, req) => {
         ctx.requires(false)
         const users = await Problems.find(req.body.filter, {
-          ...pagingToOptions(req.body)
+          ...unsafePagingToOptions(req.body)
         }).toArray()
         return users
       })

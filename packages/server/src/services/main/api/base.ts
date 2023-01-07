@@ -5,7 +5,7 @@ import { createRoot } from 'fastify-typeful'
 import { RUNNER_SECRET } from '../../../config/index.js'
 import { SCOWCredentials } from '../../../db/scow.js'
 import { Users, verifyAuthToken, type IUserInfo } from '../../../db/user.js'
-import { pagingSchema } from '../../../utils/paging.js'
+import { unsafePagingSchema } from '../../../utils/paging.js'
 import { server } from '../index.js'
 
 function requires(this: { user: IUserInfo }, cond: boolean) {
@@ -56,6 +56,6 @@ export const adminFilterSchema = Type.Object({
 })
 
 export const adminSearchSchema = Type.Intersect([
-  pagingSchema,
+  unsafePagingSchema,
   adminFilterSchema
 ])

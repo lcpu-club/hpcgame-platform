@@ -6,7 +6,7 @@ import {
   defaultGameSchedule
 } from '../../../db/syskv.js'
 import { expireUserInfo, UserGroupSchema, Users } from '../../../db/user.js'
-import { pagingToOptions } from '../../../utils/paging.js'
+import { unsafePagingToOptions } from '../../../utils/paging.js'
 import { httpErrors } from '../index.js'
 import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
 
@@ -92,7 +92,7 @@ export const userRouter = protectedChain
           .body(adminSearchSchema)
           .handle(async (ctx, req) => {
             const users = await Users.find(req.body.filter, {
-              ...pagingToOptions(req.body)
+              ...unsafePagingToOptions(req.body)
             }).toArray()
             return users
           })
