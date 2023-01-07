@@ -77,7 +77,9 @@ const { state, isLoading, error, execute } = useAsyncState(async () => {
     '```json\n' + (json ? JSON.stringify(json, null, '  ') : text) + '\n```\n'
   )
   const type = json?.score === problem.value?.score ? 'success' : 'warning'
-  typeof json === 'object' && (json['max-score'] ??= problem.value?.score)
+  if (json && typeof json === 'object') {
+    json['max-score'] ??= problem.value?.score
+  }
   return {
     objectURL,
     text,
