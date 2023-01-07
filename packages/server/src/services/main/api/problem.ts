@@ -82,76 +82,78 @@ export const problemRouter = protectedChain
         }
       })
   )
-  .handle('GET', '/admin', (C) =>
-    C.handler()
-      .query(
-        Type.Object({
-          _id: Type.String()
-        })
-      )
-      .handle(async (ctx, req) => {
-        ctx.requires(false)
-        const { _id } = req.query
-        const message = await Problems.findOne({ _id })
-        if (!message) throw httpErrors.notFound()
-        return message
-      })
-  )
-  .handle('DELETE', '/admin', (C) =>
-    C.handler()
-      .query(
-        Type.Object({
-          _id: Type.String()
-        })
-      )
-      .handle(async (ctx, req) => {
-        ctx.requires(false)
-        const { _id } = req.query
-        await Problems.deleteOne({ _id })
-        return 0
-      })
-  )
-  .handle('PUT', '/admin', (C) =>
-    C.handler()
-      .body(
-        Type.Object({
-          _id: Type.String(),
-          $set: Type.Object({
-            title: Type.String(),
-            content: Type.String(),
-            score: Type.Number(),
-            maxSubmissionCount: Type.Number(),
-            maxSubmissionSize: Type.Number(),
-            runnerArgs: Type.String(),
-            category: Type.String(),
-            tags: Type.Array(Type.String()),
-            metadata: Type.Record(Type.String(), Type.Unknown())
+  .route('/admin', (C) =>
+    C.transform((ctx) => {
+      ctx.requires(ctx.user.group === 'staff')
+      return ctx
+    })
+      .router()
+      .handle('GET', '/admin', (C) =>
+        C.handler()
+          .query(
+            Type.Object({
+              _id: Type.String()
+            })
+          )
+          .handle(async (ctx, req) => {
+            const { _id } = req.query
+            const message = await Problems.findOne({ _id })
+            if (!message) throw httpErrors.notFound()
+            return message
           })
-        })
       )
-      .handle(async (ctx, req) => {
-        ctx.requires(false)
-        const { _id, $set } = req.body
-        await Problems.updateOne({ _id }, { $set }, { upsert: true })
-        return 0
-      })
-  )
-  .handle('POST', '/admin/count', (C) =>
-    C.handler()
-      .body(adminFilterSchema)
-      .handle(async (ctx, req) => {
-        ctx.requires(false)
-        return Problems.countDocuments(req.body.filter)
-      })
-  )
-  .handle('POST', '/admin/search', (C) =>
-    C.handler()
-      .body(adminSearchSchema)
-      .handle(async (ctx, req) => {
-        ctx.requires(false)
-        const users = await Problems.find(req.body.filter, {
-          ...unsafePagingToOptions(req.body)
-        }).toArray()
-        return users
-      })
+      .handle('DELETE', '/admin', (C) =>
+        C.handler()
+          .query(
+            Type.Object({
+              _id: Type.String()
+            })
+          )
+          .handle(async (ctx, req) => {
+            const { _id } = req.query
+            await Problems.deleteOne({ _id })
+            return 0
+          })
+      )
+      .handle('PUT', '/admin', (C) =>
+        C.handler()
+          .body(
+            Type.Object({
+              _id: Type.String(),
+              $set: Type.Object({
+                title: Type.String(),
+                content: Type.String(),
+                score: Type.Number(),
+                maxSubmissionCount: Type.Number(),
+                maxSubmissionSize: Type.Number(),
+                runnerArgs: Type.String(),
+                category: Type.String(),
+                tags: Type.Array(Type.String()),
+                metadata: Type.Record(Type.String(), Type.Unknown())
+              })
+            })
+          )
+          .handle(async (ctx, req) => {
+            const { _id, $set } = req.body
+            await Problems.updateOne({ _id }, { $set }, { upsert: true })
+            return 0
+          })
+      )
+      .handle('POST', '/admin/count', (C) =>
+        C.handler()
+          .body(adminFilterSchema)
+          .handle(async (ctx, req) => {
+            return Problems.countDocuments(req.body.filter)
+          })
+      )
+      .handle('POST', '/admin/search', (C) =>
+        C.handler()
+          .body(adminSearchSchema)
+          .handle(async (ctx, req) => {
+            const users = await Problems.find(req.body.filter, {
+              ...unsafePagingToOptions(req.body)
+            }).toArray()
+            return users
+          })
+      )
   )

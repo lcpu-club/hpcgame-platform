@@ -257,7 +257,7 @@ export const submissionRouter = protectedChain
   )
   .route('/admin', (C) =>
     C.transform((ctx) => {
-      ctx.requires(false)
+      ctx.requires(ctx.user.group === 'staff')
       return ctx
     })
       .router()
