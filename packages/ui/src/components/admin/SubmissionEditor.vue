@@ -25,18 +25,27 @@
       重新评测
     </NButton>
     <div>下载提交数据</div>
-    <FileDownloader
-      :generator="downloadGenerator"
-      :btn-props="{ type: 'primary' }"
-      :filename="filename"
-    >
-      下载数据
-    </FileDownloader>
+    <NSpace>
+      <FileDownloader
+        :generator="downloadGenerator('data')"
+        :btn-props="{ type: 'primary' }"
+        :filename="filename"
+      >
+        下载数据
+      </FileDownloader>
+      <FileDownloader
+        :generator="downloadGenerator('result.json')"
+        :btn-props="{ type: 'info' }"
+        :filename="filename"
+      >
+        下载评测信息
+      </FileDownloader>
+    </NSpace>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NButton, NDatePicker, NInput, NInputNumber } from 'naive-ui'
+import { NButton, NDatePicker, NInput, NInputNumber, NSpace } from 'naive-ui'
 import { computed, ref } from 'vue'
 import type { ISubmission } from '@hpcgame-platform/server/src/db'
 import { useSimpleAsyncTask } from '@/utils/async'
@@ -63,13 +72,15 @@ const { run, running } = useSimpleAsyncTask(async () => {
     .fetch()
 })
 
-async function downloadGenerator() {
-  const { url } = await mainApi.admin.getDownloadUrl.$post
-    .body({
-      bucket: import.meta.env.VITE_BUCKET_SUBMISSION,
-      ossKey: `${props.model._id}/data`
-    })
-    .fetch()
-  return s3url(url)
+function downloadGenerator(key: string) {
+  return async () => {
+    const { url } = await mainApi.admin.getDownloadUrl.$post
+      .body({
+        bucket: import.meta.env.VITE_BUCKET_SUBMISSION,
+        ossKey: `${props.model._id}/${key}`
+      })
+      .fetch()
+    return s3url(url)
+  }
 }
 </script>
