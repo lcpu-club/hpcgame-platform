@@ -33,12 +33,18 @@ const columns: DataTableColumns = [
   { title: 'Title', key: 'title' }
 ]
 
-async function load(page: number, perPage: number, filter: unknown) {
+async function load(
+  page: number,
+  perPage: number,
+  filter: unknown,
+  sort: unknown
+) {
   return mainApi.problem['admin/search'].$post
     .body({
       page,
       perPage,
-      filter
+      filter,
+      sort
     })
     .fetch()
 }

@@ -29,12 +29,18 @@ const columns: DataTableColumns = [
   { title: 'Group', key: 'group' }
 ]
 
-async function load(page: number, perPage: number, filter: unknown) {
+async function load(
+  page: number,
+  perPage: number,
+  filter: unknown,
+  sort: unknown
+) {
   return mainApi.user.admin.search.$post
     .body({
       page,
       perPage,
-      filter
+      filter,
+      sort
     })
     .fetch()
 }

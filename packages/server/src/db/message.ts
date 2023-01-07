@@ -16,3 +16,6 @@ export interface IMessage {
 export const Messages = db.collection<IMessage>('messages')
 
 await Messages.createIndex({ createdAt: -1 }, { unique: false })
+await Messages.createIndex({ userId: 1 }, { unique: false })
+await Messages.createIndex({ group: 1 }, { unique: false })
+await Messages.createIndex({ global: 1 }, { unique: false })

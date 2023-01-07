@@ -28,15 +28,31 @@ const columns: DataTableColumns = [
   { title: 'ProblemID', key: 'problemId' },
   { title: 'UserID', key: 'userId' },
   { title: 'Status', key: 'status' },
-  { title: 'Score', key: 'score' }
+  { title: 'Score', key: 'score' },
+  {
+    title: 'Created',
+    key: 'createdAt',
+    render: (row) => new Date(row.createdAt as number).toLocaleString()
+  },
+  {
+    title: 'Updated',
+    key: 'updatedAt',
+    render: (row) => new Date(row.updatedAt as number).toLocaleString()
+  }
 ]
 
-async function load(page: number, perPage: number, filter: unknown) {
+async function load(
+  page: number,
+  perPage: number,
+  filter: unknown,
+  sort: unknown
+) {
   return mainApi.submission.admin.search.$post
     .body({
       page,
       perPage,
-      filter
+      filter,
+      sort
     })
     .fetch()
 }

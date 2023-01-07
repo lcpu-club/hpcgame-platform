@@ -1,12 +1,18 @@
 <template>
   <div class="w-full grid grid-cols-1 gap-2">
-    <div class="grid grid-cols-[auto,1fr] gap-2">
-      <div class="flex flex-col items-stretch">
-        <div>Filter:</div>
+    <div class="grid grid-cols-[1fr,1fr,auto] gap-2 place-items-stretch">
+      <div class="flex flex-col items-center">
+        Filter
+        <JSONEditor v-model="filter" />
+      </div>
+      <div class="flex flex-col items-center">
+        Sort
+        <JSONEditor v-model="sort" />
+      </div>
+      <div class="flex flex-col items-stretch justify-center">
         <NButton type="primary" @click="task.run(init)">Apply</NButton>
         <code>Σ={{ paginationReactive.itemCount }}</code>
       </div>
-      <JSONEditor v-model="filter" />
     </div>
     <NDataTable
       :columns="props.columns"
@@ -29,11 +35,13 @@ const props = defineProps<{
   load: (
     page: number,
     perPage: number,
-    filter: Record<string, unknown>
+    filter: Record<string, unknown>,
+    sort: unknown
   ) => Promise<Record<string, any>[]>
 }>()
 
 const filter = ref<Record<string, unknown>>({})
+const sort = ref<Record<string, unknown>>({})
 const task = useTaskContext()
 const data = ref<Record<string, any>[]>([])
 const paginationReactive = reactive({
@@ -57,7 +65,8 @@ async function load() {
   data.value = await props.load(
     paginationReactive.page,
     paginationReactive.pageSize,
-    filter.value
+    filter.value,
+    sort.value
   )
 }
 

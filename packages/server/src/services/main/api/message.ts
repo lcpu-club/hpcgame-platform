@@ -25,8 +25,12 @@ export const messageRouter = unprotectedChain
         })
       )
       .handle(async (ctx, req) => {
+        const now = Date.now()
         const filter: Filter<IMessage> = {
-          createdAt: { $gte: req.query.since },
+          createdAt: {
+            $gte: req.query.since,
+            $lte: now
+          },
           $or: ctx.user
             ? [
                 { global: true },
@@ -43,8 +47,12 @@ export const messageRouter = unprotectedChain
   )
   .handle('GET', '/global', (C) =>
     C.handler().handle(async () => {
+      const now = Date.now()
       return Messages.find(
-        { global: true },
+        {
+          createdAt: { $lte: now },
+          global: true
+        },
         {
           sort: { createdAt: -1 }
         }
@@ -58,8 +66,12 @@ export const messageRouter = unprotectedChain
       .handler()
       .query(pagingSchema)
       .handle(async (ctx, req) => {
+        const now = Date.now()
         return Messages.find(
-          { $or: [{ userId: ctx.user._id }, { group: ctx.user.group }] },
+          {
+            createdAt: { $lte: now },
+            $or: [{ userId: ctx.user._id }, { group: ctx.user.group }]
+          },
           { ...pagingToOptions(req.query), sort: { createdAt: -1 } }
         ).toArray()
       })

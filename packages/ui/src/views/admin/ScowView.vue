@@ -28,6 +28,35 @@
           密码：<code>{{ pass }}</code>
         </div>
         <NSpace>
+          <NInput v-model:value="scowUser" placeholder="SCOW用户名" />
+          <NButton
+            :loading="queryTask.running.value"
+            @click="queryTask.run"
+            type="info"
+          >
+            查询SCOW用户
+          </NButton>
+        </NSpace>
+        <div>
+          对应的用户为：
+          <RouterLink
+            v-if="queryUserId"
+            :to="`/admin/user/edit/${queryUserId}`"
+          >
+            <code>{{ queryUserId }}</code>
+          </RouterLink>
+          <span v-else>没有对应的用户</span>
+          <br />
+          对应的题目为：
+          <RouterLink
+            v-if="queryProblemId"
+            :to="`/admin/problem/edit/${queryProblemId}`"
+          >
+            <code>{{ queryProblemId }}</code>
+          </RouterLink>
+          <span v-else>没有对应的题目</span>
+        </div>
+        <NSpace>
           <NInput v-model:value="accountName" placeholder="账户名" />
           <NSwitch v-model:value="block" />
         </NSpace>
@@ -65,7 +94,7 @@ import { useSCOW } from '@/utils/scow'
 
 const initTask = useSimpleAsyncTask(
   async () => {
-    await mainApi.admin.initSCOW.$post.body({}).fetch()
+    await mainApi.admin.scow.init.$post.body({}).fetch()
   },
   { notifyOnSuccess: true }
 )
@@ -80,11 +109,11 @@ const { open } = useSCOW()
 const loadTask = useSimpleAsyncTask(
   async () => {
     const api = problemId.value
-      ? mainApi.admin.getSCOWCredentialsForProblem.$post.body({
+      ? mainApi.admin.scow.getCredentialForProblem.$post.body({
           _id: userId.value,
           problemId: problemId.value
         })
-      : mainApi.admin.getSCOWCredentialsForUser.$post.body({
+      : mainApi.admin.scow.getCredentialForUser.$post.body({
           _id: userId.value
         })
     const { _id, password } = await api.fetch()
@@ -95,13 +124,26 @@ const loadTask = useSimpleAsyncTask(
   { notifyOnSuccess: true }
 )
 
+const scowUser = ref('')
+const queryUserId = ref('')
+const queryProblemId = ref('')
+const queryTask = useSimpleAsyncTask(async () => {
+  const { userId, problemId } = await mainApi.admin.scow.credentialDetails.$post
+    .body({
+      scowUser: scowUser.value
+    })
+    .fetch()
+  queryUserId.value = userId
+  queryProblemId.value = problemId
+})
+
 const accountName = ref('')
 const block = ref(false)
 const syncLog = ref('')
 
 const syncTask = useSimpleAsyncTask(
   async () => {
-    const { log } = await mainApi.admin.syncAccountStatusWithSlurm.$post
+    const { log } = await mainApi.admin.scow.syncAccountStatusWithSlurm.$post
       .body({})
       .fetch()
     syncLog.value = log
@@ -111,7 +153,7 @@ const syncTask = useSimpleAsyncTask(
 
 const blockTask = useSimpleAsyncTask(
   async () => {
-    const { log } = await mainApi.admin.scowSetAccountBlock.$post
+    const { log } = await mainApi.admin.scow.setAccountBlock.$post
       .body({
         accountName: accountName.value,
         block: block.value
