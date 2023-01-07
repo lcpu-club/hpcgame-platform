@@ -338,8 +338,14 @@ export const submissionRouter = protectedChain
             )
             if (!value) throw httpErrors.notFound()
 
+            const user = await Users.findOne({ _id: value.userId })
+
+            if (!user) {
+              throw httpErrors.internalServerError("Submission's user is gone!")
+            }
+
             const creds = await getSCOWCredentialsForProblem(
-              ctx.user._id,
+              value.userId,
               value.problemId
             )
 
@@ -352,8 +358,8 @@ export const submissionRouter = protectedChain
               runner_pass: creds.password,
               problem_id: problem._id,
               submission_id: value._id,
-              user_id: ctx.user._id,
-              user_group: ctx.user.group
+              user_id: user._id,
+              user_group: user.group
             })
 
             return 0
