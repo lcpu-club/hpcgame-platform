@@ -39,7 +39,7 @@ async function load(
   filter: unknown,
   sort: unknown
 ) {
-  return mainApi.problem['admin/search'].$post
+  return mainApi.problem.admin.search.$post
     .body({
       page,
       perPage,
@@ -50,7 +50,7 @@ async function load(
 }
 
 async function count(filter: unknown) {
-  return mainApi.problem['admin/count'].$post
+  return mainApi.problem.admin.count.$post
     .body({
       filter
     })

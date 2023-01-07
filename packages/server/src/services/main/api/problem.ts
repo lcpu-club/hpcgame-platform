@@ -88,7 +88,7 @@ export const problemRouter = protectedChain
       return ctx
     })
       .router()
-      .handle('GET', '/admin', (C) =>
+      .handle('GET', '/', (C) =>
         C.handler()
           .query(
             Type.Object({
@@ -102,7 +102,7 @@ export const problemRouter = protectedChain
             return message
           })
       )
-      .handle('DELETE', '/admin', (C) =>
+      .handle('DELETE', '/', (C) =>
         C.handler()
           .query(
             Type.Object({
@@ -115,7 +115,7 @@ export const problemRouter = protectedChain
             return 0
           })
       )
-      .handle('PUT', '/admin', (C) =>
+      .handle('PUT', '/', (C) =>
         C.handler()
           .body(
             Type.Object({
@@ -139,14 +139,14 @@ export const problemRouter = protectedChain
             return 0
           })
       )
-      .handle('POST', '/admin/count', (C) =>
+      .handle('POST', '/count', (C) =>
         C.handler()
           .body(adminFilterSchema)
           .handle(async (ctx, req) => {
             return Problems.countDocuments(req.body.filter)
           })
       )
-      .handle('POST', '/admin/search', (C) =>
+      .handle('POST', '/search', (C) =>
         C.handler()
           .body(adminSearchSchema)
           .handle(async (ctx, req) => {

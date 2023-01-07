@@ -11,8 +11,8 @@ export const userInfo = useLocalStorage<IUser>(
 )
 export const authToken = computed(() => userInfo.value.authToken ?? '')
 export const loggedIn = computed(() => !!authToken.value)
-export const isAdmin = computed(
-  () => loggedIn.value && userInfo.value.group === 'admin'
+export const showAdmin = computed(
+  () => loggedIn.value && ['admin', 'staff'].includes(userInfo.value.group)
 )
 
 export const mainApi = createClient<MainDescriptor>(

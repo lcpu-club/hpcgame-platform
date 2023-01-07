@@ -47,14 +47,14 @@ import {
 import { h, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import UserIndicatorProxy from '@/components/user/UserIndicatorProxy.vue'
-import { isAdmin, loggedIn } from '@/api'
+import { showAdmin, loggedIn } from '@/api'
 
 const menuOptions = computed<MenuOption[]>(() =>
   (
     [
       ['problems', '题目', '/problems', loggedIn.value],
       ['ranklist', '排行榜', '/ranklist'],
-      ['admin', '管理', '/admin', isAdmin.value]
+      ['admin', '管理', '/admin', showAdmin.value]
     ] as const
   ).map(([key, label, to, show]) => ({
     key,

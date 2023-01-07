@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { h } from 'vue'
+import { h, computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import {
   NLayout,
@@ -34,18 +34,24 @@ import {
   NLayoutContent
 } from 'naive-ui'
 import TaskContext from '@/components/misc/TaskContext.vue'
+import { userInfo } from '@/api'
 
-const menuOptions: MenuOption[] = [
-  ['/admin/', '概览'],
-  ['/admin/sys', '动态配置'],
-  ['/admin/user', '用户管理'],
-  ['/admin/problem', '题面管理'],
-  ['/admin/submission', '提交管理'],
-  ['/admin/message', '通知管理'],
-  ['/admin/ranklist', '排行榜管理'],
-  ['/admin/scow', 'SCOW集成']
-].map(([to, label]) => ({
-  label: () => h(RouterLink, { to }, () => label),
-  key: to
-}))
+const menuOptions = computed<MenuOption[]>(() =>
+  (
+    [
+      ['/admin/', '概览'],
+      ['/admin/sys', '动态配置'],
+      ['/admin/user', '用户管理'],
+      ['/admin/problem', '题面管理', true],
+      ['/admin/submission', '提交管理', true],
+      ['/admin/message', '通知管理'],
+      ['/admin/ranklist', '排行榜管理'],
+      ['/admin/scow', 'SCOW集成']
+    ] as const
+  ).map(([to, label, staffAccess]) => ({
+    label: () => h(RouterLink, { to }, () => label),
+    key: to,
+    show: staffAccess || userInfo.value.group === 'admin'
+  }))
+)
 </script>

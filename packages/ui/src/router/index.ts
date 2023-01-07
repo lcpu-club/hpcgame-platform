@@ -1,4 +1,4 @@
-import { isAdmin, loggedIn, userInfo } from '@/api'
+import { showAdmin, loggedIn, userInfo } from '@/api'
 import { createRouter, createWebHistory } from 'vue-router'
 import { adminRoutes } from './admin'
 import { loginRoutes } from './login'
@@ -48,7 +48,7 @@ router.beforeEach((to, from, next) => {
     return loggedIn.value ? next() : next('/login')
   }
   if (to.path.startsWith('/admin')) {
-    return isAdmin.value ? next() : next('/')
+    return showAdmin.value ? next() : next('/')
   }
   return next()
 })
