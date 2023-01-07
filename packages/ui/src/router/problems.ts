@@ -13,6 +13,11 @@ export const problemsRoutes: RouteRecordRaw[] = [
         path: ':id',
         component: () => import('@/views/problems/ProblemView.vue'),
         props: ({ params: { id } }) => ({ id, key: id })
+      },
+      {
+        path: ':problemId/submissions/:id',
+        component: () => import('@/views/problems/SubmissionView.vue'),
+        props: ({ params: { id, problemId } }) => ({ id, problemId, key: id })
       }
     ]
   }

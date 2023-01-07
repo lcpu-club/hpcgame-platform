@@ -21,11 +21,6 @@ const router = createRouter({
       component: () => import('@/views/RanklistView.vue')
     },
     {
-      path: '/submissions/:id',
-      component: () => import('@/views/SubmissionView.vue'),
-      props: ({ params: { id } }) => ({ id, key: id })
-    },
-    {
       path: '/messages',
       component: () => import('@/views/MessagesView.vue')
     },

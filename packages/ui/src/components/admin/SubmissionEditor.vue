@@ -36,7 +36,7 @@
       <FileDownloader
         :generator="downloadGenerator('result.json')"
         :btn-props="{ type: 'info' }"
-        :filename="filename"
+        filename="result.json"
       >
         下载评测信息
       </FileDownloader>

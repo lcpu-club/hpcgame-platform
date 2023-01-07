@@ -1,10 +1,10 @@
 <template>
-  <div class="p-6 w-full flex justify-center">
+  <div class="flex-1 flex justify-center items-start">
     <NCard
       title="提交详情"
       segmented
       content-style="padding: 0;"
-      class="max-w-128"
+      class="w-96 shadow mx-2"
     >
       <AsyncState :loading="isLoading" :error="error">
         <NTable striped :bordered="false">
@@ -38,7 +38,8 @@
             <tr>
               <td>评测消息</td>
               <td>
-                <code>{{ state.message }}</code>
+                <code v-if="state.message">{{ state.message }}</code>
+                <span class="text-gray-400">还没有消息……</span>
               </td>
             </tr>
           </tbody>
@@ -55,15 +56,21 @@
           </NButton>
           <FileDownloader
             :generator="generator"
-            :file="filename"
             :btn-props="{ type: 'primary' }"
             :filename="filename"
+            :render-icon="renderNIcon(mdiFolderZip)"
           >
-            下载提交数据
+            下载提交文件
           </FileDownloader>
         </NSpace>
       </template>
     </NCard>
+    <ResultViewer
+      v-if="state?.status === 'finished'"
+      class="flex-1 shadow mx-2"
+      :id="props.id"
+      :problem-id="state.problemId"
+    />
   </div>
 </template>
 
@@ -76,7 +83,8 @@ import FileDownloader from '@/components/misc/FileDownloader.vue'
 import { s3url } from '@/utils/misc'
 import { computed } from 'vue'
 import { renderNIcon } from '@/utils/renderIcon'
-import { mdiRefresh } from '@mdi/js'
+import { mdiRefresh, mdiFolderZip } from '@mdi/js'
+import ResultViewer from '@/components/submission/ResultViewer.vue'
 
 const props = defineProps<{
   id: string

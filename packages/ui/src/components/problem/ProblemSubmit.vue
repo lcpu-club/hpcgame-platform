@@ -79,7 +79,7 @@ const { run, running } = useSimpleAsyncTask(async () => {
   await mainApi.submission.submit.$post
     .body({ _id: submissionId.value })
     .fetch()
-  router.push(`/submissions/${submissionId.value}`)
+  router.push(`/problems/${props.problemId}/submissions/${submissionId.value}`)
 })
 </script>
 

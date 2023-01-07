@@ -30,17 +30,20 @@ const columns: DataTableColumns<ISubmission> = [
     title: 'ID',
     key: '_id',
     render: (row) =>
-      h(RouterLink, { to: `/submissions/${row._id}` }, () =>
-        h(
-          'code',
-          {
-            style: {
-              color:
-                status.value.effectiveSubmissionId === row._id ? 'blue' : ''
-            }
-          },
-          row._id
-        )
+      h(
+        RouterLink,
+        { to: `/problems/${props.problemId}/submissions/${row._id}` },
+        () =>
+          h(
+            'code',
+            {
+              style: {
+                color:
+                  status.value.effectiveSubmissionId === row._id ? 'blue' : ''
+              }
+            },
+            row._id
+          )
       )
   },
   { title: '状态', key: 'status', render: (row) => h('code', {}, row.status) },
