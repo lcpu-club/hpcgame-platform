@@ -39,7 +39,7 @@
               <td>评测消息</td>
               <td>
                 <code v-if="state.message">{{ state.message }}</code>
-                <span class="text-gray-400">还没有消息……</span>
+                <span v-else class="text-gray-400">还没有消息……</span>
               </td>
             </tr>
           </tbody>
