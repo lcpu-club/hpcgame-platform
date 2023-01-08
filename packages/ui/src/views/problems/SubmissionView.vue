@@ -65,7 +65,7 @@
         </NSpace>
       </template>
     </NCard>
-    <ResultViewer
+    <ResultView
       v-if="state?.status === 'finished'"
       class="flex-1 shadow mx-2"
       :id="props.id"
@@ -84,7 +84,7 @@ import { s3url } from '@/utils/misc'
 import { computed } from 'vue'
 import { renderNIcon } from '@/utils/renderIcon'
 import { mdiRefresh, mdiFolderZip } from '@mdi/js'
-import ResultViewer from '@/components/submission/ResultViewer.vue'
+import ResultView from '@/components/submission/ResultView.vue'
 
 const props = defineProps<{
   id: string

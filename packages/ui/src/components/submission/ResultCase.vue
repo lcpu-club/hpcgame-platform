@@ -45,7 +45,7 @@
       </div>
     </NP>
   </NStatistic>
-  <template v-if="props.json.subtasks">
+  <template v-if="props.json.subtasks && props.json.subtasks.length">
     <NDivider>测试点信息</NDivider>
     <NCollapse accordion>
       <NCollapseItem

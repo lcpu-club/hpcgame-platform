@@ -11,9 +11,13 @@ import {
 } from '../../../scow/index.js'
 import { getDownloadUrl, getUploadUrl } from '../../../storage/index.js'
 import { httpErrors } from '../index.js'
-import { adminChain } from './base.js'
+import { protectedChain } from './base.js'
 
-export const adminRouter = adminChain
+export const adminRouter = protectedChain
+  .transform((ctx) => {
+    ctx.requires(ctx.user.group === 'staff')
+    return ctx
+  })
   .router()
   .handle('POST', '/getUploadUrl', (C) =>
     C.handler()
@@ -49,7 +53,11 @@ export const adminRouter = adminChain
       })
   )
   .route('/scow', (C) =>
-    C.router()
+    C.transform((ctx) => {
+      ctx.requires(false)
+      return ctx
+    })
+      .router()
       .handle('POST', '/init', (C) =>
         C.handler().handle(async () => {
           await initSCOW()
