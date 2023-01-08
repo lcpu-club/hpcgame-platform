@@ -24,7 +24,7 @@ export const mainApi = createClient<MainDescriptor>(
   })
 )
 
-if (loggedIn.value) {
+export function tryUpdateUser() {
   mainApi.user.$get
     .query({ userId: userInfo.value._id })
     .fetch()
@@ -40,4 +40,8 @@ if (loggedIn.value) {
         console.log(err)
       }
     })
+}
+
+if (loggedIn.value) {
+  tryUpdateUser()
 }

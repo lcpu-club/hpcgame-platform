@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { mainApi } from '@/api'
+import { mainApi, tryUpdateUser } from '@/api'
 import FileUploader from '@/components/misc/FileUploader.vue'
 import { useSimpleAsyncTask } from '@/utils/async'
 import { s3url } from '@/utils/misc'
@@ -59,6 +59,7 @@ async function generator(file: File) {
       problemId: props.problemId
     })
     .fetch()
+  tryUpdateUser()
   const { url } = await submission.getUploadUrl.$post
     .body({
       _id,

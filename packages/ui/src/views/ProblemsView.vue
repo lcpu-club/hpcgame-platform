@@ -1,6 +1,6 @@
 <template>
   <div class="min-w-280">
-    <AsyncState :loading="isLoading" :error="error">
+    <AsyncState :loading="!state" :error="error">
       <div
         v-if="state.problems.length === 0"
         class="p-6 w-full flex justify-center"
@@ -14,7 +14,11 @@
         class="p-6 pt-0 w-full grid grid-cols-[auto,1fr] gap-2 place-items-start justify-items-stretch"
       >
         <div class="pt-6 sticky top-0 flex">
-          <ProblemList class="min-w-64" @refresh="execute()" />
+          <ProblemList
+            class="min-w-64"
+            :loading="isLoading"
+            @refresh="execute()"
+          />
         </div>
         <div class="pt-6 flex">
           <RouterView v-slot="{ Component }">
@@ -41,10 +45,16 @@ import { useAsyncState } from '@vueuse/core'
 import { NAlert, NSkeleton } from 'naive-ui'
 import { provide } from 'vue'
 import { loadProblemsData, kProblemsData } from '@/utils/problems'
+import { tryUpdateUser } from '@/api'
 
 const { state, isLoading, error, execute } = useAsyncState(
-  loadProblemsData,
-  null as never
+  async () => {
+    const data = await loadProblemsData()
+    state && tryUpdateUser()
+    return data
+  },
+  null as never,
+  { resetOnExecute: false }
 )
 
 provide(kProblemsData, state)

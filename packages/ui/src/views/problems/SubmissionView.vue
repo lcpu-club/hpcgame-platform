@@ -6,7 +6,7 @@
       content-style="padding: 0;"
       class="w-96 shadow mx-2"
     >
-      <AsyncState :loading="isLoading" :error="error">
+      <AsyncState :loading="!state" :error="error">
         <NTable striped :bordered="false">
           <tbody>
             <tr>
@@ -46,11 +46,22 @@
         </NTable>
       </AsyncState>
       <template #action v-if="state">
-        <NSpace>
+        <NSpace align="center">
+          <NButton
+            v-if="state.status === 'created'"
+            type="warning"
+            @click="run"
+            :loading="running"
+            :render-icon="renderNIcon(mdiPlay)"
+          >
+            提交
+          </NButton>
           <NButton
             type="info"
             @click="execute()"
+            :loading="isLoading"
             :render-icon="renderNIcon(mdiRefresh)"
+            :disabled="shouldRefresh && auto"
           >
             刷新
           </NButton>
@@ -62,6 +73,10 @@
           >
             下载提交文件
           </FileDownloader>
+          <div v-if="shouldRefresh" class="grid grid-cols-1">
+            <NSwitch v-model:value="auto" size="small" />
+            <NText>自动刷新</NText>
+          </div>
         </NSpace>
       </template>
     </NCard>
@@ -75,24 +90,30 @@
 </template>
 
 <script setup lang="ts">
-import { NCard, NTable, NButton, NSpace } from 'naive-ui'
+import { NCard, NTable, NButton, NSpace, NSwitch, NText } from 'naive-ui'
 import AsyncState from '@/components/misc/AsyncState.vue'
 import { useAsyncState } from '@vueuse/core'
 import { mainApi } from '@/api'
 import FileDownloader from '@/components/misc/FileDownloader.vue'
 import { s3url } from '@/utils/misc'
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import { renderNIcon } from '@/utils/renderIcon'
-import { mdiRefresh, mdiFolderZip } from '@mdi/js'
+import { mdiRefresh, mdiFolderZip, mdiPlay } from '@mdi/js'
 import ResultView from '@/components/submission/ResultView.vue'
+import { useSimpleAsyncTask } from '@/utils/async'
 
 const props = defineProps<{
   id: string
 }>()
 
-const { state, isLoading, error, execute } = useAsyncState(async () => {
-  return mainApi.submission.$get.query({ _id: props.id }).fetch()
-}, null as never)
+const { state, isLoading, error, execute } = useAsyncState(
+  async () => {
+    const data = await mainApi.submission.$get.query({ _id: props.id }).fetch()
+    return data
+  },
+  null as never,
+  { resetOnExecute: false }
+)
 
 const ext = computed(() => state.value?.metadata?.ext ?? 'unknown')
 const filename = computed(
@@ -105,4 +126,24 @@ async function generator() {
     .fetch()
   return s3url(url)
 }
+
+const { run, running } = useSimpleAsyncTask(
+  async () => {
+    await mainApi.submission.submit.$post.body({ _id: state.value._id }).fetch()
+    execute()
+  },
+  { notifyOnSuccess: true }
+)
+
+const auto = ref(true)
+const shouldRefresh = computed(() =>
+  ['pending', 'running'].includes(state.value?.status)
+)
+
+const intervalId = setInterval(() => {
+  if (auto.value && !isLoading.value && shouldRefresh.value) {
+    execute()
+  }
+}, 5000)
+onBeforeUnmount(() => clearInterval(intervalId))
 </script>

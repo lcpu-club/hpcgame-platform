@@ -8,7 +8,7 @@
       content-style="padding: 0;"
     >
       <template #header-extra>
-        <NButton type="info" @click="emit('refresh')">
+        <NButton type="info" @click="emit('refresh')" :loading="props.loading">
           <!--  -->
           刷新题目
         </NButton>
@@ -27,6 +27,8 @@ import { RouterLink } from 'vue-router'
 import { renderNIcon } from '@/utils/renderIcon'
 import { mdiCircle } from '@mdi/js'
 import ConnectScow from '@/components/scow/ConnectScow.vue'
+
+const props = defineProps<{ loading: boolean }>()
 
 const emit = defineEmits<{
   (ev: 'refresh'): void
