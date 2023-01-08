@@ -1,4 +1,4 @@
-import { showAdmin, loggedIn, userInfo } from '@/api'
+import { showAdmin, loggedIn } from '@/api'
 import { createRouter, createWebHistory } from 'vue-router'
 import { adminRoutes } from './admin'
 import { loginRoutes } from './login'

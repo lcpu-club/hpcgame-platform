@@ -6,7 +6,11 @@
           <ResultCase :json="state.json" />
         </NTabPane>
         <NTabPane name="raw" tab="原始内容">
-          <article class="markdown-body" v-html="state.html"></article>
+          <div class="grid">
+            <NScrollbar x-scrollable>
+              <article class="markdown-body" v-html="state.html"></article>
+            </NScrollbar>
+          </div>
         </NTabPane>
       </NTabs>
     </AsyncState>
@@ -36,7 +40,7 @@
 import { mainApi } from '@/api'
 import { s3url } from '@/utils/misc'
 import { useAsyncState } from '@vueuse/core'
-import { NCard, NButton, NSpace, NTabs, NTabPane } from 'naive-ui'
+import { NCard, NButton, NSpace, NTabs, NTabPane, NScrollbar } from 'naive-ui'
 import AsyncState from '@/components/misc/AsyncState.vue'
 import { renderNIcon } from '@/utils/renderIcon'
 import { mdiRefresh, mdiCodeJson } from '@mdi/js'

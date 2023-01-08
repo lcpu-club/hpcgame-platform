@@ -32,14 +32,15 @@ export function getProblemStatusRef(id: string) {
   return computed(() => getProblemStatus(id))
 }
 
-export function getColorByScore(score: number) {
+export function getColorByScore(score: number, maxScore: number) {
+  score = (score / maxScore) * 100
   const r = Math.floor((100 - score) * 2.55)
   const g = Math.floor(score * 2.55)
   return `rgb(${r}, ${g}, 0)`
 }
 
-export function getProblemColor(id: string) {
+export function getProblemColor(id: string, maxScore: number) {
   const status = getProblemStatus(id)
   if (!status) return 'gray'
-  return getColorByScore(status.score)
+  return getColorByScore(status.score, maxScore)
 }

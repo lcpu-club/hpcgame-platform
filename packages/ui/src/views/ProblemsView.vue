@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="min-w-280">
     <AsyncState :loading="isLoading" :error="error">
       <div
         v-if="state.problems.length === 0"

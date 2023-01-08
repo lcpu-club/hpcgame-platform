@@ -1,5 +1,5 @@
 <template>
-  <div v-if="problem" class="flex-1 grid grid-col-1 gap-2">
+  <div v-if="problem" class="flex-1 grid gap-2">
     <NCard :title="problem.title" segmented>
       <AsyncState :loading="isLoading" :error="error">
         <article class="markdown-body" v-html="state"></article>

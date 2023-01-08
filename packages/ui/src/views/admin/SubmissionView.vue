@@ -37,7 +37,7 @@ const columns: DataTableColumns = [
   {
     title: 'Updated',
     key: 'updatedAt',
-    render: (row) => new Date(row.updatedAt as number).toLocaleString()
+    render: (row) => new Date((row.updatedAt as number) / 1000).toLocaleString()
   }
 ]
 

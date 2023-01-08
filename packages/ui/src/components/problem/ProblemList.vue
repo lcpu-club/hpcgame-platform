@@ -42,7 +42,7 @@ const menuOptions = computed<MenuOption[]>(() =>
         h(RouterLink, { to: `/problems/${problem._id}` }, () => problem.title),
       key: problem._id,
       icon: renderNIcon(mdiCircle, {
-        color: getProblemColor(problem._id)
+        color: getProblemColor(problem._id, problem.score)
       })
     }))
   }))
