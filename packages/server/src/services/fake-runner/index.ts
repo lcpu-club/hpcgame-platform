@@ -17,22 +17,26 @@ reader.on('message', async (msg) => {
   msg.finish()
   const data = JSON.parse(msg.body.toString()) as IJudgeRequestMsg
   console.log(data)
-  await publishAsync(judgeStatusTopic, {
+  await publishAsync<IJudgeStatusMsg>(judgeStatusTopic, {
     submission_id: data.submission_id,
     done: false,
     score: 0,
     message: 'Running',
-    timestamp: Date.now()
-  } as IJudgeStatusMsg)
+    timestamp: Date.now() * 1000,
+    success: true,
+    error: ''
+  })
   console.log('Running...')
   setTimeout(() => {
-    publishAsync(judgeStatusTopic, {
+    publishAsync<IJudgeStatusMsg>(judgeStatusTopic, {
       submission_id: data.submission_id,
       done: true,
       score: 100,
       message: 'Accepted',
-      timestamp: Date.now()
-    } as IJudgeStatusMsg)
+      timestamp: Date.now() * 1000,
+      success: true,
+      error: ''
+    })
     console.log('Accepted!')
   }, 2000)
 })

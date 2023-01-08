@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid'
+import { Messages } from '../../db/message.js'
 import { Submissions } from '../../db/submission.js'
 import { Users } from '../../db/user.js'
 import { logger } from '../../logger/index.js'
@@ -30,7 +32,7 @@ reader.on('message', async (msg) => {
           updatedAt: data.timestamp
         }
       },
-      { projection: { userId: 1, problemId: 1 } }
+      { projection: { userId: 1, problemId: 1, status: 1 } }
     )
     if (value) {
       await Users.updateOne(
@@ -45,6 +47,37 @@ reader.on('message', async (msg) => {
           } as never
         }
       )
+      if (value.status !== 'finished') {
+        if (data.done) {
+          await Messages.insertOne({
+            _id: nanoid(),
+            global: false,
+            group: '',
+            userId: value.userId,
+            title: '评测完成',
+            content: `您的提交\`${value._id}\`已经完成评测，得分为\`${data.score}\`。`,
+            metadata: {
+              submissionId: value._id,
+              problemId: value.problemId
+            },
+            createdAt: Date.now()
+          })
+        } else if (value.status === 'pending') {
+          await Messages.insertOne({
+            _id: nanoid(),
+            global: false,
+            group: '',
+            userId: value.userId,
+            title: '评测开始',
+            content: `您的提交\`${value._id}\`已经开始评测，请耐心等候。`,
+            metadata: {
+              submissionId: value._id,
+              problemId: value.problemId
+            },
+            createdAt: Date.now()
+          })
+        }
+      }
     }
   } catch (err) {
     logger.error(err)
