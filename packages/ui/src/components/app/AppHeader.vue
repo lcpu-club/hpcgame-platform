@@ -53,7 +53,7 @@ const menuOptions = computed<MenuOption[]>(() =>
   (
     [
       ['problems', '题目', '/problems', loggedIn.value],
-      ['ranklist', '排行榜', '/ranklist'],
+      ['ranklist', '排行榜', '/ranklist', loggedIn.value],
       ['admin', '管理', '/admin', showAdmin.value]
     ] as const
   ).map(([key, label, to, show]) => ({

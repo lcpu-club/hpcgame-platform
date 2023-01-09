@@ -1,18 +1,17 @@
-import { Static } from '@sinclair/typebox'
-import { StringEnum } from '../utils/type.js'
+import type { Filter } from 'mongodb'
+import type { IUser } from './user.js'
 import { db } from './base.js'
 
-export const RanklistIdSchema = StringEnum(['all', 'pku', 'social'])
-export type RanklistId = Static<typeof RanklistIdSchema>
-
-export interface IRanklistItem {
+export interface IRanklistPlayer {
   userId: string
-  name: string
-  group: string
-  tags: string[]
-  email: string
   score: number
   scores: Record<string, number>
+}
+
+export interface IRanklistOptions {
+  filter: Filter<IUser>
+  playerCount: number
+  topstarCount: number
 }
 
 export interface IRanklistTopstarMutation {
@@ -26,9 +25,13 @@ export interface IRanklistTopstar {
 }
 
 export interface IRanklist {
-  _id: RanklistId
-  items: IRanklistItem[]
+  _id: string
+  public: boolean
+  name: string
+  options: IRanklistOptions
+  players: IRanklistPlayer[]
   topstars: IRanklistTopstar[]
+  updatedAt: number
 }
 
 export const Ranklists = db.collection<IRanklist>('ranklists')

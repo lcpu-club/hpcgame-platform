@@ -41,13 +41,14 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   window.$loadingBar?.start()
-  if (to.path.startsWith('/login') || to.path.startsWith('/auth')) {
+  const pfx = (s: string) => to.path.startsWith(s)
+  if (pfx('/login') || pfx('/auth')) {
     return loggedIn.value ? next('/') : next()
   }
-  if (to.path.startsWith('/problems') || to.path.startsWith('/user')) {
+  if (pfx('/problems') || pfx('/user') || pfx('/ranklist')) {
     return loggedIn.value ? next() : next('/login')
   }
-  if (to.path.startsWith('/admin')) {
+  if (pfx('/admin')) {
     return showAdmin.value ? next() : next('/')
   }
   return next()

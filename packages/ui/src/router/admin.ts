@@ -76,6 +76,15 @@ export const adminRoutes: RouteRecordRaw[] = [
         path: 'ranklist',
         component: () => import('@/views/admin/RanklistView.vue')
       },
+      {
+        path: 'ranklist/new',
+        component: () => import('@/views/admin/RanklistNewView.vue')
+      },
+      {
+        path: 'ranklist/edit/:id',
+        component: () => import('@/views/admin/RanklistEditView.vue'),
+        props: true
+      },
 
       {
         path: 'scow',

@@ -1,6 +1,6 @@
 import { logger } from '../../logger/index.js'
 import {
-  createReader,
+  consume,
   IJudgeRequestMsg,
   IJudgeStatusMsg,
   judgeRequestTopic,
@@ -8,14 +8,7 @@ import {
 } from '../../mq/index.js'
 import { publishAsync } from '../../mq/writer.js'
 
-const reader = await createReader(judgeRequestTopic, 'default')
-
-reader.on('ready', () => logger.info('NSQ is ready'))
-reader.on('error', (err) => logger.error(err))
-
-reader.on('message', async (msg) => {
-  msg.finish()
-  const data = JSON.parse(msg.body.toString()) as IJudgeRequestMsg
+consume<IJudgeRequestMsg>(judgeRequestTopic, 'default', async (data) => {
   console.log(data)
   await publishAsync<IJudgeStatusMsg>(judgeStatusTopic, {
     submission_id: data.submission_id,

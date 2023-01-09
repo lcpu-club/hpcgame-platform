@@ -1727,6 +1727,7 @@ __metadata:
     fastify-typeful: ^0.1.1
     ioredis: ^5.2.4
     isemail: ^3.2.0
+    js-sdsl: ^4.2.0
     minimist: ^1.2.7
     mongodb: ^4.13.0
     nanoid: ^4.0.0
@@ -5144,7 +5145,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-sdsl@npm:^4.1.4":
+"js-sdsl@npm:^4.1.4, js-sdsl@npm:^4.2.0":
   version: 4.2.0
   resolution: "js-sdsl@npm:4.2.0"
   checksum: 2cd0885f7212afb355929d72ca105cb37de7e95ad6031e6a32619eaefa46735a7d0fb682641a0ba666e1519cb138fe76abc1eea8a34e224140c9d94c995171f1
