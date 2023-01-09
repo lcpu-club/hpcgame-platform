@@ -43,3 +43,10 @@ export interface IJudgeStatusMsg {
   message: string
   timestamp: number
 }
+
+export const rankRequestTopic = 'ranker.request'
+export interface IRankRequestMsg {
+  effectiveSubmissionId: string
+  effectiveUserId: string
+  effectiveUserGroup: string
+}

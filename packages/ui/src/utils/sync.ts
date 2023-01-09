@@ -1,3 +1,4 @@
+import { hash } from './meta'
 import { hpcSyncChannel } from './shared'
 
 hpcSyncChannel.addEventListener('message', (ev) => {
@@ -14,6 +15,10 @@ hpcSyncChannel.addEventListener('message', (ev) => {
     case 'set':
       localStorage.setItem(payload.key, payload.value)
       return
+    case 'sync':
+      if (payload !== hash) {
+        location.reload()
+      }
   }
 })
 
@@ -25,4 +30,8 @@ export function finalizeLogout() {
 export function finalizeLogin() {
   hpcSyncChannel.postMessage({ type: 'login' })
   location.reload()
+}
+
+export function syncVersion() {
+  hpcSyncChannel.postMessage({ type: 'sync', payload: hash })
 }
