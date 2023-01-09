@@ -47,7 +47,8 @@ export async function pollForChange() {
           payload: {
             type: 'info',
             title: '收到新消息',
-            content: message.title
+            content: message.title,
+            duration: 5000
           }
         })
       }

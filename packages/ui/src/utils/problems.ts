@@ -3,14 +3,14 @@ import { computed, inject, type InjectionKey, type Ref } from 'vue'
 
 export async function loadProblemsData() {
   const problems = await mainApi.problem.list.$get.fetch()
-  const categories = [...new Set(problems.map((p) => p.category))].map(
-    (key) => ({
+  const categories = [...new Set(problems.map((p) => p.category))]
+    .sort()
+    .map((key) => ({
       category: key,
       problems: problems
         .filter((p) => p.category === key)
         .sort((a, b) => a.title.localeCompare(b.title))
-    })
-  )
+    }))
   return { problems, categories }
 }
 
