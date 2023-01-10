@@ -1,5 +1,5 @@
 import { redis } from '../cache/index.js'
-import { IRule } from '../utils/rules.js'
+import type { IRule } from '../utils/rules.js'
 import { db } from './base.js'
 import type { UserGroup } from './user.js'
 
