@@ -19,6 +19,9 @@ async function generatePlayers({ filter, playerCount }: IRanklistOptions) {
     false
   )
   for await (const user of users) {
+    // Ignore users that do not submit
+    if (Object.keys(user.problemStatus).length === 0) continue
+
     const scores = Object.fromEntries(
       Object.entries(user.problemStatus).map(([key, value]) => [
         key,
