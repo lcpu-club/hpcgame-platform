@@ -14,7 +14,7 @@
           <tr v-for="player of state.players" :key="player.userId">
             <td>
               <NSpace align="center" :wrap="false" :wrap-item="false">
-                <NAvatar size="small" :src="gravatar(player.user.email)" />
+                <NAvatar size="small" :src="gravatar(player.user.email)" lazy />
                 <div class="whitespace-nowrap">
                   {{ player.user.name }}
                 </div>
