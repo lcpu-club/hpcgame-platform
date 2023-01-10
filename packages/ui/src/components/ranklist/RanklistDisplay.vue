@@ -14,7 +14,12 @@
           <tr v-for="player of state.players" :key="player.userId">
             <td>
               <NSpace align="center" :wrap="false" :wrap-item="false">
-                <NAvatar size="small" :src="gravatar(player.user.email)" lazy />
+                <NAvatar
+                  size="small"
+                  :src="gravatar(player.user.email)"
+                  lazy
+                  :intersection-observer-options="imgOptions"
+                />
                 <div class="whitespace-nowrap">
                   {{ player.user.name }}
                 </div>
@@ -65,6 +70,9 @@ const props = defineProps<{
 
 const ranklist = useRanklistsData()
 const self = computed(() => ranklist.value.find((r) => r._id === props.id))
+const imgOptions = {
+  root: document
+}
 
 const { state, error } = useAsyncState(async () => {
   const { players, topstars, users, problems } = await mainApi.ranklist.$get
