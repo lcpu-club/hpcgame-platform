@@ -84,6 +84,8 @@ const scoreType = computed(() =>
   showMaxScore.value
     ? props.json.score === props.json['max-score']
       ? 'success'
+      : props.json.score === 0
+      ? 'error'
       : 'warning'
     : undefined
 )
