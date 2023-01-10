@@ -16,6 +16,7 @@
     "@mdi/js": "^7.1.96",
     "@vueuse/core": "^9.9.0",
     "crypto-js": "^4.1.1",
+    "echarts": "^5.4.1",
     "github-markdown-css": "^5.1.0",
     "katex": "^0.16.4",
     "naive-ui": "^2.34.2",
@@ -30,6 +31,7 @@
     "typeful-fetch": "^0.1.4",
     "unified": "^10.1.2",
     "vue": "^3.2.45",
+    "vue-echarts": "^6.5.1",
     "vue-recaptcha": "^2.0.3",
     "vue-router": "^4.1.6"
   },

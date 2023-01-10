@@ -6,8 +6,8 @@
           还没有排行榜信息，请稍候...
         </NAlert>
       </div>
-      <div v-else class="p-6">
-        <NCard title="排行榜" class="shadow" segmented>
+      <div v-else class="p-6 flex justify-center">
+        <NCard title="排行榜" class="shadow max-w-320" segmented>
           <template #header-extra>
             <NButton :loading="isLoading" @click="execute()" type="info">
               刷新

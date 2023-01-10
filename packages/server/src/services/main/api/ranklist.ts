@@ -1,8 +1,9 @@
 import { Type } from '@sinclair/typebox'
 import { createHash } from 'crypto'
 import { redis } from '../../../cache/index.js'
-import { IRanklist, Ranklists } from '../../../db/ranklist.js'
-import { IRankRequestMsg, rankRequestTopic } from '../../../mq/index.js'
+import { Problems } from '../../../db/problem.js'
+import { type IRanklist, Ranklists } from '../../../db/ranklist.js'
+import { type IRankRequestMsg, rankRequestTopic } from '../../../mq/index.js'
 import { publishAsync } from '../../../mq/writer.js'
 import { httpErrors } from '../index.js'
 import { protectedChain } from './base.js'
@@ -80,6 +81,11 @@ export const ranklistRouter = protectedChain
         for (const user of data.users) {
           user.email = md5(user.email)
         }
+        data.problems = await Problems.find(
+          {},
+          { projection: { _id: 1, title: 1, score: 1 } }
+        ).toArray()
+        await redis.set('ranklist:' + _id, JSON.stringify(data), 'EX', 30)
         return data
       })
   )
