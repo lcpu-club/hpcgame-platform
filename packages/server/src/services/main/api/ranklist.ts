@@ -3,6 +3,11 @@ import { createHash } from 'crypto'
 import { redis } from '../../../cache/index.js'
 import { Problems } from '../../../db/problem.js'
 import { type IRanklist, Ranklists } from '../../../db/ranklist.js'
+import {
+  defaultGameSchedule,
+  kGameSchedule,
+  sysGet
+} from '../../../db/syskv.js'
 import { type IRankRequestMsg, rankRequestTopic } from '../../../mq/index.js'
 import { publishAsync } from '../../../mq/writer.js'
 import { httpErrors } from '../index.js'
@@ -14,10 +19,18 @@ function md5(str: string) {
   return hash.digest('hex')
 }
 
+async function shouldShowRanklists(group: string) {
+  const schedule = await sysGet(kGameSchedule, defaultGameSchedule)
+  return Date.now() >= schedule.start || group === 'admin' || group === 'staff'
+}
+
 export const ranklistRouter = protectedChain
   .router()
   .handle('GET', '/list', (C) =>
     C.handler().handle(async (ctx) => {
+      if (!(await shouldShowRanklists(ctx.user.group))) {
+        return []
+      }
       const showAll = ctx.user.group === 'admin' || ctx.user.group === 'staff'
       return Ranklists.find(showAll ? {} : { public: true }, {
         projection: { _id: 1, name: 1, public: 1, updatedAt: 1 }

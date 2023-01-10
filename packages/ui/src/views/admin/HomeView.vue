@@ -1,5 +1,21 @@
 <template>
   <div class="w-full grid grid-cols-1 gap-2">
+    <NCard title="比赛日程">
+      <AsyncState :loading="!state" :error="error">
+        <div
+          class="grid grid-cols-[100px,auto] gap-2 justify-items-center place-items-center"
+        >
+          <div>比赛开始</div>
+          <div class="text-4xl">
+            {{ new Date(state.start).toLocaleString() }}
+          </div>
+          <div>比赛结束</div>
+          <div class="text-4xl">
+            {{ new Date(state.end).toLocaleString() }}
+          </div>
+        </div>
+      </AsyncState>
+    </NCard>
     <NCard title="前端信息">
       <div class="grid grid-cols-[100px,auto] gap-2">
         <div>版本</div>
@@ -45,6 +61,8 @@ import { mainApi } from '@/api'
 import FileDownloader from '@/components/misc/FileDownloader.vue'
 import { s3url } from '@/utils/misc'
 import { useSimpleAsyncTask } from '@/utils/async'
+import { useAsyncState } from '@vueuse/core'
+import AsyncState from '@/components/misc/AsyncState.vue'
 
 const ts = ref(Date.now())
 const bucket = ref('')
@@ -77,4 +95,11 @@ const syncTask = useSimpleAsyncTask(
   },
   { notifyOnSuccess: true }
 )
+
+const { state, error } = useAsyncState(async () => {
+  const data = await mainApi.kv['load/:key'].$get
+    .params({ key: 'game_schedule' })
+    .fetch()
+  return data as any
+}, null as never)
 </script>
