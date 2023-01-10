@@ -4,12 +4,15 @@ import {
   getSCOWCredentialsForProblem,
   SCOWCredentials
 } from '../../../db/scow.js'
+import { sysGet, kTagRules, defaultTagRules } from '../../../db/syskv.js'
+import { Users } from '../../../db/user.js'
 import {
   initSCOW,
   setAccountBlock,
   syncAccountStatusWithSlurm
 } from '../../../scow/index.js'
 import { getDownloadUrl, getUploadUrl } from '../../../storage/index.js'
+import { execuateRules } from '../../../utils/rules.js'
 import { httpErrors } from '../index.js'
 import { protectedChain } from './base.js'
 
@@ -51,6 +54,23 @@ export const adminRouter = protectedChain
           url: await getDownloadUrl(req.body.bucket, req.body.ossKey)
         }
       })
+  )
+  .handle('POST', '/syncUserTags', (C) =>
+    C.handler().handle(async (ctx) => {
+      ctx.requires(false)
+      const { rules } = await sysGet(kTagRules, defaultTagRules)
+      const users = Users.find()
+      for await (const user of users) {
+        const tags = execuateRules<string[]>(rules, user, user.tags)
+        if (tags.some((tag) => !user.tags.includes(tag))) {
+          await Users.updateOne(
+            { _id: user._id },
+            { $addToSet: { tags: { $each: tags } } }
+          )
+        }
+      }
+      return 0
+    })
   )
   .route('/scow', (C) =>
     C.transform((ctx) => {

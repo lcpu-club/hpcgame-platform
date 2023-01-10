@@ -1,4 +1,5 @@
 import { redis } from '../cache/index.js'
+import { IRule } from '../utils/rules.js'
 import { db } from './base.js'
 import type { UserGroup } from './user.js'
 
@@ -52,7 +53,7 @@ export const defaultGameSchedule = {
 }
 
 export const kUserChargeLimit = 'user_charge_limit' as ISysKey<
-  Record<UserGroup, number>
+  Record<UserGroup, number | IRule[]>
 >
 export const defaultUserChargeLimit: Record<UserGroup, number> = {
   admin: 0,
@@ -69,4 +70,11 @@ export const kEmailConfig = 'email_config' as ISysKey<{
 export const defaultEmailConfig = {
   whitelist: ['.edu.cn'],
   blacklist: []
+}
+
+export const kTagRules = 'tag_rules' as ISysKey<{
+  rules: IRule[]
+}>
+export const defaultTagRules = {
+  rules: []
 }

@@ -48,7 +48,6 @@ export const DEV_MODE = boolean('DEV_MODE', false)
 // Auth
 export const IAAA_ID = string('IAAA_ID')
 export const IAAA_KEY = string('IAAA_KEY')
-export const NEWCOMER_YEAR = string('NEWCOMER_YEAR', '22')
 
 // Mail
 export const SMTP_HOST = string('SMTP_HOST')

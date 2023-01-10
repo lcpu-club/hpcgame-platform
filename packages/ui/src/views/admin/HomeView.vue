@@ -24,17 +24,27 @@
         </FileDownloader>
       </div>
     </NCard>
+    <NCard title="杂项">
+      <NButton
+        type="error"
+        :loading="syncTask.running.value"
+        @click="syncTask.run"
+      >
+        同步用户标签
+      </NButton>
+    </NCard>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NCard, NDatePicker, NInput, NInputNumber } from 'naive-ui'
+import { NCard, NDatePicker, NInput, NInputNumber, NButton } from 'naive-ui'
 import { version } from '@/utils/meta'
 import { ref } from 'vue'
 import FileUploader from '@/components/misc/FileUploader.vue'
 import { mainApi } from '@/api'
 import FileDownloader from '@/components/misc/FileDownloader.vue'
 import { s3url } from '@/utils/misc'
+import { useSimpleAsyncTask } from '@/utils/async'
 
 const ts = ref(Date.now())
 const bucket = ref('')
@@ -60,4 +70,11 @@ async function generatorDownload() {
     .fetch()
   return s3url(url)
 }
+
+const syncTask = useSimpleAsyncTask(
+  async () => {
+    await mainApi.admin.syncUserTags.$post.body({}).fetch()
+  },
+  { notifyOnSuccess: true }
+)
 </script>

@@ -1,10 +1,5 @@
 import { Type } from '@sinclair/typebox'
-import {
-  DEV_MODE,
-  IAAA_ID,
-  IAAA_KEY,
-  NEWCOMER_YEAR
-} from '../../../config/index.js'
+import { DEV_MODE, IAAA_ID, IAAA_KEY } from '../../../config/index.js'
 import { createUser, UserGroupSchema, Users } from '../../../db/user.js'
 import { rootChain } from './base.js'
 import { validate } from '@pku-internals/iaaa'
@@ -13,11 +8,14 @@ import { redis } from '../../../cache/index.js'
 import isemail from 'isemail'
 import { sendMail } from '../../../mail/index.js'
 import { recaptchaVerify } from '../../../captcha/index.js'
-import { defaultEmailConfig, kEmailConfig, sysGet } from '../../../db/syskv.js'
-
-function isNewComer(identityId: string) {
-  return identityId.length === 10 && identityId.startsWith(NEWCOMER_YEAR)
-}
+import {
+  defaultEmailConfig,
+  defaultTagRules,
+  kEmailConfig,
+  kTagRules,
+  sysGet
+} from '../../../db/syskv.js'
+import { execuateRules } from '../../../utils/rules.js'
 
 function generateCode() {
   return Math.floor(Math.random() * 1000000)
@@ -77,10 +75,17 @@ export const authRouter = rootChain
         const iaaaId = resp.userInfo.identityId
         const user = await Users.findOne({ iaaaId })
         if (user) return user
+
+        const { rules } = await sysGet(kTagRules, defaultTagRules)
+        const tags = execuateRules<string[]>(
+          rules,
+          { iaaaId: resp.userInfo.identityId },
+          []
+        )
         return createUser({
           name: resp.userInfo.name,
           group: 'pku',
-          tags: isNewComer(iaaaId) ? ['newcomer'] : [],
+          tags,
           email: `${resp.userInfo.identityId}@pku.edu.cn`,
           problemStatus: {},
           iaaaId,
@@ -149,10 +154,13 @@ export const authRouter = rootChain
 
         const user = await Users.findOne({ authEmail: mail })
         if (user) return user
+
+        const { rules } = await sysGet(kTagRules, defaultTagRules)
+        const tags = execuateRules<string[]>(rules, { authEmail: mail }, [])
         return createUser({
           name: mail.split('@')[0],
           group: 'social',
-          tags: [],
+          tags,
           email: mail,
           problemStatus: {},
           authEmail: mail,
