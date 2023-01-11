@@ -63,6 +63,7 @@ import RanklistScores from './RanklistScores.vue'
 import RanklistTopstars from './RanklistTopstars.vue'
 import { useRanklistsData } from '@/utils/ranklist'
 import { computed } from 'vue'
+import type { IProblem } from '@hpcgame-platform/server/src/db'
 
 const props = defineProps<{
   id: string
@@ -90,7 +91,12 @@ const { state, error } = useAsyncState(async () => {
     })),
     users,
     userMap,
-    problems
+    problems: (problems as IProblem[]).sort((a, b) => {
+      if (a.category === b.category) {
+        return a.title.localeCompare(b.title)
+      }
+      return a.category.localeCompare(b.category)
+    })
   }
 }, null as never)
 </script>
