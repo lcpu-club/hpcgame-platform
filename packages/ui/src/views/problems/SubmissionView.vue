@@ -144,6 +144,6 @@ const intervalId = setInterval(() => {
   if (auto.value && !isLoading.value && shouldRefresh.value) {
     execute()
   }
-}, 5000)
+}, 3000)
 onBeforeUnmount(() => clearInterval(intervalId))
 </script>

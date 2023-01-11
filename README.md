@@ -5,3 +5,8 @@
 [文档](./docs/README.md)
 
 </div>
+
+Related Projects:
+
+- [lcpu-club/hpcjudge](https://github.com/lcpu-club/hpcjudge)
+- [PKUHPC/SCOW](https://github.com/PKUHPC/SCOW)
