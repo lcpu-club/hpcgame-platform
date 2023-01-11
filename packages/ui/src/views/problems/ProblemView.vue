@@ -1,6 +1,12 @@
 <template>
   <div v-if="problem" class="flex-1 grid gap-2">
     <NCard :title="problem.title" segmented>
+      <template #header-extra>
+        <NText strong>
+          {{ problem.score }}
+        </NText>
+        pts
+      </template>
       <AsyncState :loading="isLoading" :error="error">
         <article class="markdown-body" v-html="state"></article>
         <template v-if="attachments.length">
@@ -50,7 +56,7 @@
 
 <script setup lang="ts">
 import { useProblemsData } from '@/utils/problems'
-import { NCard, NSpace, NTag, NDivider } from 'naive-ui'
+import { NCard, NSpace, NTag, NDivider, NText } from 'naive-ui'
 import { computed } from 'vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import AsyncState from '@/components/misc/AsyncState.vue'

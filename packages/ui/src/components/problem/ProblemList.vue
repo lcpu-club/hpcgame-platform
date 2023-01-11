@@ -22,7 +22,7 @@
 // import { userInfo } from '@/api'
 import { computed, h } from 'vue'
 import { useProblemsData, getProblemColor } from '@/utils/problems'
-import { NButton, NCard, NMenu, type MenuOption } from 'naive-ui'
+import { NButton, NCard, NMenu, type MenuOption, NP, NText } from 'naive-ui'
 import { RouterLink } from 'vue-router'
 import { renderNIcon } from '@/utils/renderIcon'
 import { mdiCircle } from '@mdi/js'
@@ -41,7 +41,12 @@ const menuOptions = computed<MenuOption[]>(() =>
     key: item.category,
     children: item.problems.map((problem) => ({
       label: () =>
-        h(RouterLink, { to: `/problems/${problem._id}` }, () => problem.title),
+        h(RouterLink, { to: `/problems/${problem._id}` }, () =>
+          h(NP, { class: ['flex', 'justify-between'] }, () => [
+            h(NText, { strong: true }, () => problem.title),
+            h(NText, { depth: 3 }, () => `${problem.score}pts`)
+          ])
+        ),
       key: problem._id,
       icon: renderNIcon(mdiCircle, {
         color: getProblemColor(problem._id, problem.score)
