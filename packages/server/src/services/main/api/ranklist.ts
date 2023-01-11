@@ -96,7 +96,7 @@ export const ranklistRouter = protectedChain
         }
         data.problems = await Problems.find(
           {},
-          { projection: { _id: 1, title: 1, score: 1 } }
+          { projection: { _id: 1, title: 1, score: 1, category: 1 } }
         ).toArray()
         await redis.set('ranklist:' + _id, JSON.stringify(data), 'EX', 30)
         return data

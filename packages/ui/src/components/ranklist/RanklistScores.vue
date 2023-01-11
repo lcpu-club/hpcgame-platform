@@ -21,6 +21,7 @@ import type { IProblem } from '@hpcgame-platform/server/src/db'
 import { NTooltip, NIcon } from 'naive-ui'
 import { renderMdiIcon } from '@/utils/renderIcon'
 import { mdiCircle } from '@mdi/js'
+import { getColorByScore } from '@/utils/problems'
 
 const props = defineProps<{
   scores: Record<string, number>
@@ -29,9 +30,6 @@ const props = defineProps<{
 
 function color(score: number | undefined, maxScore: number) {
   if (typeof score !== 'number') return '#7f8c8d'
-  if (!score) return '#c0392b'
-  if (score < maxScore) return '#e67e22'
-  if (score === maxScore) return '#2ecc71'
-  return '#9b59b6'
+  return getColorByScore(score, maxScore)
 }
 </script>
