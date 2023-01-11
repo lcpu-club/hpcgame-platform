@@ -25,11 +25,11 @@ async function generatePlayers({ filter, playerCount }: IRanklistOptions) {
     const scores = Object.fromEntries(
       Object.entries(user.problemStatus).map(([key, value]) => [
         key,
-        value.score
+        value.score ?? 0
       ])
     )
     const score = Object.values(user.problemStatus).reduce(
-      (acc, cur) => acc + cur.score,
+      (acc, cur) => acc + (cur.score ?? 0),
       0
     )
     const item: IRanklistPlayer = {
