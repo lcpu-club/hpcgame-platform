@@ -42,9 +42,13 @@ const menuOptions = computed<MenuOption[]>(() =>
     children: item.problems.map((problem) => ({
       label: () =>
         h(RouterLink, { to: `/problems/${problem._id}` }, () =>
-          h(NP, { class: ['flex', 'justify-between'] }, () => [
+          h(NP, { class: ['flex', 'justify-between', 'items-center'] }, () => [
             h(NText, { strong: true }, () => problem.title),
-            h(NText, { depth: 3 }, () => `${problem.score}pts`)
+            h(
+              NText,
+              { depth: 3, class: ['text-xs'] },
+              () => `${problem.score}pts`
+            )
           ])
         ),
       key: problem._id,
