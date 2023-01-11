@@ -48,13 +48,16 @@ export const ranklistRouter = protectedChain
       )
       .handle(async (ctx, req, rep) => {
         const { _id } = req.query
-        const cached = await redis.get('ranklist:' + _id)
+        const showAll = ctx.user.group === 'admin' || ctx.user.group === 'staff'
+        const filter = showAll ? {} : { public: true }
+        const cacheKey = `ranklist:${showAll}:${_id}`
+        const cached = await redis.get(cacheKey)
         if (cached) {
           rep.header('Content-Type', 'application/json')
           return cached
         }
         const data = await Ranklists.aggregate([
-          { $match: { _id } },
+          { $match: { _id, ...filter } },
           {
             $project: {
               players: 1,
@@ -94,11 +97,10 @@ export const ranklistRouter = protectedChain
         for (const user of data.users) {
           user.email = md5(user.email)
         }
-        data.problems = await Problems.find(
-          {},
-          { projection: { _id: 1, title: 1, score: 1, category: 1 } }
-        ).toArray()
-        await redis.set('ranklist:' + _id, JSON.stringify(data), 'EX', 30)
+        data.problems = await Problems.find(filter, {
+          projection: { _id: 1, title: 1, score: 1, category: 1 }
+        }).toArray()
+        await redis.set(cacheKey, JSON.stringify(data), 'EX', 30)
         return data
       })
   )

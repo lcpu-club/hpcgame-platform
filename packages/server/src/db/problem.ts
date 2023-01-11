@@ -2,6 +2,7 @@ import { db } from './base.js'
 
 export interface IProblem {
   _id: string
+  public: boolean
   title: string
   content: string
   score: number

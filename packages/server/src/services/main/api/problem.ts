@@ -23,11 +23,10 @@ export const problemRouter = protectedChain
       if (!(await shouldShowProblems(ctx.user.group))) {
         return []
       }
-
-      const problems = await Problems.find(
-        {},
-        { projection: { content: 0, runnerArgs: 0 } }
-      ).toArray()
+      const showAll = ctx.user.group === 'admin' || ctx.user.group === 'staff'
+      const problems = await Problems.find(showAll ? {} : { public: true }, {
+        projection: { content: 0, runnerArgs: 0 }
+      }).toArray()
       return problems as Array<Omit<IProblem, 'content'>>
     })
   )
@@ -42,9 +41,10 @@ export const problemRouter = protectedChain
         if (!(await shouldShowProblems(ctx.user.group))) {
           throw server.httpErrors.notFound()
         }
-
+        const showAll = ctx.user.group === 'admin' || ctx.user.group === 'staff'
+        const filter = showAll ? {} : { public: true }
         const problem = await Problems.findOne(
-          { _id: req.query._id },
+          { _id: req.query._id, ...filter },
           { projection: { content: 1 } }
         )
         if (!problem) throw req.server.httpErrors.notFound()
@@ -67,9 +67,10 @@ export const problemRouter = protectedChain
         if (!(await shouldShowProblems(ctx.user.group))) {
           throw server.httpErrors.notFound()
         }
-
+        const showAll = ctx.user.group === 'admin' || ctx.user.group === 'staff'
+        const filter = showAll ? {} : { public: true }
         const problem = await Problems.findOne(
-          { _id: req.body._id },
+          { _id: req.body._id, ...filter },
           { projection: { _id: 1 } }
         )
         if (!problem) throw req.server.httpErrors.notFound()
@@ -121,6 +122,7 @@ export const problemRouter = protectedChain
             Type.Object({
               _id: Type.String(),
               $set: Type.Object({
+                public: Type.Boolean(),
                 title: Type.String(),
                 content: Type.String(),
                 score: Type.Number(),
