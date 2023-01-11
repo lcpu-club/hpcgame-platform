@@ -30,18 +30,20 @@ consume<IJudgeStatusMsg>(judgeStatusTopic, 'default', async (data) => {
     { projection: { userId: 1, problemId: 1, status: 1 } }
   )
   if (value) {
-    await Users.updateOne(
-      {
-        _id: value.userId,
-        [`problemStatus.${value.problemId}.effectiveSubmissionId`]:
-          data.submission_id
-      },
-      {
-        $set: {
-          [`problemStatus.${value.problemId}.score`]: data.score
-        } as never
-      }
-    )
+    if (data.done) {
+      await Users.updateOne(
+        {
+          _id: value.userId,
+          [`problemStatus.${value.problemId}.effectiveSubmissionId`]:
+            data.submission_id
+        },
+        {
+          $set: {
+            [`problemStatus.${value.problemId}.score`]: data.score
+          } as never
+        }
+      )
+    }
     if (value.status !== 'finished') {
       if (data.done) {
         await Messages.insertOne({

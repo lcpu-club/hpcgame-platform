@@ -13,7 +13,7 @@ export interface IUserAuthSource {
 }
 
 export interface ProblemStatus {
-  score: number
+  score?: number
   submissionCount: number
   effectiveSubmissionId: string
 }

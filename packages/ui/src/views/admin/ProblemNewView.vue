@@ -20,6 +20,7 @@ const router = useRouter()
 async function load(): Promise<IProblem> {
   return {
     _id: nanoid(),
+    public: false,
     title: 'Title',
     content: 'Content',
     score: 100,

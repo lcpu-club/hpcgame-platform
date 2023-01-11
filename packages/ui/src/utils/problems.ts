@@ -48,5 +48,5 @@ export function getColorByScore(score: number, maxScore: number) {
 export function getProblemColor(id: string, maxScore: number) {
   const status = getProblemStatus(id)
   if (!status) return 'gray'
-  return getColorByScore(status.score, maxScore)
+  return getColorByScore(status.score ?? 0, maxScore)
 }

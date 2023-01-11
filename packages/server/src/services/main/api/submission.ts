@@ -109,7 +109,6 @@ export const submissionRouter = protectedChain
           },
           {
             $set: <never>{
-              [`problemStatus.${problemId}.score`]: 0,
               [`problemStatus.${problemId}.effectiveSubmissionId`]: id
             },
             $inc: {
