@@ -140,16 +140,19 @@ export const ranklistRouter = protectedChain
       .handle('POST', '/', (C) =>
         C.handler()
           .body(
-            Type.Object({
-              _id: Type.String(),
-              public: Type.Boolean(),
-              name: Type.String(),
-              options: Type.Object({
-                filter: Type.Any(),
-                playerCount: Type.Number(),
-                topstarCount: Type.Number()
-              })
-            })
+            Type.Object(
+              {
+                _id: Type.String(),
+                public: Type.Boolean(),
+                name: Type.String(),
+                options: Type.Object({
+                  filter: Type.Any(),
+                  playerCount: Type.Number(),
+                  topstarCount: Type.Number()
+                })
+              },
+              { additionalProperties: false }
+            )
           )
           .handle(async (ctx, req) => {
             await Ranklists.insertOne({
@@ -166,15 +169,18 @@ export const ranklistRouter = protectedChain
           .body(
             Type.Object({
               _id: Type.String(),
-              $set: Type.Object({
-                public: Type.Boolean(),
-                name: Type.String(),
-                options: Type.Object({
-                  filter: Type.Any(),
-                  playerCount: Type.Number(),
-                  topstarCount: Type.Number()
-                })
-              })
+              $set: Type.Object(
+                {
+                  public: Type.Boolean(),
+                  name: Type.String(),
+                  options: Type.Object({
+                    filter: Type.Any(),
+                    playerCount: Type.Number(),
+                    topstarCount: Type.Number()
+                  })
+                },
+                { additionalProperties: false }
+              )
             })
           )
           .handle(async (ctx, req) => {

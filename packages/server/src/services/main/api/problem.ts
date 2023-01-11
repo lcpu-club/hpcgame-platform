@@ -121,18 +121,21 @@ export const problemRouter = protectedChain
           .body(
             Type.Object({
               _id: Type.String(),
-              $set: Type.Object({
-                public: Type.Boolean(),
-                title: Type.String(),
-                content: Type.String(),
-                score: Type.Number(),
-                maxSubmissionCount: Type.Number(),
-                maxSubmissionSize: Type.Number(),
-                runnerArgs: Type.String(),
-                category: Type.String(),
-                tags: Type.Array(Type.String()),
-                metadata: Type.Record(Type.String(), Type.Unknown())
-              })
+              $set: Type.Object(
+                {
+                  public: Type.Boolean(),
+                  title: Type.String(),
+                  content: Type.String(),
+                  score: Type.Number(),
+                  maxSubmissionCount: Type.Number(),
+                  maxSubmissionSize: Type.Number(),
+                  runnerArgs: Type.String(),
+                  category: Type.String(),
+                  tags: Type.Array(Type.String()),
+                  metadata: Type.Record(Type.String(), Type.Unknown())
+                },
+                { additionalProperties: false }
+              )
             })
           )
           .handle(async (ctx, req) => {

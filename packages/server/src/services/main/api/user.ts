@@ -102,12 +102,17 @@ export const userRouter = protectedChain
           .body(
             Type.Object({
               _id: Type.String(),
-              $set: Type.Object({
-                name: Type.String({ minLength: 1, maxLength: 32 }),
-                group: UserGroupSchema,
-                tags: Type.Array(Type.String({ minLength: 1, maxLength: 32 })),
-                email: Type.String({ format: 'email' })
-              })
+              $set: Type.Object(
+                {
+                  name: Type.String({ minLength: 1, maxLength: 32 }),
+                  group: UserGroupSchema,
+                  tags: Type.Array(
+                    Type.String({ minLength: 1, maxLength: 32 })
+                  ),
+                  email: Type.String({ format: 'email' })
+                },
+                { additionalProperties: false }
+              )
             })
           )
           .handle(async (ctx, req) => {

@@ -101,15 +101,18 @@ export const messageRouter = unprotectedChain
       .body(
         Type.Object({
           _id: Type.String(),
-          $set: Type.Object({
-            global: Type.Boolean(),
-            group: Type.String(),
-            userId: Type.String(),
-            title: Type.String(),
-            content: Type.String(),
-            createdAt: Type.Number(),
-            metadata: Type.Record(Type.String(), Type.Unknown())
-          })
+          $set: Type.Object(
+            {
+              global: Type.Boolean(),
+              group: Type.String(),
+              userId: Type.String(),
+              title: Type.String(),
+              content: Type.String(),
+              createdAt: Type.Number(),
+              metadata: Type.Record(Type.String(), Type.Unknown())
+            },
+            { additionalProperties: false }
+          )
         })
       )
       .handle(async (ctx, req) => {

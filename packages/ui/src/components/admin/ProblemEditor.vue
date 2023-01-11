@@ -4,6 +4,8 @@
   >
     <div>ID</div>
     <NInput :readonly="!props.isNew" v-model:value="model._id" />
+    <div>公开</div>
+    <NSwitch v-model:value="model.public" />
     <div>标题</div>
     <NInput v-model:value="model.title" />
     <div>内容</div>
@@ -39,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { NInput, NInputNumber, NSelect } from 'naive-ui'
+import { NInput, NInputNumber, NSelect, NSwitch } from 'naive-ui'
 import { ref } from 'vue'
 import JSONEditor from '../misc/JSONEditor.vue'
 import type { IProblem } from '@hpcgame-platform/server/src/db'

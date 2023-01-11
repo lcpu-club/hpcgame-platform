@@ -269,7 +269,9 @@ export const submissionRouter = protectedChain
             })
           )
           .handle(async (ctx, req) => {
-            const submission = await Submissions.findOne(req.query)
+            const submission = await Submissions.findOne({
+              _id: req.query._id
+            })
             if (!submission) throw req.server.httpErrors.notFound()
             return submission
           })
@@ -279,13 +281,16 @@ export const submissionRouter = protectedChain
           .body(
             Type.Object({
               _id: Type.String(),
-              $set: Type.Object({
-                score: Type.Number(),
-                status: SubmissionStatusSchema,
-                message: Type.String(),
-                createdAt: Type.Number(),
-                updatedAt: Type.Number()
-              })
+              $set: Type.Object(
+                {
+                  score: Type.Number(),
+                  status: SubmissionStatusSchema,
+                  message: Type.String(),
+                  createdAt: Type.Number(),
+                  updatedAt: Type.Number()
+                },
+                { additionalProperties: false }
+              )
             })
           )
           .handle(async (ctx, req) => {
