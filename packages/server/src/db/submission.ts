@@ -28,3 +28,15 @@ export interface ISubmission {
 
 export const Submissions = db.collection<ISubmission>('submissions')
 await Submissions.createIndex({ userId: 1, problemId: 1 })
+await Submissions.createIndex(
+  { userId: 1, problemId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      status: {
+        $in: ['created', 'pending', 'running']
+      }
+    },
+    name: 'unique_submission_per_user'
+  }
+)

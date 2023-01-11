@@ -1,4 +1,3 @@
-import { logger } from '../../logger/index.js'
 import {
   consume,
   IJudgeRequestMsg,
@@ -31,5 +30,5 @@ consume<IJudgeRequestMsg>(judgeRequestTopic, 'default', async (data) => {
       error: ''
     })
     console.log('Accepted!')
-  }, 2000)
+  }, 20000)
 })
