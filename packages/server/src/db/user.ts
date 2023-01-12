@@ -63,7 +63,7 @@ export async function expireUserInfo(_id: string) {
 
 export async function verifyAuthToken(token: unknown) {
   if (typeof token !== 'string') return null
-  const [userId, _token] = token.split(':')
+  const [userId] = token.split(':')
   if (typeof userId !== 'string') return null
   const cached = await redis.get('user:' + token)
   if (!cached) {
@@ -73,7 +73,7 @@ export async function verifyAuthToken(token: unknown) {
     )
     if (!user) return null
     const { authToken, ...rest } = user
-    if (authToken !== _token) throw httpErrors.forbidden()
+    if (authToken !== token) throw httpErrors.forbidden()
     await redis.set('user:' + authToken, JSON.stringify(rest))
     return user
   }
