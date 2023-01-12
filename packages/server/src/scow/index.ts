@@ -7,6 +7,7 @@ import {
   SCOW_TENANT_NAME
 } from '../config/index.js'
 import { type UserGroup, UserGroups } from '../db/user.js'
+import { logger } from '../logger/index.js'
 
 export const scow = new SCOW(SCOW_GRPC_ADDR)
 
@@ -20,6 +21,7 @@ async function ignoreMeaninglessError<T>(promise: Promise<T>) {
         (x) => x === err.code
       )
     ) {
+      logger.warn(e, 'SCOW error ignored')
       return
     }
     throw e
