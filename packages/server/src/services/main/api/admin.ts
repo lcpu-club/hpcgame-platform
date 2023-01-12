@@ -77,7 +77,10 @@ export const adminRouter = protectedChain
       ctx.requires(false)
       const users = Users.find()
       for await (const user of users) {
-        user.authToken = await generateAuthToken(user._id)
+        await Users.updateOne(
+          { _id: user._id },
+          { $set: { authToken: await generateAuthToken(user._id) } }
+        )
       }
       return 0
     })
