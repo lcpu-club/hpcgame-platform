@@ -1,5 +1,7 @@
 <template>
-  <div class="p-16 pt-8 <lg:p-1 w-full flex justify-center items-start">
+  <div
+    class="p-16 pt-8 <lg:p-1 w-full flex justify-center items-start min-w-256"
+  >
     <NLayout class="border">
       <NLayoutHeader bordered class="p-4">
         <div class="text-lg">HPC Game 管理后台</div>
