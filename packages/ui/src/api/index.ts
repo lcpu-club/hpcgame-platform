@@ -3,6 +3,7 @@ import type { IUser } from '@hpcgame-platform/server/src/db'
 import { createClient, HandlerFetchError } from 'typeful-fetch'
 import { useLocalStorage } from '@vueuse/core'
 import { computed } from 'vue'
+import { finalizeLogout } from '@/utils/sync'
 
 export const userInfo = useLocalStorage<IUser>(
   'user-info',
@@ -37,7 +38,10 @@ export function tryUpdateUser() {
     })
     .catch((err) => {
       if (err instanceof HandlerFetchError) {
-        console.log(err)
+        if (err.response.status === 403) {
+          userInfo.value.authToken = ''
+          finalizeLogout()
+        }
       }
     })
 }
