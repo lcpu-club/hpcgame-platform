@@ -1,7 +1,7 @@
 <template>
   <NCard :title="props.message.title" segmented>
     <article class="markdown-body" v-html="html"></article>
-    <template #footer>
+    <template v-if="props.message.metadata.problemId" #footer>
       <NSpace>
         <RouterLink
           v-if="submission"
