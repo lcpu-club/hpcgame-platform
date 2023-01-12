@@ -30,7 +30,10 @@ const columns: DataTableColumns = [
         h('code', row._id as string)
       )
   },
-  { title: 'Title', key: 'title' }
+  { title: 'Title', key: 'title' },
+  { title: 'Public', key: 'public' },
+  { title: 'Score', key: 'score' },
+  { title: 'Category', key: 'category' }
 ]
 
 async function load(

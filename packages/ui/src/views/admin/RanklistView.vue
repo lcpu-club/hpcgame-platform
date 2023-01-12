@@ -34,7 +34,8 @@ const columns: DataTableColumns = [
         h('code', row._id as string)
       )
   },
-  { title: 'Name', key: 'name' }
+  { title: 'Name', key: 'name' },
+  { title: 'Public', key: 'public' }
 ]
 
 const { state, isLoading, error } = useAsyncState(
