@@ -5,7 +5,7 @@ import {
   SCOWCredentials
 } from '../../../db/scow.js'
 import { sysGet, kTagRules, defaultTagRules } from '../../../db/syskv.js'
-import { Users } from '../../../db/user.js'
+import { generateAuthToken, Users } from '../../../db/user.js'
 import {
   initSCOW,
   setAccountBlock,
@@ -68,6 +68,16 @@ export const adminRouter = protectedChain
             { $addToSet: { tags: { $each: tags } } }
           )
         }
+      }
+      return 0
+    })
+  )
+  .handle('POST', '/resetAuthTokens', (C) =>
+    C.handler().handle(async (ctx) => {
+      ctx.requires(false)
+      const users = Users.find()
+      for await (const user of users) {
+        user.authToken = await generateAuthToken(user._id)
       }
       return 0
     })
