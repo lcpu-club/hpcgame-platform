@@ -31,7 +31,11 @@ const columns: DataTableColumns = [
       )
   },
   { title: 'Title', key: 'title' },
-  { title: 'Public', key: 'public' },
+  {
+    title: 'Public',
+    key: 'public',
+    render: (row) => (row.public ? 'Public' : 'Private')
+  },
   { title: 'Score', key: 'score' },
   { title: 'Category', key: 'category' }
 ]

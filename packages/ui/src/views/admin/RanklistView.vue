@@ -35,7 +35,11 @@ const columns: DataTableColumns = [
       )
   },
   { title: 'Name', key: 'name' },
-  { title: 'Public', key: 'public' }
+  {
+    title: 'Public',
+    key: 'public',
+    render: (row) => (row.public ? 'Public' : 'Private')
+  }
 ]
 
 const { state, isLoading, error } = useAsyncState(
