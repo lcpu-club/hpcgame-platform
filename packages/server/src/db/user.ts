@@ -1,6 +1,7 @@
 import type { Static } from '@sinclair/typebox'
 import { nanoid } from 'nanoid/async'
 import { redis } from '../cache/index.js'
+import { httpErrors } from '../services/main/index.js'
 import { StringEnum } from '../utils/type.js'
 import { db } from './base.js'
 
@@ -62,7 +63,7 @@ export async function expireUserInfo(_id: string) {
 
 export async function verifyAuthToken(token: unknown) {
   if (typeof token !== 'string') return null
-  const userId = token.split(':')[0]
+  const [userId, _token] = token.split(':')
   if (typeof userId !== 'string') return null
   const cached = await redis.get('user:' + token)
   if (!cached) {
@@ -72,6 +73,7 @@ export async function verifyAuthToken(token: unknown) {
     )
     if (!user) return null
     const { authToken, ...rest } = user
+    if (authToken !== _token) throw httpErrors.forbidden()
     await redis.set('user:' + authToken, JSON.stringify(rest))
     return user
   }
