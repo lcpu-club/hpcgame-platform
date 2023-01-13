@@ -26,7 +26,7 @@
                 <UserTags :tags="player.user.tags" />
               </NSpace>
             </td>
-            <td>{{ player.score }}</td>
+            <td class="whitespace-nowrap">{{ player.score }}</td>
             <td>
               <div class="flex items-center justify-center">
                 <RanklistScores
