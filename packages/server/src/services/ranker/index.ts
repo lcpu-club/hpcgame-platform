@@ -10,12 +10,14 @@ import {
 import { consume, IRankRequestMsg, rankRequestTopic } from '../../mq/index.js'
 import { Debouncer } from '../../utils/debounce.js'
 import { logger } from '../../logger/index.js'
+import { Submissions } from '../../db/submission.js'
 
 async function generatePlayers({ filter, playerCount }: IRanklistOptions) {
   const users = Users.find(filter, { projection: { _id: 1, problemStatus: 1 } })
   const queue = new PriorityQueue<IRanklistPlayer>(
     [],
-    (x, y) => x.score - y.score,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    (x, y) => (x.score === y.score ? y.last! - x.last! : x.score - y.score),
     false
   )
   for await (const user of users) {
@@ -32,10 +34,20 @@ async function generatePlayers({ filter, playerCount }: IRanklistOptions) {
       (acc, cur) => acc + (cur.score ?? 0),
       0
     )
+    const lastSubmission = await Submissions.findOne(
+      { userId: user._id },
+      {
+        sort: { createdAt: -1 },
+        limit: 1,
+        projection: { createdAt: 1 }
+      }
+    )
+    if (!lastSubmission) continue
     const item: IRanklistPlayer = {
       userId: user._id,
       score,
-      scores
+      scores,
+      last: lastSubmission.createdAt
     }
     queue.push(item)
     if (queue.size() > playerCount) queue.pop()

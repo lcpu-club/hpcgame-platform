@@ -6,6 +6,7 @@ export interface IRanklistPlayer {
   userId: string
   score: number
   scores: Record<string, number>
+  last?: number
 }
 
 export interface IRanklistOptions {
