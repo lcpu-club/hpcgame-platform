@@ -5,13 +5,15 @@
       <NTable striped>
         <thead>
           <tr>
+            <th>位次</th>
             <th>用户</th>
             <th>得分</th>
             <th class="w-full !text-center">详细信息</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="player of state.players" :key="player.userId">
+          <tr v-for="(player, i) of state.players" :key="player.userId">
+            <td class="whitespace-nowrap">{{ i + 1 }}</td>
             <td>
               <NSpace align="center" :wrap="false" :wrap-item="false">
                 <NAvatar
