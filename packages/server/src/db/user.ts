@@ -1,7 +1,6 @@
 import type { Static } from '@sinclair/typebox'
 import { nanoid } from 'nanoid/async'
 import { redis } from '../cache/index.js'
-import { httpErrors } from '../services/main/index.js'
 import { StringEnum } from '../utils/type.js'
 import { db } from './base.js'
 
@@ -73,7 +72,7 @@ export async function verifyAuthToken(token: unknown) {
     )
     if (!user) return null
     const { authToken, ...rest } = user
-    if (authToken !== token) throw httpErrors.forbidden()
+    if (authToken !== token) return null
     await redis.set('user:' + authToken, JSON.stringify(rest))
     return user
   }
