@@ -78,3 +78,10 @@ export const kTagRules = 'tag_rules' as ISysKey<{
 export const defaultTagRules = {
   rules: []
 }
+
+export const kTeamConfig = 'team_config' as ISysKey<{
+  maxTeamSize: number
+}>
+export const defaultTeamConfig = {
+  maxTeamSize: 5
+}

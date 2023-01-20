@@ -4,7 +4,9 @@ import { getSCOWCredentialsForTeam } from '../../../db/scow.js'
 import {
   sysGet,
   kGameSchedule,
-  defaultGameSchedule
+  defaultGameSchedule,
+  kTeamConfig,
+  defaultTeamConfig
 } from '../../../db/syskv.js'
 import { Teams } from '../../../db/team.js'
 import { expireUserInfo, Users } from '../../../db/user.js'
@@ -99,8 +101,12 @@ export const teamRouter = protectedChain
       )
       .handle(async (ctx, req) => {
         ctx.requires(await shouldAllowTeamOps())
+        const config = await sysGet(kTeamConfig, defaultTeamConfig)
         const { value } = await Teams.findOneAndUpdate(
-          { teamToken: req.body.teamToken },
+          {
+            teamToken: req.body.teamToken,
+            [`memberIds.${config.maxTeamSize - 1}`]: { $exists: false }
+          },
           { $addToSet: { memberIds: ctx.user._id } },
           { projection: { _id: 1 } }
         )
