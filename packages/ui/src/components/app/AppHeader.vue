@@ -49,16 +49,23 @@ import { RouterLink } from 'vue-router'
 import UserIndicatorProxy from '@/components/user/UserIndicatorProxy.vue'
 import { showAdmin, loggedIn } from '@/api'
 
+const additionalMenuOptions = JSON.parse(
+  import.meta.env.VITE_ADDITIONAL_MENU_OPTIONS ?? '[]'
+)
+console.log(additionalMenuOptions)
+
 const menuOptions = computed<MenuOption[]>(() =>
   (
     [
       ['problems', '题目', '/problems', loggedIn.value],
       ['ranklist', '排行榜', '/ranklist', loggedIn.value],
-      ['admin', '管理', '/admin', showAdmin.value]
+      ['admin', '管理', '/admin', showAdmin.value],
+      ...additionalMenuOptions
     ] as const
-  ).map(([key, label, to, show]) => ({
+  ).map(([key, label, to, show, native]) => ({
     key,
-    label: () => h(RouterLink, { to }, () => label),
+    label: () =>
+      native ? h('a', { href: to }, label) : h(RouterLink, { to }, () => label),
     show: show ?? true
   }))
 )
