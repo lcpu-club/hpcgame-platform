@@ -1,4 +1,5 @@
 import { authToken } from '@/api'
+import { getItem } from '@/utils/storage'
 import MessageWorker from './message?sharedworker'
 
 export function startMessageWorker() {
@@ -8,9 +9,7 @@ export function startMessageWorker() {
     worker.port.postMessage({
       type: 'start',
       payload: {
-        since:
-          parseInt(localStorage.getItem('messageTimestamp') ?? '0') ||
-          Date.now(),
+        since: parseInt(getItem('messageTimestamp') ?? '0') || Date.now(),
         token: authToken.value
       }
     })

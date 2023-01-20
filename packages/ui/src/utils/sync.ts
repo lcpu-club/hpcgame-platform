@@ -1,5 +1,6 @@
 import { hash } from './meta'
 import { hpcSyncChannel } from './shared'
+import { setItem } from './storage'
 
 hpcSyncChannel.addEventListener('message', (ev) => {
   const { type, payload } = ev.data
@@ -13,7 +14,7 @@ hpcSyncChannel.addEventListener('message', (ev) => {
     case 'log':
       return console.log(payload)
     case 'set':
-      localStorage.setItem(payload.key, payload.value)
+      setItem(payload.key, payload.value)
       return
     case 'sync':
       if (payload !== hash) {

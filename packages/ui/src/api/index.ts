@@ -4,9 +4,10 @@ import { createClient, HandlerFetchError } from 'typeful-fetch'
 import { useLocalStorage } from '@vueuse/core'
 import { computed } from 'vue'
 import { finalizeLogout } from '@/utils/sync'
+import { PREFIX } from '@/utils/storage'
 
 export const userInfo = useLocalStorage<IUser>(
-  'user-info',
+  PREFIX + 'user-info',
   {} as unknown as IUser,
   { deep: true }
 )
