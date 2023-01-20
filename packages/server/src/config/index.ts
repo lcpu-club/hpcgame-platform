@@ -59,6 +59,7 @@ export const MAIL_SENDER = string('MAIL_SENDER', 'HPC Game System')
 
 // Redis
 export const REDIS_URL = string('REDIS_URL', 'redis://localhost:6379')
+export const REDIS_PREFIX = string('REDIS_URL', 'hpc:')
 
 // Recaptcha
 export const RECAPTCHA_SECRET = string('RECAPTCHA_SECRET')
