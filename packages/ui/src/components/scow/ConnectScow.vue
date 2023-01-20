@@ -18,7 +18,7 @@ import { useSCOW } from '@/utils/scow'
 const { open } = useSCOW()
 
 const { run, running } = useSimpleAsyncTask(async () => {
-  const { _id, password } = await mainApi.user.scowCredentials.$post
+  const { _id, password } = await mainApi.team.getSCOWCredentials.$post
     .body({})
     .fetch()
   open(_id, password)

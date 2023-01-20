@@ -27,7 +27,7 @@ export const mainApi = createClient<MainDescriptor>(
 )
 
 export function tryUpdateUser() {
-  mainApi.user.$get
+  return mainApi.user.$get
     .query({ userId: userInfo.value._id })
     .fetch()
     .then((user) => {

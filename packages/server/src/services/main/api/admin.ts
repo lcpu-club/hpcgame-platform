@@ -1,7 +1,7 @@
 import { Type } from '@sinclair/typebox'
 import {
-  getSCOWCredentialsForUser,
   getSCOWCredentialsForProblem,
+  getSCOWCredentialsForTeam,
   SCOWCredentials
 } from '../../../db/scow.js'
 import { sysGet, kTagRules, defaultTagRules } from '../../../db/syskv.js'
@@ -97,7 +97,7 @@ export const adminRouter = protectedChain
           return 0
         })
       )
-      .handle('POST', '/getCredentialForUser', (C) =>
+      .handle('POST', '/getCredentialForTeam', (C) =>
         C.handler()
           .body(
             Type.Object({
@@ -105,7 +105,7 @@ export const adminRouter = protectedChain
             })
           )
           .handle(async (_, req) => {
-            return getSCOWCredentialsForUser(req.body._id)
+            return getSCOWCredentialsForTeam(req.body._id)
           })
       )
       .handle('POST', '/getCredentialForProblem', (C) =>

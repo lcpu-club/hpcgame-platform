@@ -1,5 +1,5 @@
-import { mainApi, userInfo } from '@/api'
-import { computed, inject, type InjectionKey, type Ref } from 'vue'
+import { mainApi } from '@/api'
+import { inject, type InjectionKey, type Ref } from 'vue'
 
 export async function loadProblemsData() {
   const problems = await mainApi.problem.list.$get.fetch()
@@ -24,14 +24,6 @@ export function useProblemsData() {
   return problemsData
 }
 
-export function getProblemStatus(id: string) {
-  return userInfo.value.problemStatus[id]
-}
-
-export function getProblemStatusRef(id: string) {
-  return computed(() => getProblemStatus(id))
-}
-
 function interpolate(start: number, end: number, rate: number) {
   return Math.floor((end - start) * rate + start)
 }
@@ -43,10 +35,4 @@ export function getColorByScore(score: number, maxScore: number) {
   const s = interpolate(63, 63, score)
   const l = interpolate(46, 42, score)
   return `hsl(${h}deg ${s}% ${l}%)`
-}
-
-export function getProblemColor(id: string, maxScore: number) {
-  const status = getProblemStatus(id)
-  if (!status) return 'gray'
-  return getColorByScore(status.score ?? 0, maxScore)
 }

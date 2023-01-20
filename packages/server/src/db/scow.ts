@@ -8,10 +8,11 @@ import { db } from './base.js'
 import { defaultUserChargeLimit, kUserChargeLimit, sysGet } from './syskv.js'
 import { Users } from './user.js'
 import { execuateRules } from '../utils/rules.js'
+import { Teams } from './team.js'
 
 export interface ISCOWCredential {
   _id: string
-  userId: string
+  teamId: string
   problemId: string
   password: string
   synced: boolean
@@ -19,7 +20,7 @@ export interface ISCOWCredential {
 
 export const SCOWCredentials = db.collection<ISCOWCredential>('scowCredentials')
 
-await SCOWCredentials.createIndex({ userId: 1, problemId: 1 }, { unique: true })
+await SCOWCredentials.createIndex({ teamId: 1, problemId: 1 }, { unique: true })
 
 // Valid Linux username: [a-z_][a-z0-9_-]*
 // ~2^157 unique IDs
@@ -30,12 +31,12 @@ async function generateSCOWId() {
   return 'hp' + (await SCOWId())
 }
 
-export async function getSCOWCredentialsForUser(userId: string) {
-  let cred = await SCOWCredentials.findOne({ userId, problemId: '' })
+export async function getSCOWCredentialsForTeam(teamId: string) {
+  let cred = await SCOWCredentials.findOne({ teamId, problemId: '' })
   if (!cred) {
     cred = {
       _id: await generateSCOWId(),
-      userId,
+      teamId,
       problemId: '',
       password: await nanoid(32),
       synced: false
@@ -43,8 +44,10 @@ export async function getSCOWCredentialsForUser(userId: string) {
     await SCOWCredentials.insertOne(cred)
   }
   if (!cred.synced) {
+    const team = await Teams.findOne({ _id: teamId })
+    if (!team) throw new Error('Team not found')
     const user = await Users.findOne(
-      { _id: userId },
+      { _id: team.ownerId },
       { projection: { metadata: 1, authEmail: 1, group: 1, tags: 1 } }
     )
     if (!user) throw new Error('User not found')
@@ -69,14 +72,14 @@ export async function getSCOWCredentialsForUser(userId: string) {
 }
 
 export async function getSCOWCredentialsForProblem(
-  userId: string,
+  teamId: string,
   problemId: string
 ) {
-  let cred = await SCOWCredentials.findOne({ userId, problemId })
+  let cred = await SCOWCredentials.findOne({ teamId, problemId })
   if (!cred) {
     cred = {
       _id: await generateSCOWId(),
-      userId,
+      teamId,
       problemId,
       password: await nanoid(32),
       synced: false
@@ -84,8 +87,10 @@ export async function getSCOWCredentialsForProblem(
     await SCOWCredentials.insertOne(cred)
   }
   if (!cred.synced) {
+    const team = await Teams.findOne({ _id: teamId })
+    if (!team) throw new Error('Team not found')
     const user = await Users.findOne(
-      { _id: userId },
+      { _id: team.ownerId },
       { projection: { metadata: 1, authEmail: 1, group: 1 } }
     )
     if (!user) throw new Error('User not found')
@@ -93,7 +98,7 @@ export async function getSCOWCredentialsForProblem(
       cred._id,
       cred.password,
       getRunnerAccount(user.group),
-      `${problemId}-${userId}`
+      `${problemId}-${teamId}`
     )
     await SCOWCredentials.updateOne(
       { _id: cred._id },

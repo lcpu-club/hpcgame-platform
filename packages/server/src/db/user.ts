@@ -12,12 +12,6 @@ export interface IUserAuthSource {
   iaaa?: string // IAAA Identifier
 }
 
-export interface ProblemStatus {
-  score?: number
-  submissionCount: number
-  effectiveSubmissionId: string
-}
-
 export interface IUser {
   _id: string
   name: string
@@ -25,10 +19,11 @@ export interface IUser {
   tags: string[]
   email: string
 
+  teamId?: string
+
   authToken: string
   iaaaId?: string
   authEmail?: string
-  problemStatus: Record<string, ProblemStatus>
 
   metadata: {
     qq?: string
@@ -47,7 +42,7 @@ export async function generateAuthToken(userId: string) {
   return userId + ':' + token
 }
 
-export type IUserInfo = Pick<IUser, '_id' | 'group'>
+export type IUserInfo = Pick<IUser, '_id' | 'group' | 'teamId'>
 
 export async function expireUserInfo(_id: string) {
   const keys = await redis.keys('user:' + _id + ':*')
@@ -68,7 +63,7 @@ export async function verifyAuthToken(token: unknown) {
   if (!cached) {
     const user = await Users.findOne(
       { _id: userId },
-      { projection: { _id: 1, group: 1, authToken: 1 } }
+      { projection: { _id: 1, group: 1, authToken: 1, teamId: 1 } }
     )
     if (!user) return null
     const { authToken, ...rest } = user

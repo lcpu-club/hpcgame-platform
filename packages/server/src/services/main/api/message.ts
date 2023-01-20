@@ -35,7 +35,8 @@ export const messageRouter = unprotectedChain
             ? [
                 { global: true },
                 { group: ctx.user.group },
-                { userId: ctx.user._id }
+                { userId: ctx.user._id },
+                { teamId: ctx.user.teamId }
               ]
             : [{ global: true }]
         }
@@ -70,7 +71,11 @@ export const messageRouter = unprotectedChain
         return Messages.find(
           {
             createdAt: { $lte: now },
-            $or: [{ userId: ctx.user._id }, { group: ctx.user.group }]
+            $or: [
+              { userId: ctx.user._id },
+              { group: ctx.user.group },
+              { teamId: ctx.user.teamId }
+            ]
           },
           { ...pagingToOptions(req.query), sort: { createdAt: -1 } }
         ).toArray()
@@ -106,6 +111,7 @@ export const messageRouter = unprotectedChain
               global: Type.Boolean(),
               group: Type.String(),
               userId: Type.String(),
+              teamId: Type.String(),
               title: Type.String(),
               content: Type.String(),
               createdAt: Type.Number(),

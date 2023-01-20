@@ -9,6 +9,7 @@ import {
   kGameSchedule,
   defaultGameSchedule
 } from '../../../db/syskv.js'
+import { Teams } from '../../../db/team.js'
 import { Users } from '../../../db/user.js'
 import { type IJudgeRequestMsg, judgeRequestTopic } from '../../../mq/index.js'
 import { publishAsync } from '../../../mq/writer.js'
@@ -41,7 +42,7 @@ export const submissionRouter = protectedChain
       .handle(async (ctx, req) => {
         return Submissions.find(
           {
-            userId: ctx.user._id,
+            teamId: ctx.user.teamId,
             problemId: req.query.problemId
           },
           {
@@ -62,7 +63,7 @@ export const submissionRouter = protectedChain
         const { _id } = req.query
         const submission = await Submissions.findOne({
           _id,
-          userId: ctx.user._id
+          teamId: ctx.user.teamId
         })
         if (!submission) throw req.server.httpErrors.notFound()
         return submission
@@ -80,11 +81,12 @@ export const submissionRouter = protectedChain
         if (!(await shouldAllowSubmit(ctx.user.group))) {
           throw httpErrors.badRequest()
         }
+        if (!ctx.user.teamId) throw httpErrors.badRequest()
 
         const { problemId } = req.body
         const submission = await Submissions.findOne({
           problemId,
-          userId: ctx.user._id,
+          teamId: ctx.user.teamId,
           status: 'created'
         })
         if (submission) {
@@ -95,9 +97,9 @@ export const submissionRouter = protectedChain
         if (!problem) throw req.server.httpErrors.badRequest()
 
         const id = await nanoid()
-        const result = await Users.updateOne(
+        const result = await Teams.updateOne(
           {
-            _id: ctx.user._id,
+            _id: ctx.user.teamId,
             $or: [
               { [`problemStatus.${problemId}`]: { $exists: false } },
               {
@@ -119,7 +121,7 @@ export const submissionRouter = protectedChain
         if (!result.modifiedCount) throw server.httpErrors.badRequest()
         await Submissions.insertOne({
           _id: id,
-          userId: ctx.user._id,
+          teamId: ctx.user.teamId,
           problemId,
           score: 0,
           status: 'created',
@@ -154,7 +156,7 @@ export const submissionRouter = protectedChain
         const { _id } = req.body
         const submission = await Submissions.findOne({
           _id,
-          userId: ctx.user._id,
+          teamId: ctx.user.teamId,
           status: 'created'
         })
         if (!submission) throw server.httpErrors.notFound()
@@ -194,7 +196,7 @@ export const submissionRouter = protectedChain
         const { _id } = req.body
         const submission = await Submissions.findOne({
           _id,
-          userId: ctx.user._id
+          teamId: ctx.user.teamId
         })
         if (!submission) throw server.httpErrors.notFound()
         return {
@@ -216,20 +218,24 @@ export const submissionRouter = protectedChain
         if (!(await shouldAllowSubmit(ctx.user.group))) {
           throw httpErrors.badRequest()
         }
+        if (!ctx.user.teamId) throw httpErrors.badRequest()
 
-        const submission = await Submissions.findOne({ _id: req.body._id })
+        const submission = await Submissions.findOne({
+          _id: req.body._id,
+          teamId: ctx.user.teamId
+        })
         if (!submission) throw httpErrors.notFound()
         if (submission.status !== 'created') throw httpErrors.badRequest()
 
         const creds = await getSCOWCredentialsForProblem(
-          ctx.user._id,
+          ctx.user.teamId,
           submission.problemId
         )
 
         const { modifiedCount } = await Submissions.updateOne(
           {
             _id: req.body._id,
-            userId: ctx.user._id,
+            teamId: ctx.user.teamId,
             status: 'created'
           },
           { $set: { status: 'pending' } }
@@ -342,19 +348,23 @@ export const submissionRouter = protectedChain
             )
             if (!value) throw httpErrors.notFound()
 
-            const user = await Users.findOne({ _id: value.userId })
+            const team = await Teams.findOne({ _id: value.teamId })
 
-            if (!user) {
-              throw httpErrors.internalServerError("Submission's user is gone!")
+            if (!team) {
+              throw httpErrors.internalServerError("Submission's team is gone!")
             }
 
             const creds = await getSCOWCredentialsForProblem(
-              value.userId,
+              value.teamId,
               value.problemId
             )
 
             const problem = await Problems.findOne({ _id: value.problemId })
             if (!problem) throw httpErrors.internalServerError()
+
+            const owner = await Users.findOne({ _id: team.ownerId })
+            if (!owner)
+              throw httpErrors.internalServerError("Team's owner is gone!")
 
             await publishAsync<IJudgeRequestMsg>(judgeRequestTopic, {
               runner_args: problem.runnerArgs,
@@ -362,8 +372,8 @@ export const submissionRouter = protectedChain
               runner_pass: creds.password,
               problem_id: problem._id,
               submission_id: value._id,
-              user_id: user._id,
-              user_group: user.group
+              user_id: owner._id,
+              user_group: owner.group
             })
 
             return 0

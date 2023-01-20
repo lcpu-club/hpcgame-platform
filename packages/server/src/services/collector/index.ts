@@ -1,16 +1,9 @@
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid/async'
 import { Messages } from '../../db/message.js'
 import { Submissions } from '../../db/submission.js'
-import { Users } from '../../db/user.js'
+import { Teams } from '../../db/team.js'
 import { logger } from '../../logger/index.js'
-import {
-  consume,
-  IJudgeStatusMsg,
-  IRankRequestMsg,
-  judgeStatusTopic,
-  rankRequestTopic
-} from '../../mq/index.js'
-import { publishAsync } from '../../mq/writer.js'
+import { consume, IJudgeStatusMsg, judgeStatusTopic } from '../../mq/index.js'
 
 consume<IJudgeStatusMsg>(judgeStatusTopic, 'default', async (data) => {
   logger.info(data)
@@ -31,9 +24,9 @@ consume<IJudgeStatusMsg>(judgeStatusTopic, 'default', async (data) => {
   )
   if (value) {
     if (data.done) {
-      await Users.updateOne(
+      await Teams.updateOne(
         {
-          _id: value.userId,
+          _id: value.teamId,
           [`problemStatus.${value.problemId}.effectiveSubmissionId`]:
             data.submission_id
         },
@@ -47,10 +40,11 @@ consume<IJudgeStatusMsg>(judgeStatusTopic, 'default', async (data) => {
     if (value.status !== 'finished') {
       if (data.done) {
         await Messages.insertOne({
-          _id: nanoid(),
+          _id: await nanoid(),
           global: false,
           group: '',
-          userId: value.userId,
+          userId: '',
+          teamId: value.teamId,
           title: '评测完成',
           content: `您的提交\`${value._id}\`已经完成评测，得分为\`${data.score}\`。`,
           metadata: {
@@ -59,16 +53,13 @@ consume<IJudgeStatusMsg>(judgeStatusTopic, 'default', async (data) => {
           },
           createdAt: Date.now()
         })
-        await publishAsync<IRankRequestMsg>(rankRequestTopic, {
-          effectiveSubmissionId: value._id,
-          effectiveUserId: value.userId
-        })
       } else if (value.status === 'pending') {
         await Messages.insertOne({
-          _id: nanoid(),
+          _id: await nanoid(),
           global: false,
           group: '',
-          userId: value.userId,
+          userId: '',
+          teamId: value.teamId,
           title: '评测开始',
           content: `您的提交\`${value._id}\`已经开始评测，请耐心等候。`,
           metadata: {

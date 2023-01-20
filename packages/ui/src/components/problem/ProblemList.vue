@@ -21,11 +21,9 @@
 <script setup lang="ts">
 // import { userInfo } from '@/api'
 import { computed, h } from 'vue'
-import { useProblemsData, getProblemColor } from '@/utils/problems'
+import { useProblemsData } from '@/utils/problems'
 import { NButton, NCard, NMenu, type MenuOption, NP, NText } from 'naive-ui'
 import { RouterLink } from 'vue-router'
-import { renderNIcon } from '@/utils/renderIcon'
-import { mdiCircle } from '@mdi/js'
 import ConnectScow from '@/components/scow/ConnectScow.vue'
 
 const props = defineProps<{ loading: boolean }>()
@@ -51,10 +49,7 @@ const menuOptions = computed<MenuOption[]>(() =>
             )
           ])
         ),
-      key: problem._id,
-      icon: renderNIcon(mdiCircle, {
-        color: getProblemColor(problem._id, problem.score)
-      })
+      key: problem._id
     }))
   }))
 )

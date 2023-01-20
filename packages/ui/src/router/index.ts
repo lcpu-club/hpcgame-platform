@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { adminRoutes } from './admin'
 import { loginRoutes } from './login'
 import { problemsRoutes } from './problems'
+import { teamRoutes } from './team'
 import { userRoutes } from './user'
 
 const router = createRouter({
@@ -17,10 +18,6 @@ const router = createRouter({
       component: () => import('@/views/AboutView.vue')
     },
     {
-      path: '/ranklist',
-      component: () => import('@/views/RanklistView.vue')
-    },
-    {
       path: '/messages',
       component: () => import('@/views/MessagesView.vue')
     },
@@ -30,6 +27,7 @@ const router = createRouter({
     },
     ...loginRoutes,
     ...userRoutes,
+    ...teamRoutes,
     ...adminRoutes,
     ...problemsRoutes,
     {
@@ -42,10 +40,10 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   window.$loadingBar?.start()
   const pfx = (s: string) => to.path.startsWith(s)
-  if (pfx('/login') || pfx('/auth')) {
+  if (pfx('/login')) {
     return loggedIn.value ? next('/') : next()
   }
-  if (pfx('/problems') || pfx('/user') || pfx('/ranklist')) {
+  if (pfx('/problems') || pfx('/user') || pfx('/team')) {
     return loggedIn.value ? next() : next('/login')
   }
   if (pfx('/admin')) {

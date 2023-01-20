@@ -23,7 +23,7 @@ async function load() {
 
 async function save(data: unknown) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { _id, userId, problemId, ...$set } = data as ISubmission
+  const { _id, teamId, problemId, ...$set } = data as ISubmission
   await mainApi.submission.admin.$put.body({ _id, $set }).fetch()
 }
 

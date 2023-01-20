@@ -12,7 +12,7 @@ export type SubmissionStatus = Static<typeof SubmissionStatusSchema>
 
 export interface ISubmission {
   _id: string
-  userId: string
+  teamId: string
   problemId: string
   score: number
   status: SubmissionStatus
@@ -27,9 +27,9 @@ export interface ISubmission {
 }
 
 export const Submissions = db.collection<ISubmission>('submissions')
-await Submissions.createIndex({ userId: 1, problemId: 1 })
+await Submissions.createIndex({ teamId: 1, problemId: 1 })
 await Submissions.createIndex(
-  { userId: 1, problemId: 1 },
+  { teamId: 1, problemId: 1 },
   {
     unique: true,
     partialFilterExpression: {

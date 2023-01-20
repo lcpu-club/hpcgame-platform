@@ -18,8 +18,6 @@
     <NInput readonly v-model:value="model.iaaaId" />
     <div>登录邮箱</div>
     <NInput readonly v-model:value="model.authEmail" />
-    <div>题目状态</div>
-    <JSONEditor readonly v-model="model.problemStatus" />
     <div>元数据</div>
     <JSONEditor readonly v-model="model.metadata" />
   </div>

@@ -1,24 +1,8 @@
 import { Type } from '@sinclair/typebox'
-import { getSCOWCredentialsForUser } from '../../../db/scow.js'
-import {
-  sysGet,
-  kGameSchedule,
-  defaultGameSchedule
-} from '../../../db/syskv.js'
 import { expireUserInfo, UserGroupSchema, Users } from '../../../db/user.js'
 import { unsafePagingToOptions } from '../../../utils/paging.js'
 import { httpErrors } from '../index.js'
 import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
-
-async function shouldAllowSCOWAccess(group: string) {
-  const schedule = await sysGet(kGameSchedule, defaultGameSchedule)
-  const now = Date.now()
-  return (
-    (now >= schedule.start && now <= schedule.end) ||
-    group === 'admin' ||
-    group === 'staff'
-  )
-}
 
 export const userRouter = protectedChain
   .router()
@@ -64,14 +48,6 @@ export const userRouter = protectedChain
         }
         return 0
       })
-  )
-  .handle('POST', '/scowCredentials', (C) =>
-    C.handler().handle(async (ctx) => {
-      if (!(await shouldAllowSCOWAccess(ctx.user.group))) {
-        throw httpErrors.forbidden('SCOW is not available now')
-      }
-      return getSCOWCredentialsForUser(ctx.user._id)
-    })
   )
   .handle('DELETE', '/', (C) => C.handler())
   .route('/admin', (C) =>

@@ -57,7 +57,6 @@ export const authRouter = rootChain
           group: req.query.group,
           tags: [],
           email: 'no@email.at.all',
-          problemStatus: {},
           metadata: {}
         })
       })
@@ -87,7 +86,6 @@ export const authRouter = rootChain
           group: 'pku',
           tags,
           email: `${resp.userInfo.identityId}@pku.edu.cn`,
-          problemStatus: {},
           iaaaId,
           metadata: {
             realname: resp.userInfo.name,
@@ -162,7 +160,6 @@ export const authRouter = rootChain
           group: 'social',
           tags,
           email: mail,
-          problemStatus: {},
           authEmail: mail,
           metadata: {}
         })

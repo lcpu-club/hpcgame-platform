@@ -17,13 +17,10 @@ import { NDataTable, type DataTableColumns } from 'naive-ui'
 import type { ISubmission } from '@hpcgame-platform/server/src/db'
 import { h } from 'vue'
 import { RouterLink } from 'vue-router'
-import { getProblemStatusRef } from '@/utils/problems'
 
 const props = defineProps<{
   problemId: string
 }>()
-
-const status = getProblemStatusRef(props.problemId)
 
 const columns: DataTableColumns<ISubmission> = [
   {
@@ -33,17 +30,7 @@ const columns: DataTableColumns<ISubmission> = [
       h(
         RouterLink,
         { to: `/problems/${props.problemId}/submissions/${row._id}` },
-        () =>
-          h(
-            'code',
-            {
-              style: {
-                color:
-                  status.value.effectiveSubmissionId === row._id ? 'blue' : ''
-              }
-            },
-            row._id
-          )
+        () => h('code', {}, row._id)
       )
   },
   { title: '状态', key: 'status', render: (row) => h('code', {}, row.status) },

@@ -52,13 +52,12 @@ import { showAdmin, loggedIn } from '@/api'
 const additionalMenuOptions = JSON.parse(
   import.meta.env.VITE_ADDITIONAL_MENU_OPTIONS ?? '[]'
 )
-console.log(additionalMenuOptions)
 
 const menuOptions = computed<MenuOption[]>(() =>
   (
     [
       ['problems', '题目', '/problems', loggedIn.value],
-      ['ranklist', '排行榜', '/ranklist', loggedIn.value],
+      ['team', '团队', '/team', loggedIn.value],
       ['admin', '管理', '/admin', showAdmin.value],
       ...additionalMenuOptions
     ] as const

@@ -113,7 +113,7 @@ const loadTask = useSimpleAsyncTask(
           _id: userId.value,
           problemId: problemId.value
         })
-      : mainApi.admin.scow.getCredentialForUser.$post.body({
+      : mainApi.admin.scow.getCredentialForTeam.$post.body({
           _id: userId.value
         })
     const { _id, password } = await api.fetch()
@@ -128,12 +128,12 @@ const scowUser = ref('')
 const queryUserId = ref('')
 const queryProblemId = ref('')
 const queryTask = useSimpleAsyncTask(async () => {
-  const { userId, problemId } = await mainApi.admin.scow.credentialDetails.$post
+  const { teamId, problemId } = await mainApi.admin.scow.credentialDetails.$post
     .body({
       scowUser: scowUser.value
     })
     .fetch()
-  queryUserId.value = userId
+  queryUserId.value = teamId
   queryProblemId.value = problemId
 })
 

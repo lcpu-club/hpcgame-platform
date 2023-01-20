@@ -4,8 +4,8 @@
   >
     <div>ID</div>
     <NInput readonly v-model:value="model._id" />
-    <div>用户ID</div>
-    <NInput readonly v-model:value="model.userId" />
+    <div>团队ID</div>
+    <NInput readonly v-model:value="model.teamId" />
     <div>题目ID</div>
     <NInput readonly v-model:value="model.problemId" />
     <div>分数</div>
