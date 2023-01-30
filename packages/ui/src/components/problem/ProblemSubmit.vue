@@ -6,7 +6,7 @@
   >
     允许的格式：<code>{{ props.allowedExtensions.join(',') }}</code>
   </FileUploader>
-  <NButton
+  <!-- <NButton
     :loading="running"
     :disabled="!submissionId"
     type="info"
@@ -15,17 +15,17 @@
     class="mt-2 w-full"
   >
     提交
-  </NButton>
+  </NButton> -->
 </template>
 
 <script setup lang="ts">
 import { mainApi, tryUpdateUser } from '@/api'
 import FileUploader from '@/components/misc/FileUploader.vue'
-import { useSimpleAsyncTask } from '@/utils/async'
+// import { useSimpleAsyncTask } from '@/utils/async'
 import { s3url } from '@/utils/misc'
-import { NButton } from 'naive-ui'
+// import { NButton } from 'naive-ui'
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   problemId: string
@@ -65,14 +65,14 @@ function onUploaded(file: File, metadata: unknown) {
   submissionId.value = (metadata as { _id: string })._id
 }
 
-const router = useRouter()
+// const router = useRouter()
 
-const { run, running } = useSimpleAsyncTask(async () => {
-  await mainApi.submission.submit.$post
-    .body({ _id: submissionId.value })
-    .fetch()
-  router.push(`/problems/${props.problemId}/submissions/${submissionId.value}`)
-})
+// const { run, running } = useSimpleAsyncTask(async () => {
+//   await mainApi.submission.submit.$post
+//     .body({ _id: submissionId.value })
+//     .fetch()
+//   router.push(`/problems/${props.problemId}/submissions/${submissionId.value}`)
+// })
 </script>
 
 <style scoped>
