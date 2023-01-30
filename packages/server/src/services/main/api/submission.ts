@@ -207,59 +207,59 @@ export const submissionRouter = protectedChain
         }
       })
   )
-  .handle('POST', '/submit', (C) =>
-    C.handler()
-      .body(
-        Type.Object({
-          _id: Type.String()
-        })
-      )
-      .handle(async (ctx, req) => {
-        if (!(await shouldAllowSubmit(ctx.user.group))) {
-          throw httpErrors.badRequest()
-        }
-        if (!ctx.user.teamId) throw httpErrors.badRequest()
+  // .handle('POST', '/submit', (C) =>
+  //   C.handler()
+  //     .body(
+  //       Type.Object({
+  //         _id: Type.String()
+  //       })
+  //     )
+  //     .handle(async (ctx, req) => {
+  //       if (!(await shouldAllowSubmit(ctx.user.group))) {
+  //         throw httpErrors.badRequest()
+  //       }
+  //       if (!ctx.user.teamId) throw httpErrors.badRequest()
 
-        const submission = await Submissions.findOne({
-          _id: req.body._id,
-          teamId: ctx.user.teamId
-        })
-        if (!submission) throw httpErrors.notFound()
-        if (submission.status !== 'created') throw httpErrors.badRequest()
+  //       const submission = await Submissions.findOne({
+  //         _id: req.body._id,
+  //         teamId: ctx.user.teamId
+  //       })
+  //       if (!submission) throw httpErrors.notFound()
+  //       if (submission.status !== 'created') throw httpErrors.badRequest()
 
-        const creds = await getSCOWCredentialsForProblem(
-          ctx.user.teamId,
-          submission.problemId
-        )
+  //       const creds = await getSCOWCredentialsForProblem(
+  //         ctx.user.teamId,
+  //         submission.problemId
+  //       )
 
-        const { modifiedCount } = await Submissions.updateOne(
-          {
-            _id: req.body._id,
-            teamId: ctx.user.teamId,
-            status: 'created'
-          },
-          { $set: { status: 'pending' } }
-        )
-        if (!modifiedCount) throw httpErrors.badRequest()
+  //       const { modifiedCount } = await Submissions.updateOne(
+  //         {
+  //           _id: req.body._id,
+  //           teamId: ctx.user.teamId,
+  //           status: 'created'
+  //         },
+  //         { $set: { status: 'pending' } }
+  //       )
+  //       if (!modifiedCount) throw httpErrors.badRequest()
 
-        const problem = await Problems.findOne({
-          _id: submission.problemId
-        })
-        if (!problem) throw httpErrors.internalServerError()
+  //       const problem = await Problems.findOne({
+  //         _id: submission.problemId
+  //       })
+  //       if (!problem) throw httpErrors.internalServerError()
 
-        await publishAsync<IJudgeRequestMsg>(judgeRequestTopic, {
-          runner_args: problem.runnerArgs,
-          runner_user: creds._id,
-          runner_pass: creds.password,
-          problem_id: problem._id,
-          submission_id: submission._id,
-          user_id: ctx.user._id,
-          user_group: ctx.user.group
-        })
+  //       await publishAsync<IJudgeRequestMsg>(judgeRequestTopic, {
+  //         runner_args: problem.runnerArgs,
+  //         runner_user: creds._id,
+  //         runner_pass: creds.password,
+  //         problem_id: problem._id,
+  //         submission_id: submission._id,
+  //         user_id: ctx.user._id,
+  //         user_group: ctx.user.group
+  //       })
 
-        return 0
-      })
-  )
+  //       return 0
+  //     })
+  // )
   .route('/admin', (C) =>
     C.transform((ctx) => {
       ctx.requires(ctx.user.group === 'staff')
