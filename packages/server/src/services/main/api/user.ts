@@ -3,6 +3,17 @@ import { expireUserInfo, UserGroupSchema, Users } from '../../../db/user.js'
 import { unsafePagingToOptions } from '../../../utils/paging.js'
 import { httpErrors } from '../index.js'
 import { adminFilterSchema, adminSearchSchema, protectedChain } from './base.js'
+import { getClusterCredentialForTeam } from '../cluster/index.js'
+import {
+  sysGet,
+  kGameSchedule,
+  defaultGameSchedule
+} from '../../../db/syskv.js'
+
+async function shouldAllowClusterAccess(group: string) {
+  const schedule = await sysGet(kGameSchedule, defaultGameSchedule)
+  return Date.now() >= schedule.start || group === 'admin' || group === 'staff'
+}
 
 export const userRouter = protectedChain
   .router()
@@ -50,6 +61,17 @@ export const userRouter = protectedChain
       })
   )
   .handle('DELETE', '/', (C) => C.handler())
+  .handle('POST', '/getClusterCredentials', (C) =>
+    C.handler().handle(async (ctx) => {
+      if (!(await shouldAllowClusterAccess(ctx.user.group))) {
+        throw httpErrors.badRequest('Cluster access is not allowed')
+      }
+      if (!ctx.user.teamId) {
+        throw httpErrors.badRequest('User is not in a team')
+      }
+      return getClusterCredentialForTeam(ctx.user.teamId)
+    })
+  )
   .route('/admin', (C) =>
     C.transform((ctx) => {
       ctx.requires(false)

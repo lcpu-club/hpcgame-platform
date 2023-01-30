@@ -71,3 +71,14 @@ export const SCOW_ADMIN_PASS = string('SCOW_ADMIN_PASS', 'hpcgame_admin')
 
 // Runner
 export const RUNNER_SECRET = string('RUNNER_SECRET', '')
+
+// Cluster
+export const CLUSTER_API_BASE = string(
+  'CLUSTER_API_BASE',
+  'http://localhost:10723'
+)
+export const CLUSTER_API_TOKEN_NAME = string('CLUSTER_API_TOKEN_NAME', 'hpc')
+export const CLUSTER_API_TOKEN_SECRET = string(
+  'CLUSTER_API_TOKEN_SECRET',
+  'hpc'
+)

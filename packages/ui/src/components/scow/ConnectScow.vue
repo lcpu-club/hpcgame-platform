@@ -4,7 +4,7 @@
       <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -->
       <NIcon v-html="SCOWLogo" />
     </template>
-    登录超算平台
+    登录SCOW™
   </NButton>
 </template>
 

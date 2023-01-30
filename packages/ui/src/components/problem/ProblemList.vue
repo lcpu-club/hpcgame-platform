@@ -1,5 +1,6 @@
 <template>
   <div class="grid grid-cols-1 gap-2">
+    <ConnectCluster />
     <ConnectScow />
     <NCard
       class="shadow"
@@ -25,6 +26,7 @@ import { useProblemsData } from '@/utils/problems'
 import { NButton, NCard, NMenu, type MenuOption, NP, NText } from 'naive-ui'
 import { RouterLink } from 'vue-router'
 import ConnectScow from '@/components/scow/ConnectScow.vue'
+import ConnectCluster from '@/components/problem/ConnectCluster.vue'
 
 const props = defineProps<{ loading: boolean }>()
 

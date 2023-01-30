@@ -85,3 +85,15 @@ export const kTeamConfig = 'team_config' as ISysKey<{
 export const defaultTeamConfig = {
   maxTeamSize: 5
 }
+
+export const kClusterBalanceConfig = 'cluster_balance_config' as ISysKey<{
+  rules: IRule[]
+}>
+export const defaultClusterBalanceConfig = {
+  rules: [
+    {
+      $match: {},
+      $returns: {}
+    }
+  ] satisfies IRule[]
+}
