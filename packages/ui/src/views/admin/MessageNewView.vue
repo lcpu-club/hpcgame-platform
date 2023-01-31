@@ -23,6 +23,7 @@ async function load() {
     global: true,
     group: '',
     userId: '',
+    teamId: '',
     title: 'Title',
     content: 'Content',
     metadata: {},

@@ -10,6 +10,8 @@
     <NInput v-model:value="model.group" />
     <div>用户ID</div>
     <NInput v-model:value="model.userId" />
+    <div>团队ID</div>
+    <NInput v-model:value="model.teamId" />
     <div>标题</div>
     <NInput v-model:value="model.title" />
     <div>内容</div>
