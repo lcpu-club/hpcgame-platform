@@ -59,6 +59,8 @@ const menuOptions = computed<MenuOption[]>(() =>
     [
       ['problems', '题目', '/problems', loggedIn.value],
       ['ranklist', '排行榜', '/ranklist', loggedIn.value],
+      ['staff', '工作人员名单', '/staff', true],
+      ['ranking', '最终排名', '/ranking', true],
       ['admin', '管理', '/admin', showAdmin.value],
       ...additionalMenuOptions
     ] as const

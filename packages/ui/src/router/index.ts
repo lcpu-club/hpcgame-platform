@@ -28,6 +28,14 @@ const router = createRouter({
       path: '/terms',
       component: () => import('@/views/TermsView.vue')
     },
+    {
+      path: '/staff',
+      component: () => import('@/views/StaffView.vue')
+    },
+    {
+      path: '/ranking',
+      component: () => import('@/views/RankingView.vue')
+    },
     ...loginRoutes,
     ...userRoutes,
     ...adminRoutes,
@@ -42,7 +50,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   window.$loadingBar?.start()
   const pfx = (s: string) => to.path.startsWith(s)
-  if (pfx('/login') || pfx('/auth')) {
+  if (pfx('/login')) {
     return loggedIn.value ? next('/') : next()
   }
   if (pfx('/problems') || pfx('/user') || pfx('/ranklist')) {
